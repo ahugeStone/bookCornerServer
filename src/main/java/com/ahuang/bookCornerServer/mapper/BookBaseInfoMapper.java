@@ -10,6 +10,14 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 
+/**
+ * 
+* @ClassName: BookBaseInfoMapper
+* @Description: BOOK_BASEINFO表的Mapper
+* @author ahuang
+* @date 2018年6月2日 下午10:00:58
+* @version V1.0
+ */
 public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseInfoEntity,String>{
 	String TABLE_NAEM = " BOOK_BASEINFO ";
 	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";

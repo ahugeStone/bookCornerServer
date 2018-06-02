@@ -1,14 +1,20 @@
 package com.ahuang.bookCornerServer.bo;
 
 import java.util.List;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+/**
+ * 
+* @ClassName: PageList
+* @Description: 翻页实体类
+* @author ahuang
+* @date 2018年6月2日 下午10:00:30
+* @version V1.0
+* @param <T>
+ */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class PageList<T> {
 	/**每页数量**/
 	Integer pageSize;
@@ -26,4 +32,26 @@ public class PageList<T> {
 	boolean lastPage;
 	/**当前页具体内容**/
 	List<T> objectList;
+	/**
+	 * 构造同时生成翻页相关属性值
+	 */
+	public PageList(Integer startNum, Integer totalNum, Integer pageSize, List<T> list) {
+		startNum = startNum <= 0 ? 1:startNum;
+		Integer totalPageNum = totalNum%pageSize == 0? totalNum/pageSize:totalNum/pageSize+1;
+		Integer endNum = startNum + pageSize;
+		endNum  = endNum > totalNum? totalNum:endNum;
+		startNum = startNum > endNum? endNum:startNum;
+		Integer currentPageNum = endNum%pageSize == 0? startNum/pageSize:startNum/pageSize+1;
+		currentPageNum = currentPageNum > totalPageNum? totalPageNum:currentPageNum;
+		boolean isLastPage = endNum == totalNum;
+		
+		this.startNum = startNum;
+		this.totalPageNum = totalPageNum;
+		this.endNum = endNum;
+		this.currentPageNum = currentPageNum;
+		this.lastPage = isLastPage;
+		this.pageSize = pageSize;
+		this.totalNum = totalNum;
+		this.objectList = list;
+	}
 }

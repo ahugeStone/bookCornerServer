@@ -10,7 +10,14 @@ import com.ahuang.bookCornerServer.bo.PageList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.mapper.BookBaseInfoMapper;
 import com.ahuang.bookCornerServer.servise.BookService;
-
+/**
+ * 
+* @ClassName: BookServiceImpl
+* @Description: 图书服务类
+* @author ahuang
+* @date 2018年6月2日 下午9:58:15
+* @version V1.0
+ */
 @Service
 public class BookServiceImpl implements BookService {
 	@Autowired
@@ -18,29 +25,11 @@ public class BookServiceImpl implements BookService {
 	
 	@Override
 	public PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param) {
-		Integer num = (Integer)param.get("num");
-		num = num <= 0 ? 1:num;
-		Integer pageSize = (Integer)param.get("pageSize");
-//		PageList pageList = new PageList(pageSize, num, null, null, null);
-		PageList<BookBaseInfoEntity> pageList = new PageList<BookBaseInfoEntity>();
-		List<BookBaseInfoEntity> booklist = bookBaseInfoMapper.queryBookListPage(param);
-		Integer totalNum = bookBaseInfoMapper.queryBookInfoNum(param);
-		Integer totalPageNum = totalNum%pageSize == 0? totalNum/pageSize:totalNum/pageSize+1;
-		Integer endNum = num + pageSize;
-		endNum  = endNum > totalNum? totalNum:endNum;
-		num = num > endNum? endNum:num;
-		Integer currentPageNum = endNum%pageSize == 0? num/pageSize:num/pageSize+1;
-		currentPageNum = currentPageNum > totalPageNum? totalPageNum:currentPageNum;
-		boolean isLastPage = endNum == totalNum;
-		
-		pageList.setObjectList(booklist);
-		pageList.setPageSize(pageSize);
-		pageList.setStartNum(num);
-		pageList.setTotalNum(totalNum);
-		pageList.setLastPage(isLastPage);
-		pageList.setEndNum(endNum);
-		pageList.setTotalPageNum(totalPageNum);
-		pageList.setCurrentPageNum(currentPageNum);
+		Integer num = (Integer)param.get("num"); // 当前页起始id
+		Integer pageSize = (Integer)param.get("pageSize"); // 页面大小
+		List<BookBaseInfoEntity> booklist = bookBaseInfoMapper.queryBookListPage(param); // 图书列表
+		Integer totalNum = bookBaseInfoMapper.queryBookInfoNum(param); // 图书总数
+		PageList<BookBaseInfoEntity> pageList = new PageList<BookBaseInfoEntity>(num, totalNum,pageSize,booklist); //获取页面对象
 		
 		return pageList;
 	}

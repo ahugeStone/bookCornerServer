@@ -16,6 +16,14 @@ import com.ahuang.bookCornerServer.servise.BookService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+* @ClassName: bookTest
+* @Description: 测试controller
+* @author ahuang
+* @date 2018年6月2日 下午10:01:31
+* @version V1.0
+ */
 @Slf4j
 @RestController
 @RequestMapping("/bookTest")

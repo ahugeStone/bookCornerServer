@@ -4,6 +4,14 @@ import java.util.Date;
 
 import lombok.Data;
 
+/**
+ * 
+* @ClassName: BookBaseInfoEntity
+* @Description: 图书实体类
+* @author ahuang
+* @date 2018年6月2日 下午10:00:06
+* @version V1.0
+ */
 @Data
 public class BookBaseInfoEntity {
 	/**图书编号**/
