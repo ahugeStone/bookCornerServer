@@ -31,9 +31,27 @@ public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseI
 	@Select("select " + SELECT_FIELDS + " from  " + TABLE_NAEM )
     public Page<BookBaseInfoEntity> queryBookListPages(Pageable pageable);
 	
-	@Select("select " + SELECT_FIELDS + " from  " + TABLE_NAEM + "  limit #{num}, #{pageSize}")
+	@Select( "<script>" 
+	+  "select " + SELECT_FIELDS + " from  " + TABLE_NAEM 
+	+ "<if test='bookName!=null or bookType!=null or bookStatus!=null'>"
+	+ "where"
+		+ "<if test='bookName!=null'>"
+		+ "bookName like concat('%',#{bookName},'%') "
+		+ "</if>"
+		+ "<if test='bookType!=null'>"
+		+ "bookType = #{bookType}"
+		+ "</if>"
+		+ "<if test='bookStatus!=null'>"
+		+ "bookStatus = #{bookStatus}"
+		+ "</if>"
+	+ "</if>"
+	+ "<if test='num!=null and pageSize != null '>"
+	+ "  limit #{num}, #{pageSize}"
+	+ "</if>"  
+	+ "</script>")
     public List<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
 	
 	@Select("select count(1) from " + TABLE_NAEM)
 	public Integer queryBookInfoNum(Map<String, Object> param);
+	
 }

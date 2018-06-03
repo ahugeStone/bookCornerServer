@@ -36,12 +36,20 @@ public class PageList<T> {
 	 * 构造同时生成翻页相关属性值
 	 */
 	public PageList(Integer startNum, Integer totalNum, Integer pageSize, List<T> list) {
-		startNum = startNum <= 0 ? 1:startNum;
+		if(null == startNum || null == pageSize) {
+			startNum = 0;
+			pageSize = list.size();
+		}
+		startNum = startNum < 0 ? 0:startNum;
+		if(null == totalNum) {
+			totalNum = list.size();
+		}
 		Integer totalPageNum = totalNum%pageSize == 0? totalNum/pageSize:totalNum/pageSize+1;
 		Integer endNum = startNum + pageSize;
 		endNum  = endNum > totalNum? totalNum:endNum;
 		startNum = startNum > endNum? endNum:startNum;
 		Integer currentPageNum = endNum%pageSize == 0? startNum/pageSize:startNum/pageSize+1;
+		currentPageNum = currentPageNum==0? 1:currentPageNum;
 		currentPageNum = currentPageNum > totalPageNum? totalPageNum:currentPageNum;
 		boolean isLastPage = endNum == totalNum;
 		

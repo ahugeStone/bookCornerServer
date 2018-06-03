@@ -50,9 +50,11 @@ public class bookTest {
 	@RequestMapping("/queryBooksPages")
 	public PageList<BookBaseInfoEntity> queryBooksPages(@RequestBody Map<String, Object> req) {
 		Integer num = (Integer)req.get("num");
+		String bookName = (String) req.get("bookName");
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("num", num);
 		param.put("pageSize", 10);
+		param.put("bookName", bookName);
 		return bookService.queryBookListPage(param);
 	}
 }
