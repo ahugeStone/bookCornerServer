@@ -33,7 +33,7 @@ public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseI
 	
 	@Select( "<script>" 
 	+  "select " + SELECT_FIELDS + " from  " + TABLE_NAEM 
-	+ "<if test='bookName!=null or bookType!=null or bookStatus!=null'>"
+	+ "<if test='(bookName!=null and bookName!=\"\") or (bookType!=null and bookType!=\"\") or (bookStatus!=null and bookStatus!=\"\")'>"
 	+ "where"
 		+ "<if test='bookName!=null'>"
 		+ "bookName like concat('%',#{bookName},'%') "
