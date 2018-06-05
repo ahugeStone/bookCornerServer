@@ -51,10 +51,14 @@ public class bookTest {
 	public PageList<BookBaseInfoEntity> queryBooksPages(@RequestBody Map<String, Object> req) {
 		Integer num = (Integer)req.get("num");
 		String bookName = (String) req.get("bookName");
+		String bookType = (String) req.get("bookType");
+		String bookStatus = (String) req.get("bookStatus");
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("num", num);
 		param.put("pageSize", 10);
 		param.put("bookName", bookName);
+		param.put("bookType", bookType);
+		param.put("bookStatus", bookStatus);
 		return bookService.queryBookListPage(param);
 	}
 }

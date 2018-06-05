@@ -27,7 +27,9 @@ public class BookServiceImpl implements BookService {
 	public PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param) {
 		Integer num = (Integer)param.get("num"); // 当前页起始id
 		Integer pageSize = (Integer)param.get("pageSize"); // 页面大小
+		param.put("isCount", false);
 		List<BookBaseInfoEntity> booklist = bookBaseInfoMapper.queryBookListPage(param); // 图书列表
+		param.put("isCount", true);
 		Integer totalNum = bookBaseInfoMapper.queryBookInfoNum(param); // 图书总数
 		PageList<BookBaseInfoEntity> pageList = new PageList<BookBaseInfoEntity>(num, totalNum,pageSize,booklist); //获取页面对象
 		
