@@ -4,6 +4,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.CacheNamespace;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -18,6 +20,7 @@ import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 * @date 2018年6月2日 下午10:00:58
 * @version V1.0
  */
+@CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) 
 public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseInfoEntity,String>{
 	String TABLE_NAEM = " BOOK_BASEINFO ";
 	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";
@@ -50,12 +53,14 @@ public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseI
 	+ "  limit #{num}, #{pageSize}"
 	+ "</if>"  
 	+ "</script>")
+	@Options(useCache=true)
     public List<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
 	
 	@Select("<script>"
 			+ "select count(1) from " + TABLE_NAEM
 			+ BOOK_LIST_WHERE
 		+ "</script>")
+	@Options(useCache=true)
 	public Integer queryBookInfoNum(Map<String, Object> param);
 	
 }
