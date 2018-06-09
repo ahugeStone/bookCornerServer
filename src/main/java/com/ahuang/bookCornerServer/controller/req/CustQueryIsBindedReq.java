@@ -1,6 +1,7 @@
 package com.ahuang.bookCornerServer.controller.req;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.Data;
 /**
@@ -13,7 +14,8 @@ import lombok.Data;
  */
 @Data
 public class CustQueryIsBindedReq {
-	@NotNull(message = "code不能为空")
+	@Valid
+	@NotEmpty(message = "code不能为空")
 	private String code;
 	private String debug;
 }

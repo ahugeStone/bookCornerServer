@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class BookBaseInfoEntity implements Serializable{
 	/**
-	* @Fields serialVersionUID : TODO(用一句话描述这个变量表示什么)
+	* @Fields serialVersionUID : 序列化
 	*/
 	private static final long serialVersionUID = 235344467676212938L;
 	/**图书编号**/
