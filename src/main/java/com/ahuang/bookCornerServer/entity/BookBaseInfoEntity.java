@@ -19,30 +19,82 @@ public class BookBaseInfoEntity implements Serializable{
 	* @Fields serialVersionUID : 序列化
 	*/
 	private static final long serialVersionUID = 235344467676212938L;
-	/**图书编号**/
+	/**
+	* @fieldName: bookId
+	* @fieldType: Integer
+	* @Description: 图书编号
+	*/
 	private Integer bookId;
-	/**图书名**/
+	/**
+	* @fieldName: bookName
+	* @fieldType: String
+	* @Description: 图书名
+	*/
 	private String bookName;
-	/**图书作者**/
+	/**
+	* @fieldName: bookWriter
+	* @fieldType: String
+	* @Description: 图书作者
+	*/
 	private String bookWriter;
-	/**图书简介,默认为‘-’**/
+	/**
+	* @fieldName: bookBrief
+	* @fieldType: String
+	* @Description: 图书简介,默认为‘-’
+	*/
 	private String bookBrief;
-	/**图书分类：0：党建；1：技术**/
+	/**
+	* @fieldName: bookType
+	* @fieldType: String
+	* @Description: 图书分类：0：党建；1：技术
+	*/
 	private String bookType;
-	/**图书状态：0：借出；1：在库**/
+	/**
+	* @fieldName: bookStatus
+	* @fieldType: String
+	* @Description: 图书状态：0：借出；1：在库
+	*/
 	private String bookStatus;
-	/**图书来源：0：采购；1：捐赠**/
+	/**
+	* @fieldName: bookSource
+	* @fieldType: String
+	* @Description: 图书来源：0：采购；1：捐赠
+	*/
 	private String bookSource;
-	/**图书购买者**/
+	/**
+	* @fieldName: bookBuyer
+	* @fieldType: String
+	* @Description: 图书购买者
+	*/
 	private String bookBuyer;
-	/**图书购买/捐赠时间**/
+	/**
+	* @fieldName: bookTime
+	* @fieldType: Date
+	* @Description: 图书购买/捐赠时间
+	*/
 	private Date bookTime;
-	/**图书备注,默认为‘-’**/
+	/**
+	* @fieldName: bookRemark
+	* @fieldType: String
+	* @Description: 图书备注,默认为‘-’
+	*/
 	private String bookRemark;
-	/**图书点赞数：默认为0**/
+	/**
+	* @fieldName: bookLikeNum
+	* @fieldType: Integer
+	* @Description: 图书点赞数：默认为0
+	*/
 	private Integer bookLikeNum;
-	/**图书评论数:默认为0**/
+	/**
+	* @fieldName: bookCommentNum
+	* @fieldType: Integer
+	* @Description: 图书评论数:默认为0
+	*/
 	private Integer bookCommentNum;
-	/**入库时间**/
+	/**
+	* @fieldName: recTime
+	* @fieldType: Date
+	* @Description: 入库时间
+	*/
 	private Date recTime;
 }
