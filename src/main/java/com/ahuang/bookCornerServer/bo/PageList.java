@@ -1,6 +1,9 @@
 package com.ahuang.bookCornerServer.bo;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -17,21 +20,22 @@ import lombok.Data;
 //@NoArgsConstructor
 public class PageList<T> {
 	/**每页数量**/
-	Integer pageSize;
+	private Integer pageSize;
 	/**当前页起始数**/
-	Integer startNum;
+	private Integer startNum;
 	/**当前页结束数**/
-	Integer endNum;
+	private Integer endNum;
 	/**总条数**/
-	Integer totalNum;
+	private Integer totalNum;
 	/**总页数**/
-	Integer totalPageNum;
+	private Integer totalPageNum;
 	/**当前页数**/
-	Integer currentPageNum;
+	private Integer currentPageNum;
 	/**是否为最后一页**/
-	boolean lastPage;
+	private boolean lastPage;
 	/**当前页具体内容**/
-	List<T> objectList;
+	@JsonProperty(value = "bookList")
+	private List<T> objectList;
 	/**
 	 * 构造同时生成翻页相关属性值
 	 */

@@ -52,6 +52,9 @@ public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseI
 	+ "<if test='num!=null and pageSize != null '>"
 	+ "  limit #{num}, #{pageSize}"
 	+ "</if>"  
+	+ "<if test='num==null and pageSize != null '>"
+	+ "  limit 0, #{pageSize}"
+	+ "</if>"  
 	+ "</script>")
 	@Options(useCache=true)
     public List<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);

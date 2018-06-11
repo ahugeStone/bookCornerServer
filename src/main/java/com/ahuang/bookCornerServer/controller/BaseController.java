@@ -3,6 +3,8 @@ package com.ahuang.bookCornerServer.controller;
 import javax.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RestController;
 import com.ahuang.bookCornerServer.controller.req.CommonResponse;
+import com.ahuang.bookCornerServer.exception.BaseException;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -62,10 +64,10 @@ public class BaseController {
 	* @version V1.0
 	* @throws
 	 */
-	public void checkLoginExp(HttpSession session) throws Exception {
+	public void checkLoginExp(HttpSession session) throws BaseException {
 		Object sessionUser = session.getAttribute("user");
 		if (sessionUser == null) {
-			throw new Exception("not Login!");
+			throw new BaseException("not Login!", "没有登陆");
 		}
 	}
 }

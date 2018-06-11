@@ -26,5 +26,17 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	 */
-	public PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param); 
+	public PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
+
+	/**
+	* @Title: queryBookById
+	* @Description: 根据bookid查看图书详情
+	* @param param
+	* @return BookBaseInfoEntity    返回类型
+	* @author ahuang  
+	* @date 2018年6月11日 下午9:46:39
+	* @version V1.0
+	* @throws
+	*/
+	public BookBaseInfoEntity queryBookById(Map<String, Object> param); 
 }
