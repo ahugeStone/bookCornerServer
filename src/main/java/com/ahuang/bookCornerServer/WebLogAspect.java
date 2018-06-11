@@ -5,9 +5,7 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -15,8 +13,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import com.ahuang.bookCornerServer.controller.CommonController;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,8 +41,7 @@ public class WebLogAspect {
 	* @throws
 	 */
 	@Pointcut("execution(public * com.ahuang.bookCornerServer.controller.*.*(..))")//两个..代表所有子目录，最后括号里的两个..代表所有参数
-    public void logPointCut() {
-    }
+    public void logPointCut() {}
 	
 	/**
 	 * 
@@ -60,8 +55,7 @@ public class WebLogAspect {
 	* @throws
 	 */
 	@Pointcut("execution(public * com.ahuang.bookCornerServer.ExceptionAdvice.*(..))")//两个..代表所有子目录，最后括号里的两个..代表所有参数
-    public void logExceptionCut() {
-    }
+    public void logExceptionCut() {}
 
 	/**
 	 * 
