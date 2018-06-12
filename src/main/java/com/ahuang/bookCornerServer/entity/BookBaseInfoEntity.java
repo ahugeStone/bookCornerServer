@@ -97,4 +97,11 @@ public class BookBaseInfoEntity implements Serializable{
 	* @Description: 入库时间
 	*/
 	private Date recTime;
+	
+	/**
+	* @fieldName: isBorrowed
+	* @fieldType: String
+	* @Description: 是否正被当前用户借阅
+	*/
+	private String isBorrowed;
 }

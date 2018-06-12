@@ -22,8 +22,11 @@ import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
  */
 @CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) 
 public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseInfoEntity,String>{
-	String TABLE_NAEM = " BOOK_BASEINFO ";
-	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";
+	String TABLE_NAEM = " BOOK_BASEINFO b ";
+	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, "
+			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";
+	String BORROW_RECORD_NAME = " BOOK_BORROWRECORD r ";
+	String BORROW_RECORD_FIELDS = "borrowStatus";
 	String BOOK_LIST_WHERE = "<where>"
 			+ "<if test='bookName!=null and bookName!=\"\"'>"
 			+ "<bind name=\"pattern\" value=\"'%' + bookName + '%'\" />" 
@@ -38,7 +41,22 @@ public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseI
 		+"</where>";
 	
 	@Select("Select " + SELECT_FIELDS + " from " + TABLE_NAEM + " where bookId=#{id}")
-	public BookBaseInfoEntity queryById(Integer id);
+	public BookBaseInfoEntity queryById(Map<String, Object> param);
+	
+//	@Select("Select " + SELECT_FIELDS + "," +BORROW_RECORD_FIELDS 
+//			+ " from " + TABLE_NAEM + ", " + BORROW_RECORD_NAME + " where "
+//			+ "b.bookId=r.bookId "
+//			+ "and b.bookId=#{id} "
+//			+ "and r.openid=#{openid} ")
+//	@Results({
+//        @Result(property = "isBorrowed",  column = "borrowStatus"),
+//        @Result(property = "bookId",  column = "b.bookId")
+//    })
+//	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
+	@Select("Select " + BORROW_RECORD_FIELDS + " from " + BORROW_RECORD_NAME 
+			+ " where bookId=#{id} "
+			+ "and openid=#{openid}")
+	public String queryBookBorrowStatus(Map<String, Object> param);
 	
 	@Select("Select " + SELECT_FIELDS + " from BOOK_BASEINFO")
 	public List<BookBaseInfoEntity> queryBookList();

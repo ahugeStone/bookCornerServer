@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
@@ -37,8 +38,25 @@ public class BookServiceImpl implements BookService {
 	}
 	@Override
 	public BookBaseInfoEntity queryBookById(Map<String, Object> param) {
-		Integer bookId = (Integer) param.get("bookId");
-		return bookBaseInfoMapper.queryById(bookId);
+//		Integer bookId = (Integer) param.get("bookId");
+		return bookBaseInfoMapper.queryById(param);
+	}
+	
+	@Override
+	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param) {
+//		Integer id = (Integer) param.get("bookId");
+//		String openid = (String) param.get("openid");
+		BookBaseInfoEntity bo = bookBaseInfoMapper.queryById(param);
+		String isBorrowed = bookBaseInfoMapper.queryBookBorrowStatus(param);
+		if(!ObjectUtils.isEmpty(bo)) {
+			if(null == isBorrowed) {
+				bo.setIsBorrowed("0");
+			} else {
+				bo.setIsBorrowed(isBorrowed);
+			}
+		}
+		
+		return bo;
 	}
 
 }

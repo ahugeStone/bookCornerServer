@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ahuang.bookCornerServer.bo.WXUser;
 import com.ahuang.bookCornerServer.controller.req.CommonRequest;
 import com.ahuang.bookCornerServer.controller.req.CommonResponse;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookDetailReq;
@@ -45,10 +46,12 @@ public class BookController  extends BaseController{
 	@RequestMapping("/CustQueryBookDetail")
 	public CommonResponse<?> custQueryBookDetail(@RequestBody @Valid CommonRequest<CustQueryBookDetailReq> req, HttpSession session) throws BaseException {
 		this.checkLoginExp(session);
+		WXUser user = (WXUser)session.getAttribute("user");
 		Integer bookId = req.getParams().getBookId();
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("bookId", bookId);
-		Object res = bookService.queryBookById(param);
+		param.put("id", bookId);
+		param.put("openid", user.getOpenid());
+		Object res = bookService.queryBookDetailById(param);
 		
 		return getRes(res);
 	}

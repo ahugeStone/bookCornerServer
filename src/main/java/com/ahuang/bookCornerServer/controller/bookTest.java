@@ -80,10 +80,10 @@ public class bookTest {
         
 		return req;
 	}
-	@RequestMapping("/queryBookById")
-	public BookBaseInfoEntity queryBookById(@RequestBody Map<String, Object> req) {
-		return bookBaseInfoMapper.queryById((Integer)req.get("id"));
-	}
+//	@RequestMapping("/queryBookById")
+//	public BookBaseInfoEntity queryBookById(@RequestBody Map<String, Object> req) {
+//		return bookBaseInfoMapper.queryById((Integer)req.get("id"));
+//	}
 	@RequestMapping("/queryBooks")
 	public List<BookBaseInfoEntity> queryBooks(@RequestBody Map<String, Object> req) {
 		return bookBaseInfoMapper.queryBookList();
