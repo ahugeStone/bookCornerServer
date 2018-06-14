@@ -1,8 +1,12 @@
 package com.ahuang.bookCornerServer.controller;
 
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
-import com.ahuang.bookCornerServer.controller.req.CommonResponse;
+
+import com.ahuang.bookCornerServer.bo.WXUser;
+import com.ahuang.bookCornerServer.controller.req.Response;
 import com.ahuang.bookCornerServer.exception.BaseException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class BaseController {
 	/**
+	* @fieldName: debug
+	* @fieldType: boolean
+	* @Description: 是否为调试模式（调试模式不校验腾讯是否登陆）
+	*/
+	@Value("${tx.debug}")
+	private boolean debug;
+	/**
 	 * 
 	* @Title: getRes
 	* @Description: 获取返回对象
@@ -29,9 +40,9 @@ public class BaseController {
 	* @version V1.0
 	* @throws
 	 */
-	public CommonResponse<?> getRes(Object res) {
+	public Response getRes(Object res) {
 		log.info("res:" + res);
-		return new CommonResponse<Object>(res);
+		return new Response(res);
 	}
 	/**
 	 * 
@@ -48,7 +59,13 @@ public class BaseController {
 	public boolean checkLogin(HttpSession session) {
 		Object sessionUser = session.getAttribute("user");
 		if (sessionUser == null) {
-			return false;
+			if(!debug) {
+				return false;
+			} else {
+				WXUser user = new WXUser();
+        		user.setOpenid("oe0Ej0besxqth6muj72ZzfYGmMp0");
+        		session.setAttribute("user", user);
+			}
 		}
 		return true;
 	}
@@ -67,7 +84,13 @@ public class BaseController {
 	public void checkLoginExp(HttpSession session) throws BaseException {
 		Object sessionUser = session.getAttribute("user");
 		if (sessionUser == null) {
-			throw new BaseException("not Login!", "没有登陆");
+			if(!debug) {
+				throw new BaseException("not Login!", "没有登陆");
+			} else {
+				WXUser user = new WXUser();
+        		user.setOpenid("oe0Ej0besxqth6muj72ZzfYGmMp0");
+        		session.setAttribute("user", user);
+			}
 		}
 	}
 }

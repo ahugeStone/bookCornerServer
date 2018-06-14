@@ -9,7 +9,11 @@ import org.springframework.util.ObjectUtils;
 
 import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
+import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
 import com.ahuang.bookCornerServer.mapper.BookBaseInfoMapper;
+import com.ahuang.bookCornerServer.mapper.BookBorrowRecordMapper;
+import com.ahuang.bookCornerServer.mapper.BookCommentRecordMapper;
 import com.ahuang.bookCornerServer.servise.BookService;
 /**
  * 
@@ -23,6 +27,12 @@ import com.ahuang.bookCornerServer.servise.BookService;
 public class BookServiceImpl implements BookService {
 	@Autowired
 	private BookBaseInfoMapper bookBaseInfoMapper;
+	
+	@Autowired
+	private BookBorrowRecordMapper bookBorrowRecordMapper;
+	
+	@Autowired
+	private BookCommentRecordMapper bookCommentRecordMapper;
 	
 	@Override
 	public BookList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param) {
@@ -38,25 +48,28 @@ public class BookServiceImpl implements BookService {
 	}
 	@Override
 	public BookBaseInfoEntity queryBookById(Map<String, Object> param) {
-//		Integer bookId = (Integer) param.get("bookId");
-		return bookBaseInfoMapper.queryById(param);
+		Integer bookId = (Integer) param.get("bookId");
+		return bookBaseInfoMapper.queryById(bookId);
 	}
 	
 	@Override
 	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param) {
-//		Integer id = (Integer) param.get("bookId");
-//		String openid = (String) param.get("openid");
-		BookBaseInfoEntity bo = bookBaseInfoMapper.queryById(param);
-		String isBorrowed = bookBaseInfoMapper.queryBookBorrowStatus(param);
+		Integer id = (Integer)param.get("id");
+		String openid = (String)param.get("openid");
+		BookBaseInfoEntity bo = bookBaseInfoMapper.queryById(id);
+		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(id, openid);
 		if(!ObjectUtils.isEmpty(bo)) {
-			if(null == isBorrowed) {
+			if(null == isBorrowed || null == isBorrowed.getBorrowStatus()) {
 				bo.setIsBorrowed("0");
 			} else {
-				bo.setIsBorrowed(isBorrowed);
+				bo.setIsBorrowed(isBorrowed.getBorrowStatus());
 			}
 		}
-		
 		return bo;
 	}
-
+	
+	@Override
+	public List<BookCommentRecordEntity> queryCommentList(Integer bookId) {
+		return bookCommentRecordMapper.queryCommentList(bookId);
+	}
 }

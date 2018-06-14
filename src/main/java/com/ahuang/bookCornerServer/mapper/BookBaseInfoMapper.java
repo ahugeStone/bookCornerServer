@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 
@@ -21,8 +20,9 @@ import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 * @version V1.0
  */
 @CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) 
-public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseInfoEntity,String>{
+public interface BookBaseInfoMapper{
 	String TABLE_NAEM = " BOOK_BASEINFO b ";
+	String BOOK_BASEINFO_NAME = " BOOK_BASEINFO b ";
 	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, "
 			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";
 	String BORROW_RECORD_NAME = " BOOK_BORROWRECORD r ";
@@ -41,21 +41,25 @@ public interface BookBaseInfoMapper extends PagingAndSortingRepository<BookBaseI
 		+"</where>";
 	
 	@Select("Select " + SELECT_FIELDS + " from " + TABLE_NAEM + " where bookId=#{id}")
-	public BookBaseInfoEntity queryById(Map<String, Object> param);
+	public BookBaseInfoEntity queryById(Integer id);
 	
-//	@Select("Select " + SELECT_FIELDS + "," +BORROW_RECORD_FIELDS 
-//			+ " from " + TABLE_NAEM + ", " + BORROW_RECORD_NAME + " where "
-//			+ "b.bookId=r.bookId "
-//			+ "and b.bookId=#{id} "
+//	@Select("Select b.bookId bookId, b.bookName bookName, b.bookWriter bookWriter, b.bookBrief bookBrief, " 
+//			+  "b.bookType bookType, b.bookStatus bookStatus, b.bookSource bookSource, b.bookBuyer bookBuyer, " 
+//			+  "b.bookTime bookTime, b.bookRemark bookRemark, b.bookLikeNum bookLikeNum, b.bookCommentNum bookCommentNum, " 
+//			+  "b.recTime recTime , r.borrowStatus borrowStatus"
+//			+ " from " + BOOK_BASEINFO_NAME + " LEFT JOIN " + BORROW_RECORD_NAME 
+//			+ " on b.bookId=r.bookId"
+//			+ " where "
+//			+ "b.bookId=#{id} "
 //			+ "and r.openid=#{openid} ")
 //	@Results({
 //        @Result(property = "isBorrowed",  column = "borrowStatus"),
-//        @Result(property = "bookId",  column = "b.bookId")
 //    })
 //	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
+	
 	@Select("Select " + BORROW_RECORD_FIELDS + " from " + BORROW_RECORD_NAME 
 			+ " where bookId=#{id} "
-			+ "and openid=#{openid}")
+			+ "and openid=#{openid} order by borrowTime desc limit 1")
 	public String queryBookBorrowStatus(Map<String, Object> param);
 	
 	@Select("Select " + SELECT_FIELDS + " from BOOK_BASEINFO")

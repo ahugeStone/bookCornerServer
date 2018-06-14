@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.ahuang.bookCornerServer.bo.WXUser;
-import com.ahuang.bookCornerServer.controller.req.CommonRequest;
 import com.ahuang.bookCornerServer.controller.req.CommonResponse;
-import com.ahuang.bookCornerServer.controller.req.CustQueryIsBindedReq;
+import com.ahuang.bookCornerServer.controller.req.Request;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.CommonService;
@@ -35,12 +34,12 @@ public class CommonController extends BaseController{
 	private CommonService commonService;
 	
 	@RequestMapping(path="/CustQueryIsBinded",method = { RequestMethod.POST })
-	public CommonResponse<?> CustQueryIsBinded(@RequestBody @Valid CommonRequest<CustQueryIsBindedReq> req, HttpSession session) throws BaseException {
+	public CommonResponse<?> CustQueryIsBinded(@RequestBody @Valid Request req, HttpSession session) throws BaseException {
 		WXUser user = null;
 		String openid = null;
 		if (!checkLogin(session)) {
         	log.info("未登陆，获取openid");
-        	String code = req.getParams().getCode();
+        	String code = (String) req.getParam("code");
         	openid = commonService.getOpenidByCode(code);
         	if(!ObjectUtils.isEmpty(openid)) {
         		// 如果返回报文中有openid说明登陆成功

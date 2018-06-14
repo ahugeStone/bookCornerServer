@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.MDC;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,10 +30,13 @@ public class ControllerFilter implements Filter{
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response= (HttpServletResponse) servletResponse;
-		log.info("执行过滤操作");
-		log.info("request:" + request.toString());
+        MDC.put("method", request.getRequestURI());
+		log.info("BEGIN:" + request.getRequestURI());
+//		log.info("request:" + request.toString());
 		chain.doFilter(request, response);
-		log.info("response:" + response.toString());
+//		log.info("response:" + response.toString());
+		log.info("END:" + request.getRequestURI());
+		MDC.put("method", "");
 	}
 
 	@Override

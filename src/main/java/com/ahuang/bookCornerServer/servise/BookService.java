@@ -1,9 +1,11 @@
 package com.ahuang.bookCornerServer.servise;
 
+import java.util.List;
 import java.util.Map;
 
 import com.ahuang.bookCornerServer.bo.PageList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
 
 /**
  * 
@@ -50,5 +52,18 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param); 
+	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
+
+	/**
+	* @Title: queryCommentList
+	* @Description: 查询评论列表
+	* @param bookId
+	* @param openid
+	* @return List<BookCommentRecordEntity>    返回类型
+	* @author ahuang  
+	* @date 2018年6月14日 下午10:32:21
+	* @version V1.0
+	* @throws
+	*/
+	public List<BookCommentRecordEntity> queryCommentList(Integer bookId); 
 }

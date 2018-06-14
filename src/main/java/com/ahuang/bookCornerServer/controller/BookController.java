@@ -16,6 +16,8 @@ import com.ahuang.bookCornerServer.controller.req.CommonRequest;
 import com.ahuang.bookCornerServer.controller.req.CommonResponse;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookDetailReq;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
+import com.ahuang.bookCornerServer.controller.req.Request;
+import com.ahuang.bookCornerServer.controller.req.Response;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 
@@ -35,7 +37,7 @@ public class BookController  extends BaseController{
 		String bookStatus = req.getParams().getBookStatus();
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("num", num);
-		param.put("pageSize", 10);
+		param.put("pageSize", 40);
 		param.put("bookName", bookName);
 		param.put("bookType", bookType);
 		param.put("bookStatus", bookStatus);
@@ -54,5 +56,12 @@ public class BookController  extends BaseController{
 		Object res = bookService.queryBookDetailById(param);
 		
 		return getRes(res);
+	}
+	@RequestMapping("/CustQueryBookCommentHistory")
+	public Response custQueryBookCommentHistory(@RequestBody @Valid Request req , HttpSession session) {
+		Integer bookId = (Integer)req.getParam("bookId");
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("commentHistoryList", bookService.queryCommentList(bookId));
+		return getRes(result);
 	}
 }
