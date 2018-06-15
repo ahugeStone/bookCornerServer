@@ -2,12 +2,16 @@ package com.ahuang.bookCornerServer.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ahuang.bookCornerServer.bo.WXUser;
 import com.ahuang.bookCornerServer.controller.req.Response;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
+import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.util.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 public class BaseController {
+	@Autowired
+	private CommonService commonService;
 	/**
 	* @fieldName: debug
 	* @fieldType: boolean
@@ -58,13 +64,17 @@ public class BaseController {
 	 */
 	public boolean checkLogin(HttpSession session) {
 		Object sessionUser = session.getAttribute("user");
-		if (sessionUser == null) {
+		if (StringUtil.isNullOrEmpty(sessionUser)) {
 			if(!debug) {
 				return false;
 			} else {
+				log.debug("调试模式，植入默认用户……");
 				WXUser user = new WXUser();
-        		user.setOpenid("oe0Ej0besxqth6muj72ZzfYGmMp0");
+				String openid="oe0Ej0besxqth6muj72ZzfYGmMp0";
+        		user.setOpenid(openid);
         		session.setAttribute("user", user);
+        		CustBindUsersEntity bindUser = commonService.getUserByOpenid(openid);
+        		session.setAttribute("bindUser", bindUser);
 			}
 		}
 		return true;
@@ -83,13 +93,17 @@ public class BaseController {
 	 */
 	public void checkLoginExp(HttpSession session) throws BaseException {
 		Object sessionUser = session.getAttribute("user");
-		if (sessionUser == null) {
+		if (StringUtil.isNullOrEmpty(sessionUser)) {
 			if(!debug) {
 				throw new BaseException("not Login!", "没有登陆");
 			} else {
+				log.debug("调试模式，植入默认用户……");
 				WXUser user = new WXUser();
-        		user.setOpenid("oe0Ej0besxqth6muj72ZzfYGmMp0");
+				String openid="oe0Ej0besxqth6muj72ZzfYGmMp0";
+        		user.setOpenid(openid);
         		session.setAttribute("user", user);
+        		CustBindUsersEntity bindUser = commonService.getUserByOpenid(openid);
+        		session.setAttribute("bindUser", bindUser);
 			}
 		}
 	}

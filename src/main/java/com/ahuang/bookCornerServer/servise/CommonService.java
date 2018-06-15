@@ -34,4 +34,6 @@ public interface CommonService {
 	* @throws
 	*/
 	public CustBindUsersEntity getUserByOpenid(String openid);
+	
+	
 }

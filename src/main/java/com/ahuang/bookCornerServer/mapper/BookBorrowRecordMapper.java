@@ -1,5 +1,6 @@
 package com.ahuang.bookCornerServer.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -13,4 +14,8 @@ public interface BookBorrowRecordMapper {
 			+ " where bookId=#{id} "
 			+ "and openid=#{openid} order by borrowTime desc limit 1")
 	public BookBorrowRecordEntity queryBookBorrowStatus(@Param("id") Integer id, @Param("openid") String openid);
+	
+	@Insert("Insert into " + BORROW_RECORD_NAME + "( " + BORROW_RECORD_FIELDS + " )" 
+	+ "values( null, #{bookId}, #{bookName}, #{borrowStatus}, #{openid}, #{headImgUrl}, #{userName}, #{borrowTime}, #{returnTime})" )
+	public Integer insertBorrowRecord(BookBorrowRecordEntity entity);
 }

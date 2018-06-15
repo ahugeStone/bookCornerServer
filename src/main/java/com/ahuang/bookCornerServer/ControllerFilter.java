@@ -11,8 +11,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.MDC;
+
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import com.ahuang.bookCornerServer.util.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,13 +34,25 @@ public class ControllerFilter implements Filter{
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response= (HttpServletResponse) servletResponse;
-        MDC.put("method", request.getRequestURI());
+        HttpSession session = request.getSession();
+        CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+        String userName = "";
+        if(!StringUtil.isNullOrEmpty(bindUser)) {
+        	userName = bindUser.getUserName();
+        }
+        MDC.put("method", request.getRequestURI());// 接口名
+        MDC.put("userName", userName); // 用户名
 		log.info("BEGIN:" + request.getRequestURI());
 //		log.info("request:" + request.toString());
-		chain.doFilter(request, response);
+		try {
+			chain.doFilter(request, response);
+		} catch(Exception e) {
+			log.error("error", e);
+		}
 //		log.info("response:" + response.toString());
 		log.info("END:" + request.getRequestURI());
 		MDC.put("method", "");
+		MDC.put("userName", "");
 	}
 
 	@Override

@@ -59,5 +59,4 @@ public class CommonServiceImpl implements CommonService {
 	public CustBindUsersEntity getUserByOpenid(String openid) {
 		return custBindUsersMapper.queryByOpenid(openid);
 	}
-
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +16,8 @@ import com.ahuang.bookCornerServer.controller.req.Request;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.util.StringUtil;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,7 +42,7 @@ public class CommonController extends BaseController{
         	log.info("未登陆，获取openid");
         	String code = (String) req.getParam("code");
         	openid = commonService.getOpenidByCode(code);
-        	if(!ObjectUtils.isEmpty(openid)) {
+        	if(!StringUtil.isNullOrEmpty(openid)) {
         		// 如果返回报文中有openid说明登陆成功
         		user = new WXUser();
         		user.setOpenid(openid);
@@ -53,14 +54,26 @@ public class CommonController extends BaseController{
         	}
         } else {
         	user = (WXUser)session.getAttribute("user");
-        	log.info("已登陆，user=" + user.toString());
         	openid = user.getOpenid();
+        	log.info("已登陆，openid=" + openid);
         }
+		
 		// 根据openid查询用户绑定信息
-		CustBindUsersEntity bindUser = commonService.getUserByOpenid(openid);
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+				
+		if(StringUtil.isNullOrEmpty(bindUser)) {
+			log.debug("session中没有openid:" + openid + "绑定信息，从库中查询……");
+			bindUser = commonService.getUserByOpenid(openid);
+			if(StringUtil.isNullOrEmpty(bindUser)) {
+				log.info("OPENID:" + openid + "未绑定！");
+			} else {
+				log.debug("库中查询到openid:" + openid + "绑定信息，写入session……");
+				session.setAttribute("bindUser", bindUser);
+			}
+		} 
 		Map<String, Object> res = new HashMap<String, Object> ();
 		res.put("isBinded", "0");//默认未绑定
-		if(!ObjectUtils.isEmpty(bindUser)) {
+		if(!StringUtil.isNullOrEmpty(bindUser)) {
 			res.put("isBinded", "1");//已绑定
 			res.put("openid", openid);
 			res.put("userNo", bindUser.getUserNo());

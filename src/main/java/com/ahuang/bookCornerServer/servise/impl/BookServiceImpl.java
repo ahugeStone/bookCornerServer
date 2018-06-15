@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
@@ -15,6 +14,11 @@ import com.ahuang.bookCornerServer.mapper.BookBaseInfoMapper;
 import com.ahuang.bookCornerServer.mapper.BookBorrowRecordMapper;
 import com.ahuang.bookCornerServer.mapper.BookCommentRecordMapper;
 import com.ahuang.bookCornerServer.servise.BookService;
+import com.ahuang.bookCornerServer.util.StringUtil;
+
+import lombok.extern.slf4j.Slf4j;
+
+import com.ahuang.bookCornerServer.exception.*;
 /**
  * 
 * @ClassName: BookServiceImpl
@@ -23,6 +27,7 @@ import com.ahuang.bookCornerServer.servise.BookService;
 * @date 2018年6月2日 下午9:58:15
 * @version V1.0
  */
+@Slf4j
 @Service
 public class BookServiceImpl implements BookService {
 	@Autowired
@@ -58,7 +63,7 @@ public class BookServiceImpl implements BookService {
 		String openid = (String)param.get("openid");
 		BookBaseInfoEntity bo = bookBaseInfoMapper.queryById(id);
 		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(id, openid);
-		if(!ObjectUtils.isEmpty(bo)) {
+		if(!StringUtil.isNullOrEmpty(bo)) {
 			if(null == isBorrowed || null == isBorrowed.getBorrowStatus()) {
 				bo.setIsBorrowed("0");
 			} else {
@@ -71,5 +76,20 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<BookCommentRecordEntity> queryCommentList(Integer bookId) {
 		return bookCommentRecordMapper.queryCommentList(bookId);
+	}
+	
+	@Override
+	public void borrowBookById(Integer bookId, String openid) throws BaseException {
+		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(bookId, openid);
+		BookBaseInfoEntity bookInfo = bookBaseInfoMapper.queryById(bookId);
+		// 0 借出 1归还
+		if("1".equals(bookInfo.getBookStatus()) && (StringUtil.isNullOrEmpty(isBorrowed) || "1".equals(isBorrowed.getBorrowStatus()))) {
+			//TODO 可借阅
+			log.debug("图书可借阅");
+		} else {
+			// 不可借阅
+			log.debug("bookInfo.getBookStatus：" + bookInfo.getBookStatus() + ", isBorrowed:" + isBorrowed);
+			throw new BaseException("can.not.borrow", "本书当前不可借阅");
+		}
 	}
 }

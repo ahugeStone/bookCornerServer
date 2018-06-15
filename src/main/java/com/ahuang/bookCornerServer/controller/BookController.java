@@ -18,6 +18,7 @@ import com.ahuang.bookCornerServer.controller.req.CustQueryBookDetailReq;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
 import com.ahuang.bookCornerServer.controller.req.Request;
 import com.ahuang.bookCornerServer.controller.req.Response;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 
@@ -28,6 +29,18 @@ public class BookController  extends BaseController{
 	@Autowired
 	private BookService bookService;
 
+	/**
+	* @Title: custQueryBookList
+	* @Description: 查询图书列表（分页）
+	* @param req
+	* @param session
+	* @return
+	* @throws BaseException CommonResponse<?>    返回类型
+	* @author ahuang  
+	* @date 2018年6月15日 下午9:43:33
+	* @version V1.0
+	* @throws
+	*/
 	@RequestMapping("/CustQueryBookList")
 	public CommonResponse<?> custQueryBookList(@RequestBody @Valid CommonRequest<CustQueryBookListReq> req, HttpSession session) throws BaseException {
 		this.checkLoginExp(session);
@@ -45,6 +58,18 @@ public class BookController  extends BaseController{
 		
 		return getRes(res);
 	}
+	/**
+	* @Title: custQueryBookDetail
+	* @Description: 查询图书详情
+	* @param req
+	* @param session
+	* @return
+	* @throws BaseException CommonResponse<?>    返回类型
+	* @author ahuang  
+	* @date 2018年6月15日 下午9:43:56
+	* @version V1.0
+	* @throws
+	*/
 	@RequestMapping("/CustQueryBookDetail")
 	public CommonResponse<?> custQueryBookDetail(@RequestBody @Valid CommonRequest<CustQueryBookDetailReq> req, HttpSession session) throws BaseException {
 		this.checkLoginExp(session);
@@ -57,11 +82,44 @@ public class BookController  extends BaseController{
 		
 		return getRes(res);
 	}
+	/**
+	 * @throws BaseException 
+	* @Title: custQueryBookCommentHistory
+	* @Description: 查询图书评论
+	* @param req
+	* @param session
+	* @return Response    返回类型
+	* @author ahuang  
+	* @date 2018年6月15日 下午9:44:16
+	* @version V1.0
+	* @throws
+	*/
 	@RequestMapping("/CustQueryBookCommentHistory")
-	public Response custQueryBookCommentHistory(@RequestBody @Valid Request req , HttpSession session) {
+	public Response custQueryBookCommentHistory(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+		this.checkLoginExp(session);
 		Integer bookId = (Integer)req.getParam("bookId");
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("commentHistoryList", bookService.queryCommentList(bookId));
 		return getRes(result);
+	}
+	/**
+	* @Title: custBorrowBook
+	* @Description: 借阅图书
+	* @param req
+	* @param session
+	* @return
+	* @throws BaseException Response    返回类型
+	* @author ahuang  
+	* @date 2018年6月15日 下午10:16:59
+	* @version V1.0
+	* @throws
+	*/
+	@RequestMapping("/CustBorrowBook")
+	public Response custBorrowBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+		this.checkLoginExp(session);
+		Integer bookId = (Integer)req.getParam("bookId");
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		bookService.borrowBookById(bookId, bindUser.getOpenid());
+		return getRes(null);
 	}
 }
