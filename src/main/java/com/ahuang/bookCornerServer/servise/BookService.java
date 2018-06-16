@@ -79,4 +79,17 @@ public interface BookService {
 	* @throws
 	*/
 	public void borrowBookById(Integer bookId, String openid) throws BaseException;
+
+	/**
+	 * @throws BaseException 
+	* @Title: returnBookById
+	* @Description: 根据bookid归还图书
+	* @param bookId
+	* @param openid void    返回类型
+	* @author ahuang  
+	* @date 2018年6月16日 上午9:24:35
+	* @version V1.0
+	* @throws
+	*/
+	public void returnBookById(Integer bookId, String openid) throws BaseException;
 }

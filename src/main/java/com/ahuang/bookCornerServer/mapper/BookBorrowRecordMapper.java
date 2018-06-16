@@ -3,6 +3,7 @@ package com.ahuang.bookCornerServer.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 
@@ -15,7 +16,13 @@ public interface BookBorrowRecordMapper {
 			+ "and openid=#{openid} order by borrowTime desc limit 1")
 	public BookBorrowRecordEntity queryBookBorrowStatus(@Param("id") Integer id, @Param("openid") String openid);
 	
-	@Insert("Insert into " + BORROW_RECORD_NAME + "( " + BORROW_RECORD_FIELDS + " )" 
-	+ "values( null, #{bookId}, #{bookName}, #{borrowStatus}, #{openid}, #{headImgUrl}, #{userName}, #{borrowTime}, #{returnTime})" )
+	@Insert("Insert into BOOK_BORROWRECORD ( bookId, bookName, borrowStatus, openid, headImgUrl, userName, borrowTime, returnTime  )" 
+	+ " values( #{bookId}, #{bookName}, #{borrowStatus}, #{openid}, #{headImgUrl}, #{userName}, #{borrowTime}, #{returnTime})" )
 	public Integer insertBorrowRecord(BookBorrowRecordEntity entity);
+	
+	@Update("Update BOOK_BORROWRECORD set "
+			+ "borrowStatus=#{borrowStatus}, returnTime=#{returnTime} "
+			+ "where bookId=#{bookId} "
+			+ "and openid=#{openid} order by borrowTime desc limit 1")
+	public Integer updateBorrowRecord(BookBorrowRecordEntity entity);
 }

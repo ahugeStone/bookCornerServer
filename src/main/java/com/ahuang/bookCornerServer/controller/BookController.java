@@ -122,4 +122,25 @@ public class BookController  extends BaseController{
 		bookService.borrowBookById(bookId, bindUser.getOpenid());
 		return getRes(null);
 	}
+	
+	/**
+	* @Title: custReturnBook
+	* @Description: 图书归还
+	* @param req
+	* @param session
+	* @return
+	* @throws BaseException Response    返回类型
+	* @author ahuang  
+	* @date 2018年6月16日 上午9:21:46
+	* @version V1.0
+	* @throws
+	*/
+	@RequestMapping("/CustReturnBook")
+	public Response custReturnBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+		this.checkLoginExp(session);
+		Integer bookId = (Integer)req.getParam("bookId");
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		bookService.returnBookById(bookId, bindUser.getOpenid());
+		return getRes(null);
+	}
 }

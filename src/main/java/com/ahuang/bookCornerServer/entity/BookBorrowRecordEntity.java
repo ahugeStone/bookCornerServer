@@ -16,6 +16,6 @@ public class BookBorrowRecordEntity implements Serializable{
 	private String openid;
 	private String headImgUrl;
 	private String userName;
-	private String borrowTime;
+	private Date borrowTime;
 	private Date returnTime;
 }

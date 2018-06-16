@@ -1,18 +1,24 @@
 package com.ahuang.bookCornerServer.servise.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.mapper.BookBaseInfoMapper;
 import com.ahuang.bookCornerServer.mapper.BookBorrowRecordMapper;
 import com.ahuang.bookCornerServer.mapper.BookCommentRecordMapper;
+import com.ahuang.bookCornerServer.mapper.CustBindUsersMapper;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.util.StringUtil;
 
@@ -38,6 +44,9 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	private BookCommentRecordMapper bookCommentRecordMapper;
+	
+	@Autowired
+	private CustBindUsersMapper custBindUsersMapper;
 	
 	@Override
 	public BookList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param) {
@@ -67,7 +76,11 @@ public class BookServiceImpl implements BookService {
 			if(null == isBorrowed || null == isBorrowed.getBorrowStatus()) {
 				bo.setIsBorrowed("0");
 			} else {
-				bo.setIsBorrowed(isBorrowed.getBorrowStatus());
+				if("0".equals(isBorrowed.getBorrowStatus())) {
+					bo.setIsBorrowed("1");
+				} else {
+					bo.setIsBorrowed("0");
+				}
 			}
 		}
 		return bo;
@@ -79,17 +92,57 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
 	public void borrowBookById(Integer bookId, String openid) throws BaseException {
 		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(bookId, openid);
 		BookBaseInfoEntity bookInfo = bookBaseInfoMapper.queryById(bookId);
+		CustBindUsersEntity user = custBindUsersMapper.queryByOpenid(openid);
 		// 0 借出 1归还
-		if("1".equals(bookInfo.getBookStatus()) && (StringUtil.isNullOrEmpty(isBorrowed) || "1".equals(isBorrowed.getBorrowStatus()))) {
-			//TODO 可借阅
-			log.debug("图书可借阅");
+		if(!StringUtil.isNullOrEmpty(bookInfo) && "1".equals(bookInfo.getBookStatus()) 
+//				&& (StringUtil.isNullOrEmpty(isBorrowed) || "1".equals(isBorrowed.getBorrowStatus()))
+				) {
+			log.debug("图书可借阅bookId：" + bookId);
+			BookBorrowRecordEntity borrowRecord = new BookBorrowRecordEntity();
+			borrowRecord.setBookId(bookId);
+			borrowRecord.setBookName(bookInfo.getBookName());
+			borrowRecord.setBorrowStatus("0");//0借出 1归还
+			borrowRecord.setBorrowTime(new Date());
+			borrowRecord.setHeadImgUrl(user.getHeadImgUrl());
+			borrowRecord.setOpenid(openid);
+			borrowRecord.setReturnTime(null);
+			borrowRecord.setUserName(user.getUserName());
+			// 插入借阅记录
+			bookBorrowRecordMapper.insertBorrowRecord(borrowRecord);
+			// 修改图书借阅信息-0借阅
+			bookBaseInfoMapper.updateBookBorrowStatus(bookId, "0");
 		} else {
 			// 不可借阅
 			log.debug("bookInfo.getBookStatus：" + bookInfo.getBookStatus() + ", isBorrowed:" + isBorrowed);
-			throw new BaseException("can.not.borrow", "本书当前不可借阅");
+			throw new BaseException("can.not.borrow", "本书当前不可借阅bookId：" + bookId);
+		}
+	}
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
+	public void returnBookById(Integer bookId, String openid) throws BaseException {
+		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(bookId, openid);
+		BookBaseInfoEntity bookInfo = bookBaseInfoMapper.queryById(bookId);
+//		CustBindUsersEntity user = custBindUsersMapper.queryByOpenid(openid);
+		if((!StringUtil.isNullOrEmpty(bookInfo) && "0".equals(bookInfo.getBookStatus()) )
+				&& (!StringUtil.isNullOrEmpty(isBorrowed) && "0".equals(isBorrowed.getBorrowStatus()))
+				) {
+			log.debug("图书可以归还bookid：" + bookId);
+			// 修改图书借阅信息-1归还
+			bookBaseInfoMapper.updateBookBorrowStatus(bookId, "1");
+			// 更新借阅详情 TODO 通过更新条数判断是否更新成功
+			BookBorrowRecordEntity borrowRecord = new BookBorrowRecordEntity();
+			borrowRecord.setBookId(bookId);
+			borrowRecord.setBorrowStatus("1");//0借出 1归还
+			borrowRecord.setReturnTime(new Date());
+			borrowRecord.setOpenid(openid);
+			bookBorrowRecordMapper.updateBorrowRecord(borrowRecord);
+		} else {
+			log.debug("图书无法归还bookid：" + bookId);
+			throw new BaseException("can.not.return", "本书当前无法归还bookId：" + bookId);
 		}
 	}
 }

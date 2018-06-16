@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.data.domain.Page;
 
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
@@ -61,6 +63,9 @@ public interface BookBaseInfoMapper{
 			+ " where bookId=#{id} "
 			+ "and openid=#{openid} order by borrowTime desc limit 1")
 	public String queryBookBorrowStatus(Map<String, Object> param);
+	
+	@Update("Update "+TABLE_NAEM+" set bookStatus=#{bookStatus} where bookId=#{bookId}")
+	public void updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
 	
 	@Select("Select " + SELECT_FIELDS + " from BOOK_BASEINFO")
 	public List<BookBaseInfoEntity> queryBookList();
