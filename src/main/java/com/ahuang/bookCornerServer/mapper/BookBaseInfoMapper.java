@@ -65,7 +65,7 @@ public interface BookBaseInfoMapper{
 	public String queryBookBorrowStatus(Map<String, Object> param);
 	
 	@Update("Update "+TABLE_NAEM+" set bookStatus=#{bookStatus} where bookId=#{bookId}")
-	public void updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
+	public Integer updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
 	
 	@Select("Select " + SELECT_FIELDS + " from BOOK_BASEINFO")
 	public List<BookBaseInfoEntity> queryBookList();

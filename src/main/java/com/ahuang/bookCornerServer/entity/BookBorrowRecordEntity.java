@@ -3,9 +3,12 @@ package com.ahuang.bookCornerServer.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookBorrowRecordEntity implements Serializable{
 
 	private static final long serialVersionUID = -6601593729028300400L;

@@ -36,6 +36,7 @@ import com.ahuang.bookCornerServer.exception.*;
 @Slf4j
 @Service
 public class BookServiceImpl implements BookService {
+	//TODO 不要暴露openid给前端
 	@Autowired
 	private BookBaseInfoMapper bookBaseInfoMapper;
 	
@@ -92,6 +93,18 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
+	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception {
+		List<Map<String, Object>> result = bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
+		return result;
+	}
+	
+	@Override
+	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId) {
+		List<Map<String, Object>> result = bookBorrowRecordMapper.queryBookBorrowHistoryByBookId(bookId);
+		return result;
+	}
+	
+	@Override
 	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
 	public void borrowBookById(Integer bookId, String openid) throws BaseException {
 		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(bookId, openid);
@@ -114,7 +127,10 @@ public class BookServiceImpl implements BookService {
 			// 插入借阅记录
 			bookBorrowRecordMapper.insertBorrowRecord(borrowRecord);
 			// 修改图书借阅信息-0借阅
-			bookBaseInfoMapper.updateBookBorrowStatus(bookId, "0");
+			if(1 != bookBaseInfoMapper.updateBookBorrowStatus(bookId, "0")) {
+				log.debug("updateBookBorrowStatus更新条数不是一条bookId：" + bookId);
+				throw new BaseException("can.not.borrow", "本书当前不可借阅bookId：" + bookId);
+			}
 		} else {
 			// 不可借阅
 			log.debug("bookInfo.getBookStatus：" + bookInfo.getBookStatus() + ", isBorrowed:" + isBorrowed);
@@ -132,14 +148,21 @@ public class BookServiceImpl implements BookService {
 				) {
 			log.debug("图书可以归还bookid：" + bookId);
 			// 修改图书借阅信息-1归还
-			bookBaseInfoMapper.updateBookBorrowStatus(bookId, "1");
-			// 更新借阅详情 TODO 通过更新条数判断是否更新成功
+			Integer result = bookBaseInfoMapper.updateBookBorrowStatus(bookId, "1");
+			if(1 != result) {
+				log.debug("updateBookBorrowStatus更新条数不是1条：" + bookId);
+				throw new BaseException("can.not.return", "本书当前无法归还bookId：" + bookId);
+			}
+			// 更新借阅详情, 通过更新条数判断是否更新成功
 			BookBorrowRecordEntity borrowRecord = new BookBorrowRecordEntity();
 			borrowRecord.setBookId(bookId);
 			borrowRecord.setBorrowStatus("1");//0借出 1归还
 			borrowRecord.setReturnTime(new Date());
 			borrowRecord.setOpenid(openid);
-			bookBorrowRecordMapper.updateBorrowRecord(borrowRecord);
+			if(1!=bookBorrowRecordMapper.updateBorrowRecord(borrowRecord)) {
+				log.debug("updateBorrowRecord更新条数不是1条：" + bookId);
+				throw new BaseException("can.not.return", "本书当前无法归还bookId：" + bookId);
+			}
 		} else {
 			log.debug("图书无法归还bookid：" + bookId);
 			throw new BaseException("can.not.return", "本书当前无法归还bookId：" + bookId);

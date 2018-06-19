@@ -1,6 +1,7 @@
 package com.ahuang.bookCornerServer.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -143,4 +144,23 @@ public class BookController  extends BaseController{
 		bookService.returnBookById(bookId, bindUser.getOpenid());
 		return getRes(null);
 	}
+	@RequestMapping("/CustQueryBookBorrowRecord")
+	public Response custQueryBookBorrowRecord(@RequestBody @Valid Request req , HttpSession session) throws Exception {
+		this.checkLoginExp(session);
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		List<Map<String, Object>> borrowRecordList = bookService.queryBookBorrowByOpenid(bindUser.getOpenid());
+		Map<String, Object> res = new HashMap<String, Object>();
+		res.put("borrowRecordList", borrowRecordList);
+		return getRes(res);
+	} 
+	
+	@RequestMapping("/CustQueryBookBorrowHistory")
+	public Response custQueryBookBorrowHistory(@RequestBody @Valid Request req , HttpSession session) throws Exception {
+		this.checkLoginExp(session);
+		Integer bookId = Integer.valueOf((String) req.getParam("bookId"));
+		List<Map<String, Object>> borrowHistoryList = bookService.queryBookBorrowHistoryByBookId(bookId);
+		Map<String, Object> res = new HashMap<String, Object>();
+		res.put("borrowHistoryList", borrowHistoryList);
+		return getRes(res);
+	} 
 }

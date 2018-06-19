@@ -92,4 +92,29 @@ public interface BookService {
 	* @throws
 	*/
 	public void returnBookById(Integer bookId, String openid) throws BaseException;
+
+	/**
+	 * @throws Exception 
+	* @Title: queryBookBorrowByOpenid
+	* @Description: 查询特定用户的借阅历史
+	* @param openid
+	* @return List<BookBorrowRecordEntity>    返回类型
+	* @author ahuang  
+	* @date 2018年6月19日 下午9:03:01
+	* @version V1.0
+	* @throws
+	*/
+	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception;
+
+	/**
+	* @Title: queryBookBorrowHistoryByBookId
+	* @Description: 查询特定图书的被借阅记录
+	* @param bookId
+	* @return List<BookBorrowRecordEntity>    返回类型
+	* @author ahuang  
+	* @date 2018年6月19日 下午10:23:57
+	* @version V1.0
+	* @throws
+	*/
+	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId);
 }
