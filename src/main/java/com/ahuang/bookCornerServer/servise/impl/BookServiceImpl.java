@@ -14,10 +14,12 @@ import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
+import com.ahuang.bookCornerServer.entity.BookLikeRecordEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.mapper.BookBaseInfoMapper;
 import com.ahuang.bookCornerServer.mapper.BookBorrowRecordMapper;
 import com.ahuang.bookCornerServer.mapper.BookCommentRecordMapper;
+import com.ahuang.bookCornerServer.mapper.BookLikeRecordMapper;
 import com.ahuang.bookCornerServer.mapper.CustBindUsersMapper;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.util.StringUtil;
@@ -36,7 +38,6 @@ import com.ahuang.bookCornerServer.exception.*;
 @Slf4j
 @Service
 public class BookServiceImpl implements BookService {
-	//TODO 不要暴露openid给前端
 	@Autowired
 	private BookBaseInfoMapper bookBaseInfoMapper;
 	
@@ -48,6 +49,9 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	private CustBindUsersMapper custBindUsersMapper;
+	
+	@Autowired
+	private BookLikeRecordMapper bookLikeRecordMapper;
 	
 	@Override
 	public BookList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param) {
@@ -84,6 +88,14 @@ public class BookServiceImpl implements BookService {
 				}
 			}
 		}
+		BookLikeRecordEntity isLiked = bookLikeRecordMapper.queryBookLikeRecordById(id, openid);
+		if(!StringUtil.isNullOrEmpty(isLiked)) {
+			bo.setIsLiked("1");
+		}
+		BookCommentRecordEntity isComment = bookCommentRecordMapper.queryCommentById(id, openid);
+		if(!StringUtil.isNullOrEmpty(isComment)) {
+			bo.setIsCommented("1");
+		}
 		return bo;
 	}
 	
@@ -102,6 +114,38 @@ public class BookServiceImpl implements BookService {
 	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId) {
 		List<Map<String, Object>> result = bookBorrowRecordMapper.queryBookBorrowHistoryByBookId(bookId);
 		return result;
+	}
+	
+	@Override
+	public void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException {
+		BookCommentRecordEntity entity = new BookCommentRecordEntity();
+		entity.setBookId(bookId);
+		entity.setComment(comment);
+		entity.setOpenid(bindUser.getOpenid());
+		entity.setHeadImgUrl(bindUser.getHeadImgUrl());
+		entity.setUserName(bindUser.getUserName());
+		Integer r1 = bookCommentRecordMapper.insertCommentRecord(entity);
+		log.debug("bookCommentRecordMapper插入数据条数："+r1);
+		if(1 != r1) {
+			throw new BaseException("comment.failed", "评论图书失败");
+		}
+		Integer r2 = bookBaseInfoMapper.updateBookCommentNumByOne(bookId);
+		log.debug("bookBaseInfoMapper插入数据条数："+r2);
+		if(1 != r2) {
+			throw new BaseException("comment.failed", "评论图书失败");
+		}
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
+	public void addBookLikedRecord(Integer bookId, String openid) {
+		BookLikeRecordEntity entity = new BookLikeRecordEntity();
+		entity.setBookId(bookId);
+		entity.setOpenid(openid);
+		Integer bl = bookLikeRecordMapper.insertBookLikeRecord(entity);
+		Integer bb = bookBaseInfoMapper.updateBookLikeNumByOne(bookId);
+		log.debug("bookLikeRecord插入数据条数:" + bl);
+		log.debug("bookBaseInfo插入数据条数:" + bb);
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ahuang.bookCornerServer.bo.PageList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 
 /**
@@ -117,4 +118,30 @@ public interface BookService {
 	* @throws
 	*/
 	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId);
+
+	/**
+	* @Title: addBookLikedRecord
+	* @Description: 用户点赞图书
+	* @param bookId
+	* @param openid void    返回类型
+	* @author ahuang  
+	* @date 2018年6月21日 下午9:27:14
+	* @version V1.0
+	* @throws
+	*/
+	public void addBookLikedRecord(Integer bookId, String openid);
+
+	/**
+	 * @throws BaseException 
+	* @Title: addCommentRecord
+	* @Description: 添加图书评论
+	* @param bookId
+	* @param openid
+	* @param comment void    返回类型
+	* @author ahuang  
+	* @date 2018年6月21日 下午10:00:13
+	* @version V1.0
+	* @throws
+	*/
+	public void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException;
 }

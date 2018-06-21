@@ -75,7 +75,7 @@ public class CommonController extends BaseController{
 		res.put("isBinded", "0");//默认未绑定
 		if(!StringUtil.isNullOrEmpty(bindUser)) {
 			res.put("isBinded", "1");//已绑定
-			res.put("openid", openid);
+//			res.put("openid", openid);
 			res.put("userNo", bindUser.getUserNo());
 			res.put("userName", bindUser.getUserName());
 		}

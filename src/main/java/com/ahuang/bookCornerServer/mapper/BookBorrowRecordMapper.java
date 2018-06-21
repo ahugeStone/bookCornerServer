@@ -19,7 +19,7 @@ public interface BookBorrowRecordMapper {
 			+ "and openid=#{openid} order by borrowTime desc limit 1")
 	public BookBorrowRecordEntity queryBookBorrowStatus(@Param("id") Integer id, @Param("openid") String openid);
 	
-	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,"
+	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,"
 			+ "b.bookStatus from BOOK_BORROWRECORD r ,BOOK_BASEINFO b"
 			+ " where r.bookId=#{bookId} "
 			+ " and r.bookId=b.bookId  "

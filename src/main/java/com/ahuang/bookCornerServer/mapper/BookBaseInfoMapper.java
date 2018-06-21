@@ -73,6 +73,14 @@ public interface BookBaseInfoMapper{
 	@Select("select " + SELECT_FIELDS + " from  " + TABLE_NAEM )
     public Page<BookBaseInfoEntity> queryBookListPages(Pageable pageable);
 	
+	@Update("Update " + TABLE_NAEM + "  set bookLikeNum=bookLikeNum+1 "
+			+ " where bookId=#{bookId}")
+	public Integer updateBookLikeNumByOne(Integer bookId);
+	
+	@Update("Update " + TABLE_NAEM + "  set bookCommentNum=bookCommentNum+1 "
+			+ " where bookId=#{bookId}")
+	public Integer updateBookCommentNumByOne(Integer bookId);
+	
 	@Select( "<script>"
 	+  "select " + SELECT_FIELDS + " from  " + TABLE_NAEM 
 	+ BOOK_LIST_WHERE

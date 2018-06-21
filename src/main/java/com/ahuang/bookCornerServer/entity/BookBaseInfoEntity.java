@@ -104,4 +104,18 @@ public class BookBaseInfoEntity implements Serializable{
 	* @Description: 是否正被当前用户借阅
 	*/
 	private String isBorrowed;
+	
+	/**
+	* @fieldName: isLiked
+	* @fieldType: String
+	* @Description: 当前用户是否点赞该图书
+	*/
+	private String isLiked;
+	
+	/**
+	* @fieldName: isCommented
+	* @fieldType: String
+	* @Description: 当前用户是否评论该书
+	*/
+	private String isCommented;
 }

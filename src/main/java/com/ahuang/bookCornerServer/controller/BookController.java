@@ -19,13 +19,15 @@ import com.ahuang.bookCornerServer.controller.req.CustQueryBookDetailReq;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
 import com.ahuang.bookCornerServer.controller.req.Request;
 import com.ahuang.bookCornerServer.controller.req.Response;
+import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 
 
 @RestController
-@RequestMapping("/bookCorner")
+//@RequestMapping(path="/bookCorner", produces="application/json;charset=UTF-8")
+@RequestMapping(path="/bookCorner")
 public class BookController  extends BaseController{
 	@Autowired
 	private BookService bookService;
@@ -79,7 +81,7 @@ public class BookController  extends BaseController{
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("id", bookId);
 		param.put("openid", user.getOpenid());
-		Object res = bookService.queryBookDetailById(param);
+		BookBaseInfoEntity res = bookService.queryBookDetailById(param);
 		
 		return getRes(res);
 	}
@@ -162,5 +164,25 @@ public class BookController  extends BaseController{
 		Map<String, Object> res = new HashMap<String, Object>();
 		res.put("borrowHistoryList", borrowHistoryList);
 		return getRes(res);
+	} 
+	@RequestMapping("/CustLikeBook")
+	public Response custLikeBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+		this.checkLoginExp(session);
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		Integer bookId = (Integer)req.getParam("bookId");
+		String openid = bindUser.getOpenid();
+		bookService.addBookLikedRecord(bookId, openid);
+		return getRes(null);
+	}
+	
+//	@RequestMapping(path="/CustCommentBook",produces="text/html;charset=UTF-8")
+	@RequestMapping(path="/CustCommentBook")
+	public Response custCommentBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+		this.checkLoginExp(session);
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		Integer bookId = (Integer)req.getParam("bookId");
+		String comment = (String)req.getParam("comment");
+		bookService.addCommentRecord(bookId, bindUser, comment);
+		return getRes(null);
 	} 
 }

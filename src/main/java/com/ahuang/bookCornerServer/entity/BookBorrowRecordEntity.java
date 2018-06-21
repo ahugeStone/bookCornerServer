@@ -3,6 +3,7 @@ package com.ahuang.bookCornerServer.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -16,6 +17,7 @@ public class BookBorrowRecordEntity implements Serializable{
 	private Integer bookId;
 	private String bookName;
 	private String borrowStatus;
+	@JsonIgnore
 	private String openid;
 	private String headImgUrl;
 	private String userName;
