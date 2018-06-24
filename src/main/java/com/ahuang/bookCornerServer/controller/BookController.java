@@ -175,7 +175,7 @@ public class BookController  extends BaseController{
 		return getRes(null);
 	}
 	
-//	@RequestMapping(path="/CustCommentBook",produces="text/html;charset=UTF-8")
+//	@RequestMapping(value="/CustCommentBook", produces="text/plain;charset=UTF-8;")
 	@RequestMapping(path="/CustCommentBook")
 	public Response custCommentBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
 		this.checkLoginExp(session);
