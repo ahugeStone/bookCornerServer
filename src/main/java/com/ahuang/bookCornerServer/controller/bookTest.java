@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -62,7 +61,7 @@ public class bookTest {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
+//        HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
         ResponseEntity<String> response = null;
         try {
             response = restTemplate.exchange(
