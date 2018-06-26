@@ -11,8 +11,12 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import com.ahuang.bookCornerServer.entity.CustUsersEntity;
+import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.mapper.CustBindUsersMapper;
+import com.ahuang.bookCornerServer.mapper.CustUsersMapper;
 import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.util.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,8 @@ public class CommonServiceImpl implements CommonService {
 	private ObjectMapper objectMapper;
 	@Autowired
 	private CustBindUsersMapper custBindUsersMapper;
+	@Autowired
+	private CustUsersMapper custUsersMapper;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -58,5 +64,20 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public CustBindUsersEntity getUserByOpenid(String openid) {
 		return custBindUsersMapper.queryByOpenid(openid);
+	}
+	
+	@Override
+	public void custUserBind(CustBindUsersEntity user) throws BaseException {
+		
+		CustUsersEntity cuser = custUsersMapper.queryByUserNo(user.getUserNo());
+		if(StringUtil.isNullOrEmpty(cuser)) {
+			throw new BaseException("user.not.allowed", "该用户无法绑定");
+		} else if(!user.getUserName().equals(cuser.getUserName())) {
+			throw new BaseException("user.name.not.match", "该用户绑定信息有误");
+		}
+		Integer count = custBindUsersMapper.insertUserInfo(user);
+		if(count != 1) {
+			throw new BaseException("user.cant.add", "该用户绑定失败");
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.ahuang.bookCornerServer.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
@@ -18,5 +19,9 @@ public interface CustBindUsersMapper {
 	@Select("Select " + SELECT_FIELDS + "from " + TABLE_NAEM
 			+ " where openid=#{openid}")
 	public CustBindUsersEntity queryByOpenid(String openid);
+	
+	@Insert("Insert into " + TABLE_NAEM +" (openid, nickName, headImgUrl, userNo, userName, isAdmin, recTime) "
+			+ " values(#{openid}, #{nickName}, #{headImgUrl}, #{userNo}, #{userName}, 0, SYSDATE())")
+	public Integer insertUserInfo(CustBindUsersEntity entity);
 	
 }

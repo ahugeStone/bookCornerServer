@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ahuang.bookCornerServer.bo.WXUser;
 import com.ahuang.bookCornerServer.controller.req.CommonResponse;
 import com.ahuang.bookCornerServer.controller.req.Request;
+import com.ahuang.bookCornerServer.controller.req.Response;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.CommonService;
@@ -81,5 +82,30 @@ public class CommonController extends BaseController{
 		}
 		
 		return getRes(res);
+	}
+	@RequestMapping("/CustBind")
+	public Response custBind(@RequestBody @Valid Request req, HttpSession session) throws BaseException {
+		this.checkLoginExp(session);//如果用户没有登陆则报错
+		String userNo = (String) req.getParam("userNo");
+		String userName = (String)req.getParam("userName");
+		String nickName = (String)req.getParam("nickName");
+		String headImgUrl = (String)req.getParam("headImgUrl");
+		WXUser user = (WXUser)session.getAttribute("user");
+		String openid = user.getOpenid();
+		CustBindUsersEntity bindUser = commonService.getUserByOpenid(openid);
+		if(StringUtil.isNullOrEmpty(bindUser)) {
+			// 如果库中没有绑定记录，说明用户需要绑定
+			bindUser = new CustBindUsersEntity();
+			bindUser.setOpenid(openid);
+			bindUser.setUserName(userName);
+			bindUser.setHeadImgUrl(headImgUrl);
+			bindUser.setUserNo(userNo);
+			bindUser.setNickName(nickName);
+			commonService.custUserBind(bindUser);
+			log.debug("绑定成功openid:" + openid + "，写入session……");
+			session.setAttribute("bindUser", bindUser);
+		}
+		
+		return null;
 	}
 }

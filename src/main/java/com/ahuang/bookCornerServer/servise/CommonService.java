@@ -1,6 +1,7 @@
 package com.ahuang.bookCornerServer.servise;
 
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import com.ahuang.bookCornerServer.exception.BaseException;
 
 /**
  * 
@@ -34,6 +35,18 @@ public interface CommonService {
 	* @throws
 	*/
 	public CustBindUsersEntity getUserByOpenid(String openid);
+	
+	/**
+	* @Title: custUserBind
+	* @Description: 绑定用户
+	* @param user
+	* @throws BaseException void    返回类型
+	* @author ahuang  
+	* @date 2018年6月26日 下午10:02:19
+	* @version V1.0
+	* @throws
+	*/
+	public void custUserBind(CustBindUsersEntity user) throws BaseException;
 	
 	
 }
