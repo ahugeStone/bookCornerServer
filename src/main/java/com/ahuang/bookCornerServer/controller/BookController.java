@@ -53,7 +53,7 @@ public class BookController  extends BaseController{
 		String bookStatus = req.getParams().getBookStatus();
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("num", num);
-		param.put("pageSize", 40);
+		param.put("pageSize", 20);
 		param.put("bookName", bookName);
 		param.put("bookType", bookType);
 		param.put("bookStatus", bookStatus);

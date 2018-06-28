@@ -104,8 +104,10 @@ public class CommonController extends BaseController{
 			commonService.custUserBind(bindUser);
 			log.debug("绑定成功openid:" + openid + "，写入session……");
 			session.setAttribute("bindUser", bindUser);
+		} else {
+			log.info("该用户已经绑定，openid:" + openid);
 		}
 		
-		return null;
+		return getRes(null);
 	}
 }
