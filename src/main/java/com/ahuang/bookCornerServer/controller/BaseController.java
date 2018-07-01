@@ -31,7 +31,7 @@ public class BaseController {
 	/**
 	* @fieldName: debug
 	* @fieldType: boolean
-	* @Description: 是否为调试模式（调试模式不校验腾讯是否登陆）
+	* @Description: 是否为调试模式（调试模式默认注入测试用户）
 	*/
 	@Value("${tx.debug}")
 	private boolean debug;

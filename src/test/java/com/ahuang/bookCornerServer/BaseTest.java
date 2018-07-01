@@ -49,6 +49,7 @@ public class BaseTest {
 		bindUser.setOpenid(openid);
 		bindUser.setUserName("黄实");
 		bindUser.setUserNo("3693");
+		bindUser.setHeadImgUrl("");
 		session.setAttribute("bindUser", bindUser);
 	}
 	/**

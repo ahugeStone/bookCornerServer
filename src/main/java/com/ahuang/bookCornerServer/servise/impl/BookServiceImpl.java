@@ -142,6 +142,11 @@ public class BookServiceImpl implements BookService {
 		BookLikeRecordEntity entity = new BookLikeRecordEntity();
 		entity.setBookId(bookId);
 		entity.setOpenid(openid);
+		BookLikeRecordEntity bo = bookLikeRecordMapper.queryBookLikeRecordById(bookId, openid);
+		if(!StringUtil.isNullOrEmpty(bo)) {
+			log.info("该用户已经点过赞了，openid:" + openid);
+			return;
+		}
 		Integer bl = bookLikeRecordMapper.insertBookLikeRecord(entity);
 		Integer bb = bookBaseInfoMapper.updateBookLikeNumByOne(bookId);
 		log.debug("bookLikeRecord插入数据条数:" + bl);

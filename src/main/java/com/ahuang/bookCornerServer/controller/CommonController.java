@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CommonController extends BaseController{
 	@Autowired
 	private CommonService commonService;
+	/**
+	* @fieldName: test
+	* @fieldType: boolean
+	* @Description: 是否为测试模式（测试模式根据任意code都可以获取测试用户openid）
+	*/
+	@Value("${tx.test}")
+	private boolean test;
 	
 	@RequestMapping(path="/CustQueryIsBinded",method = { RequestMethod.POST })
 	public CommonResponse<?> CustQueryIsBinded(@RequestBody @Valid Request req, HttpSession session) throws BaseException {
@@ -42,7 +50,11 @@ public class CommonController extends BaseController{
 		if (!checkLogin(session)) {
         	log.info("未登陆，获取openid");
         	String code = (String) req.getParam("code");
-        	openid = commonService.getOpenidByCode(code);
+        	if(!test) {
+        		openid = commonService.getOpenidByCode(code);
+        	} else {
+        		openid = "oe0Ej0besxqth6muj72ZzfYGmMp0";
+        	}
         	if(!StringUtil.isNullOrEmpty(openid)) {
         		// 如果返回报文中有openid说明登陆成功
         		user = new WXUser();

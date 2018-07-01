@@ -159,7 +159,7 @@ public class BookController  extends BaseController{
 	@RequestMapping("/CustQueryBookBorrowHistory")
 	public Response custQueryBookBorrowHistory(@RequestBody @Valid Request req , HttpSession session) throws Exception {
 		this.checkLoginExp(session);
-		Integer bookId = Integer.valueOf((String) req.getParam("bookId"));
+		Integer bookId = Integer.valueOf(req.getParam("bookId").toString());
 		List<Map<String, Object>> borrowHistoryList = bookService.queryBookBorrowHistoryByBookId(bookId);
 		Map<String, Object> res = new HashMap<String, Object>();
 		res.put("borrowHistoryList", borrowHistoryList);
