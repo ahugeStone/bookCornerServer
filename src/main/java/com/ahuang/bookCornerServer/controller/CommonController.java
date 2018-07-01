@@ -33,8 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/bookCorner")
 public class CommonController extends BaseController{
-	@Autowired
-	private CommonService commonService;
+	private final CommonService commonService;
 	/**
 	* @fieldName: test
 	* @fieldType: boolean
@@ -42,7 +41,12 @@ public class CommonController extends BaseController{
 	*/
 	@Value("${tx.test}")
 	private boolean test;
-	
+
+	@Autowired
+	public CommonController(CommonService commonService) {
+		this.commonService = commonService;
+	}
+
 	@RequestMapping(path="/CustQueryIsBinded",method = { RequestMethod.POST })
 	public CommonResponse<?> CustQueryIsBinded(@RequestBody @Valid Request req, HttpSession session) throws BaseException {
 		WXUser user = null;

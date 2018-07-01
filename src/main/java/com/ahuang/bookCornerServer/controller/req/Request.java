@@ -18,7 +18,6 @@ public class Request extends CommonRequest<Map<String, Object>>{
 	* @author ahuang  
 	* @date 2018年6月14日 下午8:29:09
 	* @version V1.0
-	* @throws
 	*/
 	public Object getParam(String key) {
 		return super.getParams().get(key);
@@ -32,7 +31,6 @@ public class Request extends CommonRequest<Map<String, Object>>{
 	* @author ahuang  
 	* @date 2018年6月14日 下午8:29:52
 	* @version V1.0
-	* @throws
 	*/
 	public Object getHeader(String key) {
 		return super.getHeader().get(key);

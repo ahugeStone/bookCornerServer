@@ -27,33 +27,40 @@ import com.ahuang.bookCornerServer.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import com.ahuang.bookCornerServer.exception.*;
+
 /**
- * 
-* @ClassName: BookServiceImpl
-* @Description: 图书服务类
-* @author ahuang
-* @date 2018年6月2日 下午9:58:15
-* @version V1.0
+ * The type Book service.
+ *
+ * @author ahuang
+ * @version V1.0
+ * @ClassName: BookServiceImpl
+ * @Description: 图书服务类
+ * @date 2018年6月2日 下午9:58:15
  */
 @Slf4j
 @Service
 public class BookServiceImpl implements BookService {
-	@Autowired
-	private BookBaseInfoMapper bookBaseInfoMapper;
+	private final BookBaseInfoMapper bookBaseInfoMapper;
 	
-	@Autowired
-	private BookBorrowRecordMapper bookBorrowRecordMapper;
+	private final BookBorrowRecordMapper bookBorrowRecordMapper;
 	
-	@Autowired
-	private BookCommentRecordMapper bookCommentRecordMapper;
+	private final BookCommentRecordMapper bookCommentRecordMapper;
 	
-	@Autowired
-	private CustBindUsersMapper custBindUsersMapper;
+	private final CustBindUsersMapper custBindUsersMapper;
 	
-	@Autowired
-	private BookLikeRecordMapper bookLikeRecordMapper;
-	
-	@Override
+	private final BookLikeRecordMapper bookLikeRecordMapper;
+
+    @Autowired
+    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper) {
+        this.bookBaseInfoMapper = bookBaseInfoMapper;
+        this.bookBorrowRecordMapper = bookBorrowRecordMapper;
+        this.bookCommentRecordMapper = bookCommentRecordMapper;
+        this.custBindUsersMapper = custBindUsersMapper;
+        this.bookLikeRecordMapper = bookLikeRecordMapper;
+    }
+
+
+    @Override
 	public BookList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param) {
 		Integer num = (Integer)param.get("num"); // 当前页起始id
 		Integer pageSize = (Integer)param.get("pageSize"); // 页面大小
@@ -61,10 +68,10 @@ public class BookServiceImpl implements BookService {
 		List<BookBaseInfoEntity> booklist = bookBaseInfoMapper.queryBookListPage(param); // 图书列表
 		param.put("isCount", true);
 		Integer totalNum = bookBaseInfoMapper.queryBookInfoNum(param); // 图书总数
-		BookList<BookBaseInfoEntity> pageList = new BookList<BookBaseInfoEntity>(num, totalNum,pageSize,booklist); //获取页面对象
-		
-		return pageList;
+
+        return new BookList<>(num, totalNum, pageSize, booklist);
 	}
+
 	@Override
 	public BookBaseInfoEntity queryBookById(Map<String, Object> param) {
 		Integer bookId = (Integer) param.get("bookId");
@@ -76,7 +83,7 @@ public class BookServiceImpl implements BookService {
 		Integer id = (Integer)param.get("id");
 		String openid = (String)param.get("openid");
 		BookBaseInfoEntity bo = bookBaseInfoMapper.queryById(id);
-		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(id, openid);
+        BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(id, openid);
 		if(!StringUtil.isNullOrEmpty(bo)) {
 			if(null == isBorrowed || null == isBorrowed.getBorrowStatus()) {
 				bo.setIsBorrowed("0");
@@ -105,15 +112,13 @@ public class BookServiceImpl implements BookService {
 	}
 	
 	@Override
-	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception {
-		List<Map<String, Object>> result = bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
-		return result;
+	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) {
+		return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
 	}
 	
 	@Override
 	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId) {
-		List<Map<String, Object>> result = bookBorrowRecordMapper.queryBookBorrowHistoryByBookId(bookId);
-		return result;
+		return bookBorrowRecordMapper.queryBookBorrowHistoryByBookId(bookId);
 	}
 	
 	@Override

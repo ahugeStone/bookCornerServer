@@ -3,6 +3,8 @@ package com.ahuang.bookCornerServer.bo;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
 * @ClassName: BookList
@@ -12,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 * @version V1.0
 * @param <T>
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class BookList<T>  extends PageList<T>{
 	@JsonProperty(value = "bookList")
 	private List<T> objectList;

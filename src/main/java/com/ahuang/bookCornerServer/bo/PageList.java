@@ -55,7 +55,7 @@ public class PageList<T> {
 		Integer currentPageNum = (startNum+1)%pageSize == 0? startNum/pageSize:startNum/pageSize+1;//计算当前页
 		currentPageNum = currentPageNum==0? 1:currentPageNum; //当前页不能为0
 		currentPageNum = currentPageNum > totalPageNum? totalPageNum:currentPageNum;//当前页不能大于总页数
-		boolean isLastPage = endNum == totalNum; //是否为最后一页
+		boolean isLastPage = endNum.equals(totalNum); //是否为最后一页
 		currentPageNum = isLastPage? totalPageNum:currentPageNum;//如果是最后一页，设定当前页为最后一页
 		pageSize = list.size();//设置当前页面大小
 		

@@ -30,13 +30,17 @@ public class CommonServiceImpl implements CommonService {
     private String appid;
 	@Value("${tx.secret}")
     private String secret;
+	private final ObjectMapper objectMapper;
+	private final CustBindUsersMapper custBindUsersMapper;
+	private final CustUsersMapper custUsersMapper;
+
 	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private CustBindUsersMapper custBindUsersMapper;
-	@Autowired
-	private CustUsersMapper custUsersMapper;
-	
+	public CommonServiceImpl(ObjectMapper objectMapper, CustBindUsersMapper custBindUsersMapper, CustUsersMapper custUsersMapper) {
+		this.objectMapper = objectMapper;
+		this.custBindUsersMapper = custBindUsersMapper;
+		this.custUsersMapper = custUsersMapper;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getOpenidByCode(String code) {
@@ -44,7 +48,7 @@ public class CommonServiceImpl implements CommonService {
     	String url = String.format(code2sessionUrl, appid, secret, code);
     	log.info("RequestToTx:" + url);
     	ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
-    	Map<String, Object> res = new HashMap<String, Object>();
+    	Map<String, Object> res = new HashMap<>();
     	try {
 			res = objectMapper.readValue(responseEntity.getBody(), Map.class);
 		} catch (Exception e) {
@@ -52,12 +56,12 @@ public class CommonServiceImpl implements CommonService {
 		}
     	log.info("ResponseFromTX:" + responseEntity.toString());
     	String openid = null;
-    	if(!ObjectUtils.isEmpty(res) && !ObjectUtils.isEmpty(res.get("openid"))) {
+        //否则说明登陆失败
+        if(!ObjectUtils.isEmpty(res) && !ObjectUtils.isEmpty(res.get("openid"))) {
     		// 如果返回报文中有openid说明登陆成功
     		openid = (String)res.get("openid");
-    	} else {
-    		//否则说明登陆失败
-    	}
+    		log.debug("腾讯校验通过，openid" + openid);
+    	} else log.debug("腾讯校验失败");
 		return openid;
 	}
 	

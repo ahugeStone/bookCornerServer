@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.data.domain.Page;
 
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -19,8 +20,9 @@ import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 * @Description: BOOK_BASEINFO表的Mapper
 * @author ahuang
 * @date 2018年6月2日 下午10:00:58
-* @version V1.0
+* @version V1.00
  */
+@Service
 @CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) 
 public interface BookBaseInfoMapper{
 	String TABLE_NAEM = " BOOK_BASEINFO b ";

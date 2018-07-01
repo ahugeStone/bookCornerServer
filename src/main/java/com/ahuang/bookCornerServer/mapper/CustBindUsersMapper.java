@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import org.springframework.stereotype.Service;
 
 /**
 * @ClassName: CustBindUsersMapper
@@ -12,6 +13,7 @@ import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 * @date 2018年6月10日 下午9:44:56
 * @version V1.0
 */
+@Service
 public interface CustBindUsersMapper {
 	String TABLE_NAEM = " CUST_BINDUSERS ";
 	String SELECT_FIELDS = " id, openid, nickName, headImgUrl, userNo, userName, isAdmin, recTime ";

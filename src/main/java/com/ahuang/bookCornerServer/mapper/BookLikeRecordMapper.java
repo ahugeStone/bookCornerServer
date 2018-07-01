@@ -5,7 +5,9 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.BookLikeRecordEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface BookLikeRecordMapper {
 	@Insert("Insert into BOOK_LIKERECORD (bookId, openid, recTime) "
 			+ "values(#{bookId}, #{openid}, SYSDATE())")

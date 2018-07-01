@@ -2,6 +2,7 @@ package com.ahuang.bookCornerServer.servise;
 
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -11,6 +12,7 @@ import com.ahuang.bookCornerServer.exception.BaseException;
 * @date 2018年6月10日 下午8:50:11
 * @version V1.0
  */
+@Service
 public interface CommonService {
 	/**
 	 * 

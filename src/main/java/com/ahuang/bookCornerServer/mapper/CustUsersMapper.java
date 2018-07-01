@@ -4,7 +4,9 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.CustUsersEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface CustUsersMapper {
 	String TABLE_NAEM = " CUST_USERS ";
 	String SELECT_FIELDS = " userNo, userName ";

@@ -9,7 +9,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface BookBorrowRecordMapper {
 	String BORROW_RECORD_NAME = " BOOK_BORROWRECORD r ";
 	String BORROW_RECORD_FIELDS = " id, bookId, bookName, borrowStatus, openid, headImgUrl, userName, borrowTime, returnTime ";

@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface BookCommentRecordMapper {
 	String COMMENT_RECORD_NAME = " BOOK_COMMENTRECORD c";
 	String COMMENT_RECORD_FIELDS=" id, bookId, openid, headImgUrl, userName, comment, recTime ";
