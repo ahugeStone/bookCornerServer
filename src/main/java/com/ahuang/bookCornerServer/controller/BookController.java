@@ -58,7 +58,7 @@ public class BookController  extends BaseController{
 		param.put("bookType", bookType);
 		param.put("bookStatus", bookStatus);
 		Object res = bookService.queryBookListPage(param);
-		
+
 		return getRes(res);
 	}
 	/**
@@ -82,7 +82,7 @@ public class BookController  extends BaseController{
 		param.put("id", bookId);
 		param.put("openid", user.getOpenid());
 		BookBaseInfoEntity res = bookService.queryBookDetailById(param);
-		
+
 		return getRes(res);
 	}
 	/**
@@ -164,7 +164,7 @@ public class BookController  extends BaseController{
 		Map<String, Object> res = new HashMap<String, Object>();
 		res.put("borrowHistoryList", borrowHistoryList);
 		return getRes(res);
-	} 
+	}
 	@RequestMapping("/CustLikeBook")
 	public Response custLikeBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
 		this.checkLoginExp(session);

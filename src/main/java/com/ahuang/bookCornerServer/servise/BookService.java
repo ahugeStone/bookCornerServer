@@ -60,7 +60,6 @@ public interface BookService {
 	* @Title: queryCommentList
 	* @Description: 查询评论列表
 	* @param bookId
-	* @param openid
 	* @return List<BookCommentRecordEntity>    返回类型
 	* @author ahuang  
 	* @date 2018年6月14日 下午10:32:21
@@ -120,8 +119,8 @@ public interface BookService {
 	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId);
 
 	/**
+     * 用户点赞图书
 	* @Title: addBookLikedRecord
-	* @Description: 用户点赞图书
 	* @param bookId
 	* @param openid void    返回类型
 	* @author ahuang  
@@ -132,11 +131,11 @@ public interface BookService {
 	public void addBookLikedRecord(Integer bookId, String openid);
 
 	/**
+	 * 添加图书评论
+     *
 	 * @throws BaseException 
 	* @Title: addCommentRecord
-	* @Description: 添加图书评论
 	* @param bookId
-	* @param openid
 	* @param comment void    返回类型
 	* @author ahuang  
 	* @date 2018年6月21日 下午10:00:13
