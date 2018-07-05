@@ -23,8 +23,12 @@ import java.util.Map;
 @RestController
 @RequestMapping(path="/bookCorner/v1")
 public class BookRestController {
+    private final BookService bookService;
+
     @Autowired
-    private BookService bookService;
+    public BookRestController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @RequestMapping(path="/books",method = { RequestMethod.GET })
     public Object custQueryBookList(@Valid CustQueryBookListReq req) {
@@ -32,23 +36,21 @@ public class BookRestController {
         String bookName = req.getBookName();
         String bookType = req.getBookType();
         String bookStatus = req.getBookStatus();
-        Map<String, Object> param = new HashMap<String, Object>();
+        Map<String, Object> param = new HashMap<>();
         param.put("num", num);
         param.put("pageSize", 20);
         param.put("bookName", bookName);
         param.put("bookType", bookType);
         param.put("bookStatus", bookStatus);
-        Object res = bookService.queryBookListPage(param);
 
-        return res;
+        return bookService.queryBookListPage(param);
     }
 
     @RequestMapping(path="/books/{bookId}",method = { RequestMethod.GET })
     public BookBaseInfoEntity custQueryBookDetail(@PathVariable Integer bookId) {
-        Map<String, Object> param = new HashMap<String, Object>();
+        Map<String, Object> param = new HashMap<>();
         param.put("id", bookId);
         param.put("openid", "oe0Ej0besxqth6muj72ZzfYGmMp0");
-        BookBaseInfoEntity res = bookService.queryBookDetailById(param);
-        return res;
+        return bookService.queryBookDetailById(param);
     }
 }
