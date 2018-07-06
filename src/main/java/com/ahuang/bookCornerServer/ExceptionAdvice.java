@@ -1,5 +1,7 @@
 package com.ahuang.bookCornerServer;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +29,7 @@ public class ExceptionAdvice {
     }
 	
 	@ExceptionHandler(BaseException.class)
-    public CommonResponse<?> handleBaseException(BaseException e) {
+    public ResponseEntity<CommonResponse<?>> handleBaseException(BaseException e) {
 		log.debug("into handleBaseException");
 		log.error(e.getCode() + "" + e.getMsg());
 		log.error(e.getMessage(), e);
@@ -37,7 +39,7 @@ public class ExceptionAdvice {
 		res.setCode(e.getCode());
 		res.setType(BaseException.class.getName());
 		log.debug("out handleBaseException");
-        return res;
+        return new ResponseEntity(res, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.ahuang.bookCornerServer.servise.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +30,14 @@ import com.ahuang.bookCornerServer.servise.BookService;
 //@RequestMapping(path="/bookCorner", produces="application/json;charset=UTF-8")
 @RequestMapping(path="/bookCorner")
 public class BookController  extends BaseController{
-	@Autowired
-	private BookService bookService;
+	private final BookService bookService;
 
-	/**
+    @Autowired
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
+
+    /**
 	* @Title: custQueryBookList
 	* @Description: 查询图书列表（分页）
 	* @param req
