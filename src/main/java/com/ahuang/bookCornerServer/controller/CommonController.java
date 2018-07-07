@@ -33,8 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/bookCorner")
 public class CommonController extends BaseController{
-	@Autowired
-	private CommonService commonService;
+	private final CommonService commonService;
 	/**
 	* @fieldName: test
 	* @fieldType: boolean
@@ -43,10 +42,15 @@ public class CommonController extends BaseController{
 	@Value("${tx.test}")
 	private boolean test;
 
-	@RequestMapping(path="/CustQueryIsBinded",method = { RequestMethod.POST })
+    @Autowired
+    public CommonController(CommonService commonService) {
+        this.commonService = commonService;
+    }
+
+    @RequestMapping(path="/CustQueryIsBinded",method = { RequestMethod.POST })
 	public CommonResponse<?> CustQueryIsBinded(@RequestBody @Valid Request req, HttpSession session) throws BaseException {
-		WXUser user = null;
-		String openid = null;
+		WXUser user;
+		String openid;
 		if (!checkLogin(session)) {
         	log.info("未登陆，获取openid");
         	String code = (String) req.getParam("code");
@@ -84,7 +88,7 @@ public class CommonController extends BaseController{
 				session.setAttribute("bindUser", bindUser);
 			}
 		} 
-		Map<String, Object> res = new HashMap<String, Object> ();
+		Map<String, Object> res = new HashMap<>();
 		res.put("isBinded", "0");//默认未绑定
 		if(!StringUtil.isNullOrEmpty(bindUser)) {
 			res.put("isBinded", "1");//已绑定

@@ -3,6 +3,7 @@ package com.ahuang.bookCornerServer.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.ahuang.bookCornerServer.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -36,9 +37,15 @@ public class BaseController {
 	@Autowired
 	CommonService commonService;
 
+    /**
+    * jwt加密密钥
+    * @Author: ahuang
+    * @Date: 2018/7/7 下午9:34
+    */
     @Value("${jwt.secret}")
     String SECRET;
 	/**
+     * 是否为调试模式（调试模式默认注入测试用户）
 	* @fieldName: debug
 	* @fieldType: boolean
 	* @Description: 是否为调试模式（调试模式默认注入测试用户）
@@ -46,6 +53,7 @@ public class BaseController {
 	@Value("${tx.debug}")
 	boolean debug;
     /**
+     * 是否为测试模式（测试模式任意code都可以获取测试用户openid）
      * @fieldName: debug
      * @fieldType: boolean
      * @Description: 是否为测试模式（测试模式任意code都可以获取测试用户openid）
@@ -53,6 +61,9 @@ public class BaseController {
     @Value("${tx.test}")
     boolean test;
 
+    /**
+     * 测试openid
+     */
     @Value("${test.openid}")
 	String testOpenid;
 
@@ -95,15 +106,23 @@ public class BaseController {
 		}
 		return true;
 	}
-
+    /**
+    * 校验JWT
+    * @params  [request]
+    * @return: java.lang.String
+    * @Author: ahuang
+    * @Date: 2018/7/7 下午9:37
+    */
 	String checkLoginForJWT(HttpServletRequest request) throws BaseException {
-        String JWT = request.getHeader("Authorization");
+        String tokenJWT = request.getHeader("Authorization");
         String openid = null;
+        String TOKEN_PREFIX = "Bearer";        // Token前缀
         try{
             Claims claims = Jwts.parser()
                     // 验签
                     .setSigningKey(SECRET)
-                    .parseClaimsJws(JWT)
+                    // 去掉 Bearer
+                    .parseClaimsJws(tokenJWT.replace(TOKEN_PREFIX, ""))
                     .getBody();
             // 拿openid
             openid = claims.getSubject();
@@ -114,10 +133,10 @@ public class BaseController {
 //            log.info(date.toString());
         } catch( ExpiredJwtException exp ) {
             // 超时异常
-            log.error("JWT.timeout");
+            log.error("token.JWT.timeout");
         } catch (Exception e) {
             // 其他异常
-            log.error("JWT.error");
+            log.error("token.JWT.error");
         }
         if(StringUtil.isNullOrEmpty(openid)) {
             if(debug) {
@@ -125,8 +144,8 @@ public class BaseController {
                 log.info("调试模式，校验成功");
                 openid = testOpenid;
             } else {
-                log.info("非调试模式，jwt解析失败");
-                throw new BaseException("not Login!", "没有登陆");
+                log.info("非调试模式，token解析失败");
+                throw new AuthException("not Login!", "没有登陆或登陆超时");
             }
 
         }
@@ -142,7 +161,7 @@ public class BaseController {
 	* @date 2018年6月9日 下午6:12:58
 	* @version V1.0
 	 */
-	public void checkLoginExp(HttpSession session) throws BaseException {
+    void checkLoginExp(HttpSession session) throws BaseException {
 		Object sessionUser = session.getAttribute("user");
 		if (StringUtil.isNullOrEmpty(sessionUser)) {
 			if(!debug) {

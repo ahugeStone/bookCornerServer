@@ -3,6 +3,7 @@ package com.ahuang.bookCornerServer.controller;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
@@ -42,6 +43,9 @@ public class BookRestController extends BaseController{
     @Value("${jwt.secret}")
     private String SECRET;
 
+    @Value("${jwt.expiration.time}")
+    private long EXPIRATIONTIME;
+
     @RequestMapping(path="/token",method = { RequestMethod.GET })
     public Map<String, Object> CustQueryIsBinded(@RequestParam("code") String code) throws BaseException {
         String openid = commonService.getOpenidByCode(code);
@@ -51,7 +55,7 @@ public class BookRestController extends BaseController{
                 openid = testOpenid;
             } else {
                 //否则说明登陆失败
-                throw new BaseException("login.failed", "小程序登陆校验失败");
+                throw new AuthException("login.failed", "小程序登陆校验失败");
             }
         }
         // 根据openid查询用户绑定信息
@@ -65,19 +69,19 @@ public class BookRestController extends BaseController{
             res.put("userNo", bindUser.getUserNo());
             res.put("userName", bindUser.getUserName());
 
-            long EXPIRATIONTIME = 60_000;     // 1分钟
-
-            String JWT = Jwts.builder()
-                    // 保存权限（角色）
-                    .claim("authorities", "ROLE_ADMIN,AUTH_WRITE")
-                    // 用户名写入标题
+            String tokenJWT = Jwts.builder() //生成token
+                    // 保存用户信息
+//                    .claim("authorities", "ROLE_ADMIN,AUTH_WRITE")
+                    .claim("userNo", bindUser.getUserNo())
+                    .claim("userName", bindUser.getUserName())
+                    // 用户openid写入标题
                     .setSubject(openid)
                     // 有效期设置
                     .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
                     // 签名设置
                     .signWith(SignatureAlgorithm.HS512, SECRET)
                     .compact();
-            res.put("jwt", JWT);
+            res.put("token", tokenJWT);
         } else {
             log.info("OPENID:" + openid + "未绑定！");
         }
