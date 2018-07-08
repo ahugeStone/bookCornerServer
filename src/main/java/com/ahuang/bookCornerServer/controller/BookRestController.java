@@ -40,12 +40,31 @@ public class BookRestController extends BaseController{
 
     private final CommonService commonService;
 
+    @Autowired
+    public BookRestController(BookService bookService, CommonService commonService) {
+        this.bookService = bookService;
+        this.commonService = commonService;
+    }
+
+    /**
+     * JWT加密密钥
+     */
     @Value("${jwt.secret}")
     private String SECRET;
 
+    /**
+     * JWT超时时间
+     */
     @Value("${jwt.expiration.time}")
     private long EXPIRATIONTIME;
 
+    /**
+    * 查询用户是否绑定，如果绑定返回jwt的token
+    * @params  [code] 腾讯oauth的code
+    * @return: java.util.Map<java.lang.String,java.lang.Object>
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:27
+    */
     @RequestMapping(path="/token",method = { RequestMethod.GET })
     public Map<String, Object> CustQueryIsBinded(@RequestParam("code") String code) throws BaseException {
         String openid = commonService.getOpenidByCode(code);
@@ -89,15 +108,16 @@ public class BookRestController extends BaseController{
         return res;
     }
 
-    @Autowired
-    public BookRestController(BookService bookService, CommonService commonService) {
-        this.bookService = bookService;
-        this.commonService = commonService;
-    }
-
-
+    /**
+    * 查询图书列表
+    * @params  [req]
+    * @return: java.lang.Object
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:37
+    */
     @RequestMapping(path="/books",method = { RequestMethod.GET })
-    public Object custQueryBookList(@Valid CustQueryBookListReq req) {
+    public Object custQueryBookList(@Valid CustQueryBookListReq req, HttpServletRequest request) throws BaseException {
+        checkLoginForJWT(request);
         Integer num = req.getNum();
         String bookName = req.getBookName();
         String bookType = req.getBookType();
@@ -112,6 +132,13 @@ public class BookRestController extends BaseController{
         return bookService.queryBookListPage(param);
     }
 
+    /**
+    * 查询图书详情
+    * @params  [bookId, request]
+    * @return: com.ahuang.bookCornerServer.entity.BookBaseInfoEntity
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:38
+    */
     @RequestMapping(path="/books/{bookId}",method = { RequestMethod.GET })
     public BookBaseInfoEntity custQueryBookDetail(@PathVariable Integer bookId, HttpServletRequest request) throws BaseException {
         String openid = checkLoginForJWT(request);
@@ -119,5 +146,21 @@ public class BookRestController extends BaseController{
         param.put("id", bookId);
         param.put("openid", openid);
         return bookService.queryBookDetailById(param);
+    }
+
+    /**
+    * 查询特定图书的所有评论
+    * @params  [bookId, request]
+    * @return: java.util.Map
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:55
+    */
+    @RequestMapping(path="/comments",method = { RequestMethod.GET })
+    public Map custQueryBookCommentHistory(@RequestParam("bookId") Integer bookId, HttpServletRequest request) throws BaseException {
+        checkLoginForJWT(request);
+        Map<String, Object> result = new HashMap<>();
+        result.put("commentHistoryList", bookService.queryCommentList(bookId));
+
+        return result;
     }
 }
