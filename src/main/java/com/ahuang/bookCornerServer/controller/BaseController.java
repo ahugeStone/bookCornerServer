@@ -113,8 +113,9 @@ public class BaseController {
     * @Author: ahuang
     * @Date: 2018/7/7 下午9:37
     */
-	String checkLoginForJWT(HttpServletRequest request) throws BaseException {
+    CustBindUsersEntity checkLoginForJWTSilence(HttpServletRequest request) throws BaseException {
         String tokenJWT = request.getHeader("Authorization");
+        CustBindUsersEntity user = new CustBindUsersEntity();
         String openid = null;
         String TOKEN_PREFIX = "Bearer";        // Token前缀
         try{
@@ -124,8 +125,15 @@ public class BaseController {
                     // 去掉 Bearer
                     .parseClaimsJws(tokenJWT.replace(TOKEN_PREFIX, ""))
                     .getBody();
-            // 拿openid
+            // 获取token中信息
             openid = claims.getSubject();
+            user.setOpenid(claims.getSubject());
+            user.setUserName((String) claims.get("userName"));
+            user.setUserNo((String) claims.get("userNo"));
+            user.setHeadImgUrl((String) claims.get("headImgUrl"));
+            user.setNickName((String) claims.get("nickName"));
+            user.setId((Integer) claims.get("id"));
+            user.setIsAdmin((String) claims.get("isAdmin"));
 //            String auth = (String) claims.get("authorities");
 //            Date date = claims.getExpiration();
 //            log.info(openid);
@@ -149,7 +157,21 @@ public class BaseController {
             }
 
         }
-        return openid;
+        return user;
+    }
+
+    /**
+     * 查询用户是否登陆，未登陆抛出异常
+     * @param request
+     * @return
+     * @throws BaseException
+     */
+    CustBindUsersEntity checkLoginForJWT(HttpServletRequest request) throws BaseException {
+        CustBindUsersEntity res = checkLoginForJWTSilence(request);
+        if(StringUtil.isNullOrEmpty(res.getUserNo())) {
+            throw new AuthException("not Binded!", "用户没有绑定");
+        }
+        return res;
     }
 
 	/**
