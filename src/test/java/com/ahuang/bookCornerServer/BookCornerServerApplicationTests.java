@@ -76,7 +76,7 @@ public class BookCornerServerApplicationTests extends BaseTest{
 //				.session(session) // 设置模拟session
 				.contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
 				.content(jsonStr.getBytes()))		// 设置报文参数
-		.andExpect(status().isOk())//判断返回200
+		.andExpect(status().is(500))//判断返回200
 		.andExpect(jsonPath("$._isException_").value("true"))//未登录用户无法进行绑定操作
 		.andExpect(jsonPath("$.code").value("not Login!"))//未登录用户无法进行绑定操作
 		.andDo(print()); // 打印测试过程
@@ -208,7 +208,7 @@ public class BookCornerServerApplicationTests extends BaseTest{
 				.session(session) // 设置模拟session
 				.contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
 				.content(jsonStr.getBytes()))		// 设置报文参数
-		.andExpect(status().isOk())//判断返回200
+		.andExpect(status().is(500))//判断返回200
 		.andExpect(jsonPath("$._isException_").value("true"))//已借阅图书不可重复借阅
 		.andDo(print()); // 打印测试过程
 	}
@@ -222,7 +222,7 @@ public class BookCornerServerApplicationTests extends BaseTest{
 				.session(session) // 设置模拟session
 				.contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
 				.content(jsonStr.getBytes()))		// 设置报文参数
-		.andExpect(status().isOk())//判断返回200
+		.andExpect(status().is(500))//判断返回200
 		.andExpect(jsonPath("$._isException_").value("true"))//已归还图书不可再次归还
 		.andDo(print()); // 打印测试过程
 	}

@@ -23,9 +23,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BaseTest {
-	protected MockMvc mockMvc;
-	protected MockHttpSession session;
-	protected ObjectMapper mapper;
+	MockMvc mockMvc;
+	MockHttpSession session;
+	private ObjectMapper mapper;
 	@Autowired
 	protected WebApplicationContext wac;
 	/**
@@ -34,7 +34,6 @@ public class BaseTest {
 	* @author ahuang  
 	* @date 2018年6月25日 下午10:52:41
 	* @version V1.0
-	* @throws
 	*/
 	@Before
 	public void setupMockMvc(){
@@ -57,36 +56,31 @@ public class BaseTest {
 	* @Description: 获取请求保文string
 	* @param method 方法名
 	* @param params 请求参数
-	* @return
 	* @throws JsonProcessingException String    返回类型
 	* @author ahuang  
 	* @date 2018年6月25日 下午10:53:38
 	* @version V1.0
-	* @throws
 	*/
-	public String getRequest(String method, Map<String, Object> params) throws JsonProcessingException {
-		Map<String, Object> request = new HashMap<String,  Object>();
-		Map<String, Object> header = new HashMap<String,  Object>();
+	String getRequest(String method, Map<String, Object> params) throws JsonProcessingException {
+		Map<String, Object> request = new HashMap<>();
+		Map<String, Object> header = new HashMap<>();
 		header.put("local", "zh_CN");
 		header.put("agent", "WEB15");
 		header.put("bfw-ctrl", "json");
 		request.put("method", method);
 		request.put("header", header);
 		request.put("params", params);
-		String result = mapper.writeValueAsString(request);
-		return result;
+		return mapper.writeValueAsString(request);
 	}
 	/**
 	* @Title: post
 	* @Description: 简化post
-	* @param str
 	* @return MockHttpServletRequestBuilder    返回类型
 	* @author ahuang  
 	* @date 2018年6月25日 下午11:07:21
 	* @version V1.0
-	* @throws
 	*/
-	public MockHttpServletRequestBuilder post(String str) {
+	MockHttpServletRequestBuilder post(String str) {
 		return MockMvcRequestBuilders.post(str);
 	}
 	/**
@@ -96,22 +90,19 @@ public class BaseTest {
 	* @author ahuang  
 	* @date 2018年6月25日 下午11:07:39
 	* @version V1.0
-	* @throws
 	*/
-	public StatusResultMatchers status() {
+	StatusResultMatchers status() {
 		return MockMvcResultMatchers.status();
 	}
 	/**
 	* @Title: jsonPath
 	* @Description: 简化jsonPath
-	* @param str
 	* @return JsonPathResultMatchers    返回类型
 	* @author ahuang  
 	* @date 2018年6月25日 下午11:08:53
 	* @version V1.0
-	* @throws
 	*/
-	public JsonPathResultMatchers jsonPath(String str) {
+	JsonPathResultMatchers jsonPath(String str) {
 		return MockMvcResultMatchers.jsonPath(str);
 	}
 	/**
@@ -121,9 +112,8 @@ public class BaseTest {
 	* @author ahuang  
 	* @date 2018年6月25日 下午11:09:02
 	* @version V1.0
-	* @throws
 	*/
-	public ResultHandler print() {
+	ResultHandler print() {
 		return MockMvcResultHandlers.print();
 	}
 }
