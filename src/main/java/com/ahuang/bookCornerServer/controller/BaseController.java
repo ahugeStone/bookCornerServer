@@ -1,26 +1,21 @@
 package com.ahuang.bookCornerServer.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.ahuang.bookCornerServer.bo.WXUser;
+import com.ahuang.bookCornerServer.controller.req.Response;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.AuthException;
-import io.jsonwebtoken.Claims;
+import com.ahuang.bookCornerServer.exception.BaseException;
+import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.util.JWTUtil;
+import com.ahuang.bookCornerServer.util.StringUtil;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ahuang.bookCornerServer.bo.WXUser;
-import com.ahuang.bookCornerServer.controller.req.Response;
-import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
-import com.ahuang.bookCornerServer.exception.BaseException;
-import com.ahuang.bookCornerServer.servise.CommonService;
-import com.ahuang.bookCornerServer.util.StringUtil;
-
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 
@@ -37,13 +32,6 @@ public class BaseController {
 	@Autowired
 	CommonService commonService;
 
-    /**
-    * jwt加密密钥
-    * @Author: ahuang
-    * @Date: 2018/7/7 下午9:34
-    */
-    @Value("${jwt.secret}")
-    String SECRET;
 	/**
      * 是否为调试模式（调试模式默认注入测试用户）
 	* @fieldName: debug
@@ -66,6 +54,12 @@ public class BaseController {
      */
     @Value("${test.openid}")
 	String testOpenid;
+
+    /**
+     * JWT加密密钥
+     */
+    @Value("${jwt.secret}")
+    String SECRET;
 
 	/**
 	 * 
@@ -113,32 +107,11 @@ public class BaseController {
     * @Author: ahuang
     * @Date: 2018/7/7 下午9:37
     */
-    CustBindUsersEntity checkLoginForJWTSilence(HttpServletRequest request) throws BaseException {
+    CustBindUsersEntity checkLoginForJWTSilence(HttpServletRequest request) {
         String tokenJWT = request.getHeader("Authorization");
-        CustBindUsersEntity user = new CustBindUsersEntity();
-        String openid = null;
-        String TOKEN_PREFIX = "Bearer";        // Token前缀
+        CustBindUsersEntity user = null;
         try{
-            Claims claims = Jwts.parser()
-                    // 验签
-                    .setSigningKey(SECRET)
-                    // 去掉 Bearer
-                    .parseClaimsJws(tokenJWT.replace(TOKEN_PREFIX, ""))
-                    .getBody();
-            // 获取token中信息
-            openid = claims.getSubject();
-            user.setOpenid(claims.getSubject());
-            user.setUserName((String) claims.get("userName"));
-            user.setUserNo((String) claims.get("userNo"));
-            user.setHeadImgUrl((String) claims.get("headImgUrl"));
-            user.setNickName((String) claims.get("nickName"));
-            user.setId((Integer) claims.get("id"));
-            user.setIsAdmin((String) claims.get("isAdmin"));
-//            String auth = (String) claims.get("authorities");
-//            Date date = claims.getExpiration();
-//            log.info(openid);
-//            log.info(auth);
-//            log.info(date.toString());
+            user = JWTUtil.getInfo(tokenJWT, SECRET);
         } catch( ExpiredJwtException exp ) {
             // 超时异常
             log.error("token.JWT.timeout");
@@ -146,14 +119,13 @@ public class BaseController {
             // 其他异常
             log.error("token.JWT.error");
         }
-        if(StringUtil.isNullOrEmpty(openid)) {
+        if(StringUtil.isNullOrEmpty(user)) {
             if(debug) {
-                // 如果jwt检测失败，但是为调试模式，则返回调试用户的openid
+                // 如果jwt检测失败，但是为调试模式，则返回调试用户
                 log.info("调试模式，校验成功");
-                openid = testOpenid;
+				user = commonService.getUserByOpenid(testOpenid);
             } else {
                 log.info("非调试模式，token解析失败");
-                throw new AuthException("not Login!", "没有登陆或登陆超时");
             }
 
         }
@@ -168,6 +140,9 @@ public class BaseController {
      */
     CustBindUsersEntity checkLoginForJWT(HttpServletRequest request) throws BaseException {
         CustBindUsersEntity res = checkLoginForJWTSilence(request);
+        if(StringUtil.isNullOrEmpty(res)) {
+            throw new AuthException("not Login!", "没有登陆或登陆超时");
+        }
         if(StringUtil.isNullOrEmpty(res.getUserNo())) {
             throw new AuthException("not Binded!", "用户没有绑定");
         }

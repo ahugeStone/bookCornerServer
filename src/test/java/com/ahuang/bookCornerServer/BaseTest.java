@@ -1,10 +1,13 @@
 package com.ahuang.bookCornerServer;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.ahuang.bookCornerServer.bo.WXUser;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import com.ahuang.bookCornerServer.util.JWTUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultHandler;
@@ -17,15 +20,34 @@ import org.springframework.test.web.servlet.result.StatusResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.ahuang.bookCornerServer.bo.WXUser;
-import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseTest {
 	MockMvc mockMvc;
 	MockHttpSession session;
 	private ObjectMapper mapper;
+	String tokenBinded;
+	String tokenNotBinded;
+
+    /**
+     * JWT加密密钥
+     */
+    @Value("${jwt.secret}")
+    String SECRET;
+
+    /**
+     * JWT超时时间
+     */
+    @Value("${jwt.expiration.time}")
+    long EXPIRATIONTIME;
+
+	/**
+	 * 测试openid
+	 */
+	@Value("${test.openid}")
+	String testOpenid;
+
 	@Autowired
 	protected WebApplicationContext wac;
 	/**
@@ -41,7 +63,7 @@ public class BaseTest {
 	    mapper = new ObjectMapper();
 	    session = new MockHttpSession();
 	    WXUser user = new WXUser();
-		String openid="oe0Ej0besxqth6muj72ZzfYGmMp0";
+		String openid=testOpenid;
 		user.setOpenid(openid);
 		session.setAttribute("user", user);
 		CustBindUsersEntity bindUser = new CustBindUsersEntity();
@@ -50,6 +72,8 @@ public class BaseTest {
 		bindUser.setUserNo("3693");
 		bindUser.setHeadImgUrl("");
 		session.setAttribute("bindUser", bindUser);
+		tokenBinded = JWTUtil.getToken(testOpenid, bindUser, SECRET, EXPIRATIONTIME);
+		tokenNotBinded = JWTUtil.getToken(testOpenid, null, SECRET, EXPIRATIONTIME);
 	}
 	/**
 	* @Title: getRequest
@@ -73,6 +97,16 @@ public class BaseTest {
 		return mapper.writeValueAsString(request);
 	}
 	/**
+	* 获取rest接口报文
+	* @params  [params]
+	* @return: java.lang.String
+	* @Author: ahuang
+	* @Date: 2018/7/11 下午8:29
+	*/
+	String getRestRequest(Map<String, Object> params) throws JsonProcessingException {
+        return mapper.writeValueAsString(params);
+    }
+	/**
 	* @Title: post
 	* @Description: 简化post
 	* @return MockHttpServletRequestBuilder    返回类型
@@ -83,6 +117,17 @@ public class BaseTest {
 	MockHttpServletRequestBuilder post(String str) {
 		return MockMvcRequestBuilders.post(str);
 	}
+
+	/**
+	* 简化get
+	* @params  [str]
+	* @return: org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+	* @Author: ahuang
+	* @Date: 2018/7/11 下午8:35
+	*/
+    MockHttpServletRequestBuilder get(String str) {
+        return MockMvcRequestBuilders.get(str);
+    }
 	/**
 	* @Title: status
 	* @Description: 简化status

@@ -8,9 +8,8 @@ import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.util.JWTUtil;
 import com.ahuang.bookCornerServer.util.StringUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +35,17 @@ import java.util.Map;
 @RestController
 @RequestMapping(path="/bookCorner/v1")
 public class BookRestController extends BaseController{
+    /**
+     * JWT加密密钥
+     */
+    @Value("${jwt.secret}")
+    protected String SECRET;
+
+    /**
+     * JWT超时时间
+     */
+    @Value("${jwt.expiration.time}")
+    protected long EXPIRATIONTIME;
 
     private final BookService bookService;
 
@@ -49,18 +58,6 @@ public class BookRestController extends BaseController{
     }
 
     /**
-     * JWT加密密钥
-     */
-    @Value("${jwt.secret}")
-    private String SECRET;
-
-    /**
-     * JWT超时时间
-     */
-    @Value("${jwt.expiration.time}")
-    private long EXPIRATIONTIME;
-
-    /**
     * 查询用户是否绑定，如果绑定返回jwt的token
     * @params  [code] 腾讯oauth的code
     * @return: java.util.Map<java.lang.String,java.lang.Object>
@@ -68,57 +65,44 @@ public class BookRestController extends BaseController{
     * @Date: 2018/7/8 下午10:27
     */
     @RequestMapping(path="/token",method = { RequestMethod.GET })
-    public Map<String, Object> CustQueryIsBinded(@RequestParam("code") String code) throws BaseException {
-        String openid = commonService.getOpenidByCode(code);
-        if(StringUtil.isNullOrEmpty(openid)) {
-            if(test) {
-                // 测试模式如果openid查询失败，直接赋予测试用户的openid
-                openid = testOpenid;
-            } else {
-                //否则说明登陆失败
-                throw new AuthException("login.failed", "小程序登陆校验失败");
-            }
-        }
-        // 根据openid查询用户绑定信息
-        CustBindUsersEntity bindUser = commonService.getUserByOpenid(openid);
+    public Map<String, Object> CustQueryIsBinded(@RequestParam("code") String code, HttpServletRequest request) throws BaseException {
+        CustBindUsersEntity bindUser = checkLoginForJWTSilence(request);// 获取JWT中用户信息
+        String openid = null;
         // 拼接返回报文
         Map<String, Object> res = new HashMap<>();
-        res.put("isBinded", "0");//默认未绑定
-        if(!StringUtil.isNullOrEmpty(bindUser)) {
-            res.put("isBinded", "1");//已绑定
-//			res.put("openid", openid);
-            res.put("userNo", bindUser.getUserNo());
-            res.put("userName", bindUser.getUserName());
 
-            String tokenJWT = Jwts.builder() //生成token
-                    // 保存用户信息
-//                    .claim("authorities", "ROLE_ADMIN,AUTH_WRITE")
-                    .claim("id", bindUser.getId())
-                    .claim("userNo", bindUser.getUserNo())
-                    .claim("userName", bindUser.getUserName())
-                    .claim("nickName", bindUser.getNickName())
-                    .claim("headImgUrl", bindUser.getHeadImgUrl())
-                    .claim("isAdmin", bindUser.getIsAdmin())
-                    // 用户openid写入标题
-                    .setSubject(openid)
-                    // 有效期设置
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
-                    // 签名设置
-                    .signWith(SignatureAlgorithm.HS512, SECRET)
-                    .compact();
-            res.put("token", tokenJWT);
-        } else {
-            log.info("OPENID:" + openid + "未绑定！");
-            String tokenJWT = Jwts.builder() //生成token
-                    // 保存用户信息
-                    // 用户openid写入标题
-                    .setSubject(openid)
-                    // 有效期设置
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
-                    // 签名设置
-                    .signWith(SignatureAlgorithm.HS512, SECRET)
-                    .compact();
-            res.put("token", tokenJWT);
+        switch (JWTUtil.getLoginStatus(bindUser)) {// 判断登陆状态
+            case NotLogin:
+                openid = commonService.getOpenidByCode(code);
+                if (StringUtil.isNullOrEmpty(openid)) {
+                    if (test) {
+                        // 测试模式如果openid查询失败，直接赋予测试用户的openid
+                        openid = testOpenid;
+                    } else {
+                        //否则说明登陆失败
+                        throw new AuthException("login.failed", "小程序登陆校验失败");
+                    }
+                }
+                // 根据openid查询用户绑定信息
+                bindUser = commonService.getUserByOpenid(openid);
+            case LoginWithoutBinded:
+                if(StringUtil.isNullOrEmpty(bindUser) || StringUtil.isNullOrEmpty(bindUser.getUserNo())) {
+                    log.info("OPENID:" + openid + "未绑定！");
+                    String tokenJWT = JWTUtil.getToken(openid, null, SECRET, EXPIRATIONTIME);
+                    res.put("isBinded", "0");//默认未绑定
+                    res.put("token", tokenJWT);
+                    return res;
+                }
+            case LoginAndBinded:
+                res.put("isBinded", "1");//已绑定
+                res.put("userNo", bindUser.getUserNo());
+                res.put("userName", bindUser.getUserName());
+
+                String tokenJWT = JWTUtil.getToken(openid, bindUser, SECRET, EXPIRATIONTIME);
+                res.put("token", tokenJWT);
+                break;
+            default:
+                break;
         }
 
         return res;
@@ -277,22 +261,7 @@ public class BookRestController extends BaseController{
         } else {
             log.info("该用户已经绑定，openid:" + user.getOpenid());
         }
-        String tokenJWT = Jwts.builder() //生成token
-                // 保存用户信息
-//                    .claim("authorities", "ROLE_ADMIN,AUTH_WRITE")
-                .claim("id", bindUser.getId())
-                .claim("userNo", bindUser.getUserNo())
-                .claim("userName", bindUser.getUserName())
-                .claim("nickName", bindUser.getNickName())
-                .claim("headImgUrl", bindUser.getHeadImgUrl())
-                .claim("isAdmin", bindUser.getIsAdmin())
-                // 用户openid写入标题
-                .setSubject(user.getOpenid())
-                // 有效期设置
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
-                // 签名设置
-                .signWith(SignatureAlgorithm.HS512, SECRET)
-                .compact();
+        String tokenJWT = JWTUtil.getToken(user.getOpenid(), bindUser, SECRET, EXPIRATIONTIME);
         res.put("token", tokenJWT);
         res.put("isBinded", "1");//已绑定
 //			res.put("openid", openid);
