@@ -8,8 +8,11 @@ import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.util.BookActions;
 import com.ahuang.bookCornerServer.util.JWTUtil;
+import com.ahuang.bookCornerServer.util.LoginStatus;
 import com.ahuang.bookCornerServer.util.StringUtil;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -203,14 +206,17 @@ public class BookRestController extends BaseController{
     public void custHandleBook(@PathVariable Integer bookId, @RequestParam("action") String action,
                                HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWT(request);
-        if("borrow".equals(action)) {//借阅图书
-            log.debug("borrow");
+        if(BookActions.BORROW.toString().equals(action)) {//借阅图书
+            log.debug(BookActions.BORROW.toString());
             bookService.borrowBookById(bookId, user.getOpenid());
-        } else if("return".equals(action)) {//归还图书
-            log.debug("return");
+        } else if(BookActions.RETURN.toString().equals(action)) {//归还图书
+            log.debug(BookActions.RETURN.toString());
             bookService.returnBookById(bookId, user.getOpenid());
-        } else if("thumbup".equals(action)) {//图书点赞
+        } else if(BookActions.THUMBUP.toString().equals(action)) {//图书点赞
+            log.debug(BookActions.THUMBUP.toString());
             bookService.addBookLikedRecord(bookId, user.getOpenid());
+        } else {
+            throw new BaseException("not.defined.action:" + action, "未知的图书操作");
         }
 
     }
@@ -242,25 +248,35 @@ public class BookRestController extends BaseController{
     * @Date: 2018/7/9 下午10:58
     */
     @RequestMapping(path="users/{userNo}", method = { RequestMethod.POST })
-    public Map custBind(@PathVariable("userNo") String userNo, CustBindRequest req, HttpServletRequest request) throws BaseException {
+    public Map custBind(@PathVariable("userNo") String userNo, @Valid CustBindRequest req, HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWTSilence(request);
-        CustBindUsersEntity bindUser = commonService.getUserByOpenid(user.getOpenid());
+        LoginStatus status = JWTUtil.getLoginStatus(user);
+        CustBindUsersEntity bindUser = null;
         // 拼接返回报文
         Map<String, Object> res = new HashMap<>();
-        if(StringUtil.isNullOrEmpty(bindUser)) {
-            // 如果库中没有绑定记录，说明用户需要绑定
-            bindUser = new CustBindUsersEntity();
-            bindUser.setOpenid(user.getOpenid());
-            bindUser.setUserName(req.getUserName());
-            bindUser.setHeadImgUrl(req.getHeadImgUrl());
-            bindUser.setUserNo(userNo);
-            bindUser.setNickName(req.getNickName());
-            commonService.custUserBind(bindUser);
-            log.debug("绑定成功openid:" + user.getOpenid() + ",生成token");
-
+        if(LoginStatus.LoginAndBinded.equals(status)) {
+            bindUser = user;
+            log.info("该用户已经成功登陆，openid:" + user.getOpenid());
+        } else if(LoginStatus.LoginWithoutBinded.equals(status)) {
+            bindUser = commonService.getUserByOpenid(user.getOpenid());
+            if(StringUtil.isNullOrEmpty(bindUser)) {
+                // 如果库中没有绑定记录，说明用户需要绑定
+                bindUser = new CustBindUsersEntity();
+                bindUser.setOpenid(user.getOpenid());
+                bindUser.setUserName(req.getUserName());
+                bindUser.setHeadImgUrl(req.getHeadImgUrl());
+                bindUser.setUserNo(userNo);
+                bindUser.setNickName(req.getNickName());
+                commonService.custUserBind(bindUser);
+                log.debug("绑定成功openid:" + user.getOpenid() + ",生成token");
+            } else {
+                log.info("该用户已经绑定，openid:" + user.getOpenid());
+            }
         } else {
-            log.info("该用户已经绑定，openid:" + user.getOpenid());
+            log.error("用户未登陆，无法获取openid");
+            throw new AuthException("not.login", "用户未登陆");
         }
+        // 生成新的token
         String tokenJWT = JWTUtil.getToken(user.getOpenid(), bindUser, SECRET, EXPIRATIONTIME);
         res.put("token", tokenJWT);
         res.put("isBinded", "1");//已绑定

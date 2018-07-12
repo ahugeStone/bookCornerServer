@@ -3,6 +3,7 @@ package com.ahuang.bookCornerServer;
 import com.ahuang.bookCornerServer.exception.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,7 @@ public class ExceptionAdvice {
 		res.setCode(e.getMessage());
 		res.setType(Exception.class.getName());
 		log.debug("out handleException");
-        return new ResponseEntity<CommonResponse<?>>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -47,7 +48,7 @@ public class ExceptionAdvice {
 		res.setCode(e.getCode());
 		res.setType(BaseException.class.getName());
 		log.debug("out handleBaseException");
-        return new ResponseEntity<CommonResponse<?>>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -67,7 +68,7 @@ public class ExceptionAdvice {
         res.setCode(e.getCode());
         res.setType(AuthException.class.getName());
         log.debug("out handleAuthException");
-        return new ResponseEntity<CommonResponse<?>>(res, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(res, HttpStatus.FORBIDDEN);
     }
 
     /**
@@ -86,6 +87,18 @@ public class ExceptionAdvice {
 		res.setCode(e.getBindingResult().getFieldError().getCode());
 		res.setType(MethodArgumentNotValidException.class.getName());
 		log.debug("out handleMethodArgumentNotValidException");
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<CommonResponse<?>> handleMethodArgumentNotValidException(BindException e) {
+        log.debug("into handleMethodArgumentNotValidException");
+        e.printStackTrace();
+        CommonResponse<?> res = new CommonResponse<>(true);
+        res.setMessage(e.getBindingResult().getFieldError().getField() + ":" + e.getBindingResult().getFieldError().getDefaultMessage());
+        res.setCode(e.getBindingResult().getFieldError().getCode());
+        res.setType(BindException.class.getName());
+        log.debug("out handleMethodArgumentNotValidException");
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 }

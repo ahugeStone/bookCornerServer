@@ -5,6 +5,7 @@ import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.util.JWTUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class BaseTest {
 	MockMvc mockMvc;
 	MockHttpSession session;
@@ -73,7 +75,9 @@ public class BaseTest {
 		bindUser.setHeadImgUrl("");
 		session.setAttribute("bindUser", bindUser);
 		tokenBinded = JWTUtil.getToken(testOpenid, bindUser, SECRET, EXPIRATIONTIME);
-		tokenNotBinded = JWTUtil.getToken(testOpenid, null, SECRET, EXPIRATIONTIME);
+		log.info("tokenBinded:" + tokenBinded);
+		tokenNotBinded = JWTUtil.getToken(testOpenid + "1", null, SECRET, EXPIRATIONTIME);
+        log.info("tokenNotBinded:" + tokenNotBinded);
 	}
 	/**
 	* @Title: getRequest

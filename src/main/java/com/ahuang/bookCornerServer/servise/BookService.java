@@ -30,7 +30,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	 */
-	public PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
+	PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
 
 	/**
 	* @Title: queryBookById
@@ -42,7 +42,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public BookBaseInfoEntity queryBookById(Map<String, Object> param);
+	BookBaseInfoEntity queryBookById(Map<String, Object> param);
 
 	/**
 	* @Title: queryBookDetailById
@@ -54,7 +54,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
+	BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
 
 	/**
 	* @Title: queryCommentList
@@ -66,7 +66,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public List<BookCommentRecordEntity> queryCommentList(Integer bookId); 
+	List<BookCommentRecordEntity> queryCommentList(Integer bookId);
 	
 	/**
 	 * @throws BaseException 
@@ -78,7 +78,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public void borrowBookById(Integer bookId, String openid) throws BaseException;
+	void borrowBookById(Integer bookId, String openid) throws BaseException;
 
 	/**
 	 * @throws BaseException 
@@ -91,7 +91,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public void returnBookById(Integer bookId, String openid) throws BaseException;
+	void returnBookById(Integer bookId, String openid) throws BaseException;
 
 	/**
 	 * @throws Exception 
@@ -104,7 +104,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception;
+	List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception;
 
 	/**
 	* @Title: queryBookBorrowHistoryByBookId
@@ -116,7 +116,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId);
+	List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId);
 
 	/**
      * 用户点赞图书
@@ -128,7 +128,7 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public void addBookLikedRecord(Integer bookId, String openid);
+	void addBookLikedRecord(Integer bookId, String openid);
 
 	/**
 	 * 添加图书评论
@@ -142,5 +142,5 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	public void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException;
+	void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException;
 }
