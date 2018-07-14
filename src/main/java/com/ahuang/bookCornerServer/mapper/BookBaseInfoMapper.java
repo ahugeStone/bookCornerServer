@@ -86,6 +86,7 @@ public interface BookBaseInfoMapper{
 	@Select( "<script>"
 	+  "select " + SELECT_FIELDS + " from  " + TABLE_NAEM 
 	+ BOOK_LIST_WHERE
+    + "order by bookId desc "
 	+ "<if test='num!=null and pageSize != null '>"
 	+ "  limit #{num}, #{pageSize}"
 	+ "</if>"  

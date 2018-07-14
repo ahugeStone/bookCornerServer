@@ -79,6 +79,7 @@ public class CommonServiceImpl implements CommonService {
 		} else if(!user.getUserName().equals(cuser.getUserName())) {
 			throw new BaseException("user.name.not.match", "该用户绑定信息有误");
 		}
+
 		Integer count = custBindUsersMapper.insertUserInfo(user);
 		if(count != 1) {
 			throw new BaseException("user.cant.add", "该用户绑定失败");
