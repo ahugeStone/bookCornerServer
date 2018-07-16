@@ -1,24 +1,17 @@
 package com.ahuang.bookCornerServer;
 
-import java.io.IOException;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import com.ahuang.bookCornerServer.util.JWTUtil;
+import com.ahuang.bookCornerServer.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.logging.MDC;
+import org.springframework.beans.factory.annotation.Value;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.jboss.logging.MDC;
-
-import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
-import com.ahuang.bookCornerServer.util.StringUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @WebFilter(filterName="ControllerFilter",urlPatterns="/*")
@@ -29,13 +22,27 @@ public class ControllerFilter implements Filter{
 		log.info("过滤器销毁");
 	}
 
+    /**
+     * JWT加密密钥
+     */
+    @Value("${jwt.secret}")
+    protected String SECRET;
+
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
-			throws IOException, ServletException {
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response= (HttpServletResponse) servletResponse;
+        String token = request.getHeader("Authorization");
+        log.debug("token:" + token);
         HttpSession session = request.getSession();
+        // 老版本通过session获取用户信息
         CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+        try {
+            // 新版本通过token获取用户信息
+            bindUser = JWTUtil.getInfo(token, SECRET);
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
+        }
         String userName = "";
         if(!StringUtil.isNullOrEmpty(bindUser)) {
         	userName = bindUser.getUserName();
@@ -56,7 +63,7 @@ public class ControllerFilter implements Filter{
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {
+	public void init(FilterConfig arg0) {
 		log.info("过滤器初始化");
 	}
 
