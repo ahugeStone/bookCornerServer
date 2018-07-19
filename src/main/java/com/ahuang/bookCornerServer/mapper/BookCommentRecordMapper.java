@@ -13,16 +13,31 @@ import org.springframework.stereotype.Service;
 public interface BookCommentRecordMapper {
 	String COMMENT_RECORD_NAME = " BOOK_COMMENTRECORD c";
 	String COMMENT_RECORD_FIELDS=" id, bookId, openid, headImgUrl, userName, comment, recTime ";
-	
+
+	/**
+	* 查询特定图书的所有评论
+	* @params  [bookId]
+	* @return: java.util.List<com.ahuang.bookCornerServer.entity.BookCommentRecordEntity>
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:17
+	*/
 	@Select("Select " + COMMENT_RECORD_FIELDS + " from " + COMMENT_RECORD_NAME
 			+ " where bookId=#{bookId} ")
-	public List<BookCommentRecordEntity> queryCommentList(@Param("bookId") Integer bookId);
-	
+	List<BookCommentRecordEntity> queryCommentList(@Param("bookId") Integer bookId);
+
+	/**
+	* 插入用户的图书评论
+	* @params  [entity]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:17
+	*/
 	@Insert("Insert into BOOK_COMMENTRECORD(bookId, openid, headImgUrl, userName, comment, recTime) "
 			+ "values(#{bookId}, #{openid}, #{headImgUrl}, #{userName}, #{comment}, SYSDATE())")
-	public Integer insertCommentRecord(BookCommentRecordEntity entity);
+	Integer insertCommentRecord(BookCommentRecordEntity entity);
 	
 	/**
+	 * 查询用户是否评论过该图书
 	* @Title: queryCommentById
 	* @Description: 查询用户是否评论过该图书
 	* @param bookId
@@ -35,5 +50,5 @@ public interface BookCommentRecordMapper {
 	*/
 	@Select("Select "  + COMMENT_RECORD_FIELDS + " from " + COMMENT_RECORD_NAME
 			+ " where bookId=#{bookId} and openid=#{openid} limit 1")
-	public BookCommentRecordEntity queryCommentById(@Param("bookId") Integer bookId, @Param("openid") String openid);
+	BookCommentRecordEntity queryCommentById(@Param("bookId") Integer bookId, @Param("openid") String openid);
 }

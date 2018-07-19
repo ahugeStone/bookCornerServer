@@ -1,5 +1,8 @@
 package com.ahuang.bookCornerServer.util;
 
+/**
+ * 图书可选操作
+ */
 public enum BookActions {
     /**
      * 借阅

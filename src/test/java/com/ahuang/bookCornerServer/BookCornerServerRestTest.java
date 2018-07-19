@@ -8,10 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * rest接口自动化测试
@@ -109,7 +105,7 @@ public class BookCornerServerRestTest  extends BaseTest{
     */ 
     @Test
     public void custQueryBookListFirstPage() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(get("/bookCorner/v1/books")
+        this.mockMvc.perform(get("/bookCorner/v1/books")
                         .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
                         .header("Authorization", "Bearer " + tokenBinded)
                         .param("num", "1") // 设置报文参数
@@ -134,7 +130,7 @@ public class BookCornerServerRestTest  extends BaseTest{
     */
     @Test
     public void custQueryBookDetail() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(get("/bookCorner/v1/books/1")
+        this.mockMvc.perform(get("/bookCorner/v1/books/1")
                 .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
                 .header("Authorization", "Bearer " + tokenBinded)
         )
@@ -154,7 +150,7 @@ public class BookCornerServerRestTest  extends BaseTest{
     */
     @Test
     public void custQueryBookCommentHistory() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(get("/bookCorner/v1/books/1/comments")
+        this.mockMvc.perform(get("/bookCorner/v1/books/1/comments")
                 .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
                 .header("Authorization", "Bearer " + tokenBinded)
         )
@@ -175,7 +171,7 @@ public class BookCornerServerRestTest  extends BaseTest{
     */
     @Test
     public void custCommentBook() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(post("/bookCorner/v1/books/1/comments")
+        this.mockMvc.perform(post("/bookCorner/v1/books/1/comments")
                 .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
                 .header("Authorization", "Bearer " + tokenBinded)
                 .param("comment", "测试评论test123😄") // 设置报文参数
@@ -194,7 +190,7 @@ public class BookCornerServerRestTest  extends BaseTest{
     */
     @Test
     public void custQueryBookBorrowHistory() throws Exception {
-        ResultActions resultActions = this.mockMvc.perform(get("/bookCorner/v1/books/1/history")
+        this.mockMvc.perform(get("/bookCorner/v1/books/1/history")
                 .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
                 .header("Authorization", "Bearer " + tokenBinded)
         )

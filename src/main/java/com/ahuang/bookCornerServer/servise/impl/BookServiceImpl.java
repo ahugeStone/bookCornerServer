@@ -85,6 +85,7 @@ public class BookServiceImpl implements BookService {
 		BookBaseInfoEntity bo = bookBaseInfoMapper.queryById(id);
         BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(id, openid);
 		if(!StringUtil.isNullOrEmpty(bo)) {
+			// 判断当前图书是否正被当前用户借阅中
 			if(null == isBorrowed || null == isBorrowed.getBorrowStatus()) {
 				bo.setIsBorrowed("0");
 			} else {

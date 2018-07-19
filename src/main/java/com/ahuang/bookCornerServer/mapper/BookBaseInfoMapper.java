@@ -1,18 +1,11 @@
 package com.ahuang.bookCornerServer.mapper;
 
-import org.springframework.data.domain.Pageable;
+import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.data.domain.Page;
-
-import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -23,14 +16,11 @@ import org.springframework.stereotype.Service;
 * @version V1.00
  */
 @Service
-@CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) 
+@CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) // 使用应用缓存
 public interface BookBaseInfoMapper{
 	String TABLE_NAEM = " BOOK_BASEINFO b ";
-	String BOOK_BASEINFO_NAME = " BOOK_BASEINFO b ";
 	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, "
 			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";
-	String BORROW_RECORD_NAME = " BOOK_BORROWRECORD r ";
-	String BORROW_RECORD_FIELDS = "borrowStatus";
 	String BOOK_LIST_WHERE = "<where>"
 			+ "<if test='bookName!=null and bookName!=\"\"'>"
 			+ "<bind name=\"pattern\" value=\"'%' + bookName + '%'\" />" 
@@ -43,9 +33,16 @@ public interface BookBaseInfoMapper{
 			+ "and bookStatus = #{bookStatus}"
 			+ "</if>"
 		+"</where>";
-	
+
+	/**
+	* 查询图书基本信息
+	* @params  [id]
+	* @return: com.ahuang.bookCornerServer.entity.BookBaseInfoEntity
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午8:59
+	*/
 	@Select("Select " + SELECT_FIELDS + " from " + TABLE_NAEM + " where bookId=#{id}")
-	public BookBaseInfoEntity queryById(Integer id);
+	BookBaseInfoEntity queryById(Integer id);
 	
 //	@Select("Select b.bookId bookId, b.bookName bookName, b.bookWriter bookWriter, b.bookBrief bookBrief, " 
 //			+  "b.bookType bookType, b.bookStatus bookStatus, b.bookSource bookSource, b.bookBuyer bookBuyer, " 
@@ -60,29 +57,68 @@ public interface BookBaseInfoMapper{
 //        @Result(property = "isBorrowed",  column = "borrowStatus"),
 //    })
 //	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
-	
-	@Select("Select " + BORROW_RECORD_FIELDS + " from " + BORROW_RECORD_NAME 
-			+ " where bookId=#{id} "
-			+ "and openid=#{openid} order by borrowTime desc limit 1")
-	public String queryBookBorrowStatus(Map<String, Object> param);
-	
+
+//	/**
+//	*
+//	* @params  [param]
+//	* @return: java.lang.String
+//	* @Author: ahuang
+//	* @Date: 2018/7/19 下午8:59
+//	*/
+//	@Select("Select " + BORROW_RECORD_FIELDS + " from " + BORROW_RECORD_NAME
+//			+ " where bookId=#{id} "
+//			+ "and openid=#{openid} order by borrowTime desc limit 1")
+//	String queryBookBorrowStatus(Map<String, Object> param);
+
+    /**
+    * 更新图书借阅状态
+    * @params  [bookId, bookStatus]
+    * @return: java.lang.Integer
+    * @Author: ahuang
+    * @Date: 2018/7/19 下午9:02
+    */
 	@Update("Update "+TABLE_NAEM+" set bookStatus=#{bookStatus} where bookId=#{bookId}")
-	public Integer updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
-	
+	Integer updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
+
+	/**
+	* 查询图书列表
+	* @params  []
+	* @return: java.util.List<com.ahuang.bookCornerServer.entity.BookBaseInfoEntity>
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:12
+	*/
 	@Select("Select " + SELECT_FIELDS + " from BOOK_BASEINFO")
-	public List<BookBaseInfoEntity> queryBookList();
-	
-	@Select("select " + SELECT_FIELDS + " from  " + TABLE_NAEM )
-    public Page<BookBaseInfoEntity> queryBookListPages(Pageable pageable);
-	
+	List<BookBaseInfoEntity> queryBookList();
+
+	/**
+	* 为特定图书点赞
+	* @params  [bookId]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:14
+	*/
 	@Update("Update " + TABLE_NAEM + "  set bookLikeNum=bookLikeNum+1 "
 			+ " where bookId=#{bookId}")
-	public Integer updateBookLikeNumByOne(Integer bookId);
-	
+	Integer updateBookLikeNumByOne(Integer bookId);
+
+	/**
+	* 为特定图书增加评论数
+	* @params  [bookId]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:14
+	*/
 	@Update("Update " + TABLE_NAEM + "  set bookCommentNum=bookCommentNum+1 "
 			+ " where bookId=#{bookId}")
-	public Integer updateBookCommentNumByOne(Integer bookId);
-	
+	Integer updateBookCommentNumByOne(Integer bookId);
+
+	/**
+	* 查询图书列表（分页）
+	* @params  [param]
+	* @return: java.util.List<com.ahuang.bookCornerServer.entity.BookBaseInfoEntity>
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:14
+	*/
 	@Select( "<script>"
 	+  "select " + SELECT_FIELDS + " from  " + TABLE_NAEM 
 	+ BOOK_LIST_WHERE
@@ -94,14 +130,21 @@ public interface BookBaseInfoMapper{
 	+ "  limit 0, #{pageSize}"
 	+ "</if>"  
 	+ "</script>")
-	@Options(useCache=true)
-    public List<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
-	
+//	@Options(useCache=true)
+    List<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
+
+	/**
+	* 查询图书总数
+	* @params  [param]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/7/19 下午9:15
+	*/
 	@Select("<script>"
 			+ "select count(1) from " + TABLE_NAEM
 			+ BOOK_LIST_WHERE
 		+ "</script>")
-	@Options(useCache=true)
-	public Integer queryBookInfoNum(Map<String, Object> param);
+//	@Options(useCache=true)
+	Integer queryBookInfoNum(Map<String, Object> param);
 	
 }

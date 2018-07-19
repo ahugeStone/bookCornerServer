@@ -12,7 +12,6 @@ import com.ahuang.bookCornerServer.util.BookActions;
 import com.ahuang.bookCornerServer.util.JWTUtil;
 import com.ahuang.bookCornerServer.util.LoginStatus;
 import com.ahuang.bookCornerServer.util.StringUtil;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -251,7 +250,7 @@ public class BookRestController extends BaseController{
     public Map custBind(@PathVariable("userNo") String userNo, @Valid CustBindRequest req, HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWTSilence(request);
         LoginStatus status = JWTUtil.getLoginStatus(user);
-        CustBindUsersEntity bindUser = null;
+        CustBindUsersEntity bindUser;
         // 拼接返回报文
         Map<String, Object> res = new HashMap<>();
         if(LoginStatus.LoginAndBinded.equals(status)) {

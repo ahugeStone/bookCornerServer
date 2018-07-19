@@ -12,6 +12,7 @@ public interface CustUsersMapper {
 	String SELECT_FIELDS = " userNo, userName ";
 	
 	/**
+	 * 查询用户是否可以绑定
 	* @Title: queryByUserNo
 	* @Description: 查询用户是否可以绑定
 	* @param userNo

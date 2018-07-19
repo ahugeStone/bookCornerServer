@@ -19,7 +19,7 @@ import com.ahuang.bookCornerServer.exception.BaseException;
  */
 public interface BookService {
 	/**
-	 * 
+	 * 查询图书，返回分页的结果
 	* @Title: queryBookListPage
 	* @Description: 查询图书，返回分页的结果
 	* @param @param param
@@ -33,6 +33,7 @@ public interface BookService {
 	PageList<BookBaseInfoEntity> queryBookListPage(Map<String, Object> param);
 
 	/**
+	 * 根据bookid查看图书详情
 	* @Title: queryBookById
 	* @Description: 根据bookid查看图书详情
 	* @param param
@@ -45,6 +46,7 @@ public interface BookService {
 	BookBaseInfoEntity queryBookById(Map<String, Object> param);
 
 	/**
+     * 根据bookid查看图书详情，包括本人是否正在借阅中
 	* @Title: queryBookDetailById
 	* @Description: 根据bookid查看图书详情，包括本人是否正在借阅中
 	* @param param
@@ -57,6 +59,7 @@ public interface BookService {
 	BookBaseInfoEntity queryBookDetailById(Map<String, Object> param);
 
 	/**
+     * 查询评论列表
 	* @Title: queryCommentList
 	* @Description: 查询评论列表
 	* @param bookId
@@ -69,6 +72,7 @@ public interface BookService {
 	List<BookCommentRecordEntity> queryCommentList(Integer bookId);
 	
 	/**
+     * 根据bookId借阅图书
 	 * @throws BaseException 
 	* @Title: borrowBookById
 	* @Description: 根据bookId借阅图书
@@ -81,6 +85,7 @@ public interface BookService {
 	void borrowBookById(Integer bookId, String openid) throws BaseException;
 
 	/**
+     * 根据bookid归还图书
 	 * @throws BaseException 
 	* @Title: returnBookById
 	* @Description: 根据bookid归还图书
@@ -94,6 +99,7 @@ public interface BookService {
 	void returnBookById(Integer bookId, String openid) throws BaseException;
 
 	/**
+     * 查询特定用户的借阅历史
 	 * @throws Exception 
 	* @Title: queryBookBorrowByOpenid
 	* @Description: 查询特定用户的借阅历史
@@ -107,6 +113,7 @@ public interface BookService {
 	List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception;
 
 	/**
+    * 查询特定图书的被借阅记录
 	* @Title: queryBookBorrowHistoryByBookId
 	* @Description: 查询特定图书的被借阅记录
 	* @param bookId

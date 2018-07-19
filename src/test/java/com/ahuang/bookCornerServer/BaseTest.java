@@ -100,16 +100,7 @@ public class BaseTest {
 		request.put("params", params);
 		return mapper.writeValueAsString(request);
 	}
-	/**
-	* 获取rest接口报文
-	* @params  [params]
-	* @return: java.lang.String
-	* @Author: ahuang
-	* @Date: 2018/7/11 下午8:29
-	*/
-	String getRestRequest(Map<String, Object> params) throws JsonProcessingException {
-        return mapper.writeValueAsString(params);
-    }
+
 	/**
 	* @Title: post
 	* @Description: 简化post

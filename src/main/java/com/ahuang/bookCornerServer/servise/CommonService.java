@@ -25,7 +25,7 @@ public interface CommonService {
 	* @version V1.0
 	* @throws
 	 */
-	public String getOpenidByCode(String code);
+	String getOpenidByCode(String code);
 	/**
 	* @Title: getUserByOpenid
 	* @Description: 根据openid获取绑定用户信息
@@ -36,7 +36,7 @@ public interface CommonService {
 	* @version V1.0
 	* @throws
 	*/
-	public CustBindUsersEntity getUserByOpenid(String openid);
+	CustBindUsersEntity getUserByOpenid(String openid);
 	
 	/**
 	* @Title: custUserBind
@@ -48,7 +48,7 @@ public interface CommonService {
 	* @version V1.0
 	* @throws
 	*/
-	public void custUserBind(CustBindUsersEntity user) throws BaseException;
+	void custUserBind(CustBindUsersEntity user) throws BaseException;
 	
 	
 }
