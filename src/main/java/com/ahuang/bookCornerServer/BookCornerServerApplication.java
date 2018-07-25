@@ -4,8 +4,10 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @ServletComponentScan
+@EnableScheduling
 @SpringBootApplication(scanBasePackages="com.ahuang.bookCornerServer")
 @MapperScan("com.ahuang.bookCornerServer.mapper")
 public class BookCornerServerApplication {

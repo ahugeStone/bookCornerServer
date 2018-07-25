@@ -25,13 +25,19 @@ import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 
-
+/**@RestController ： 组合注解，spring 4之后新加的注解，相当于@Controller和@ResponseBody配合使用
+ @Controller ： 处理http请求
+ @RequestMapping ： 配置URL映射
+ **/
 @RestController
 //@RequestMapping(path="/bookCorner", produces="application/json;charset=UTF-8")
 @RequestMapping(path="/bookCorner")
 public class BookController  extends BaseController{
 	private final BookService bookService;
 
+	/**
+     * 自动配置
+	 **/
     @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
