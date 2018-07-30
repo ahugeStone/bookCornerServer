@@ -470,4 +470,28 @@ public class BookCornerServerRestTest  extends BaseTest{
                 .andExpect(jsonPath("$.userName").isString())
         ;
     }
+
+
+    // 公告栏
+
+    @Test
+    public void messageInfoQuery() throws Exception {
+        this.mockMvc.perform(get("/bookCorner/v1/messages")
+                .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
+                .header("Authorization", "Bearer " + tokenBinded)
+                .param("num", "2")
+        )
+                .andDo(print())// 打印测试过程
+                .andExpect(status().isOk())//判断返回200
+                .andExpect(jsonPath("$.messageList").isArray())
+                .andExpect(jsonPath("$.messageList[0].id").isNumber())
+                .andExpect(jsonPath("$.messageList[0].operationType").isString())
+                .andExpect(jsonPath("$.messageList[0].operationContent").isString())
+                .andExpect(jsonPath("$.messageList[0].operationTime").isString())
+                .andExpect(jsonPath("$.messageList[0].userName").isString())
+                .andExpect(jsonPath("$.messageList[0].bookId").isNumber())
+                .andExpect(jsonPath("$.messageList[0].bookName").isString())
+        ;
+    }
+
 }

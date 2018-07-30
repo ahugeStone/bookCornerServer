@@ -8,6 +8,7 @@ import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
+import com.ahuang.bookCornerServer.servise.MessageService;
 import com.ahuang.bookCornerServer.util.BookActions;
 import com.ahuang.bookCornerServer.util.JWTUtil;
 import com.ahuang.bookCornerServer.util.LoginStatus;
@@ -52,11 +53,13 @@ public class BookRestController extends BaseController{
     private final BookService bookService;
 
     private final CommonService commonService;
+    private final MessageService messageService;
 
     @Autowired
-    public BookRestController(BookService bookService, CommonService commonService) {
+    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
         this.bookService = bookService;
         this.commonService = commonService;
+        this.messageService = messageService;
     }
 
     /**
@@ -283,5 +286,20 @@ public class BookRestController extends BaseController{
         res.put("userNo", bindUser.getUserNo());
         res.put("userName", bindUser.getUserName());
         return res;
+    }
+    /**
+     * 查询首页公告栏信息
+     * @params  []
+     * @return: java.util.Map
+     * @Author: lct
+     * @Date: 2018/7/26 上午11:55
+     */
+    @RequestMapping(path="/messages",method = { RequestMethod.GET })
+    public Map messageInfoQuery(@RequestParam("num") Integer num, HttpServletRequest request) throws BaseException {
+        checkLoginForJWT(request);
+        Map<String, Object> result = new HashMap<>();
+        result.put("messageList", messageService.queryMessageList(num));
+
+        return result;
     }
 }

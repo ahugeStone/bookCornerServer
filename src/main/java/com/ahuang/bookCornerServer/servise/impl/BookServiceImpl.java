@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.ahuang.bookCornerServer.entity.*;
+import com.ahuang.bookCornerServer.mapper.*;
+import com.ahuang.bookCornerServer.servise.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -11,16 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ahuang.bookCornerServer.bo.BookList;
-import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
-import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
-import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
-import com.ahuang.bookCornerServer.entity.BookLikeRecordEntity;
-import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
-import com.ahuang.bookCornerServer.mapper.BookBaseInfoMapper;
-import com.ahuang.bookCornerServer.mapper.BookBorrowRecordMapper;
-import com.ahuang.bookCornerServer.mapper.BookCommentRecordMapper;
-import com.ahuang.bookCornerServer.mapper.BookLikeRecordMapper;
-import com.ahuang.bookCornerServer.mapper.CustBindUsersMapper;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.util.StringUtil;
 
@@ -49,14 +42,16 @@ public class BookServiceImpl implements BookService {
 	private final CustBindUsersMapper custBindUsersMapper;
 	
 	private final BookLikeRecordMapper bookLikeRecordMapper;
+    private final MessageBaseInfoMapper messageBaseInfoMapper;
 
-    @Autowired
-    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper) {
+	@Autowired
+    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
         this.bookBaseInfoMapper = bookBaseInfoMapper;
         this.bookBorrowRecordMapper = bookBorrowRecordMapper;
         this.bookCommentRecordMapper = bookCommentRecordMapper;
         this.custBindUsersMapper = custBindUsersMapper;
         this.bookLikeRecordMapper = bookLikeRecordMapper;
+		this.messageBaseInfoMapper = messageBaseInfoMapper;
     }
 
 
@@ -125,6 +120,8 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException {
 		BookCommentRecordEntity entity = new BookCommentRecordEntity();
+        BookBaseInfoEntity bookInfo = bookBaseInfoMapper.queryById(bookId);
+
 		entity.setBookId(bookId);
 		entity.setComment(comment);
 		entity.setOpenid(bindUser.getOpenid());
@@ -140,6 +137,14 @@ public class BookServiceImpl implements BookService {
 		if(1 != r2) {
 			throw new BaseException("comment.failed", "评论图书失败");
 		}
+        MessageBaseInfoEntity m = new MessageBaseInfoEntity();
+        m.setBookId(bookId);
+        m.setBookName(bookInfo.getBookName());
+        m.setOperationTime(new Date());
+        m.setOperationContent(comment);
+        m.setOperationType("2");
+        m.setUserName(bindUser.getUserName());
+        messageBaseInfoMapper.insertMessage(m);
 	}
 	
 	@Override
@@ -191,12 +196,26 @@ public class BookServiceImpl implements BookService {
 			log.debug("bookInfo.getBookStatus：" + bookInfo.getBookStatus() + ", isBorrowed:" + isBorrowed);
 			throw new BaseException("can.not.borrow", "本书当前不可借阅bookId：" + bookId);
 		}
+
+		MessageBaseInfoEntity m = new MessageBaseInfoEntity();
+		m.setBookId(bookId);
+		m.setBookName(bookInfo.getBookName());
+		m.setOperationTime(new Date());
+		m.setOperationContent("");
+		m.setOperationType("0");
+		m.setUserName(user.getUserName());
+		messageBaseInfoMapper.insertMessage(m);
+
+
+
+
 	}
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
 	public void returnBookById(Integer bookId, String openid) throws BaseException {
 		BookBorrowRecordEntity isBorrowed = bookBorrowRecordMapper.queryBookBorrowStatus(bookId, openid);
 		BookBaseInfoEntity bookInfo = bookBaseInfoMapper.queryById(bookId);
+        CustBindUsersEntity user = custBindUsersMapper.queryByOpenid(openid);
 //		CustBindUsersEntity user = custBindUsersMapper.queryByOpenid(openid);
 		if((!StringUtil.isNullOrEmpty(bookInfo) && "0".equals(bookInfo.getBookStatus()) )
 				&& (!StringUtil.isNullOrEmpty(isBorrowed) && "0".equals(isBorrowed.getBorrowStatus()))
@@ -222,5 +241,13 @@ public class BookServiceImpl implements BookService {
 			log.debug("图书无法归还bookid：" + bookId);
 			throw new BaseException("can.not.return", "本书当前无法归还bookId：" + bookId);
 		}
+        MessageBaseInfoEntity m = new MessageBaseInfoEntity();
+        m.setBookId(bookId);
+        m.setBookName(bookInfo.getBookName());
+        m.setOperationTime(new Date());
+        m.setOperationContent("");
+        m.setOperationType("1");
+        m.setUserName(user.getUserName());
+        messageBaseInfoMapper.insertMessage(m);
 	}
 }
