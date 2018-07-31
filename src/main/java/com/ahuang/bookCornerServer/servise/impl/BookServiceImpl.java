@@ -5,27 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.ahuang.bookCornerServer.entity.*;
 import com.ahuang.bookCornerServer.mapper.*;
-=======
-import com.ahuang.bookCornerServer.entity.*;
-import com.ahuang.bookCornerServer.mapper.*;
+
 import com.ahuang.bookCornerServer.servise.MessageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-import com.ahuang.bookCornerServer.entity.*;
-import com.ahuang.bookCornerServer.mapper.*;
-import com.ahuang.bookCornerServer.servise.MessageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-import com.ahuang.bookCornerServer.entity.*;
-import com.ahuang.bookCornerServer.mapper.*;
-import com.ahuang.bookCornerServer.servise.MessageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -61,47 +46,22 @@ public class BookServiceImpl implements BookService {
 	private final CustBindUsersMapper custBindUsersMapper;
 	
 	private final BookLikeRecordMapper bookLikeRecordMapper;
-    private final MessageBaseInfoMapper messageBaseInfoMapper;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-<<<<<<< HEAD
+    private final MessageBaseInfoMapper messageBaseInfoMapper;
+
 	private final CommentLikeRecordMapper commentLikeRecordMapper;
 
-    @Autowired
-    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper,CommentLikeRecordMapper commentLikeRecordMapper) {
-=======
-	@Autowired
-    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
 
 	@Autowired
-    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-
-	@Autowired
-    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
+    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper,CommentLikeRecordMapper commentLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
         this.bookBaseInfoMapper = bookBaseInfoMapper;
         this.bookBorrowRecordMapper = bookBorrowRecordMapper;
         this.bookCommentRecordMapper = bookCommentRecordMapper;
         this.custBindUsersMapper = custBindUsersMapper;
         this.bookLikeRecordMapper = bookLikeRecordMapper;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         this.commentLikeRecordMapper = commentLikeRecordMapper;
-=======
-		this.messageBaseInfoMapper = messageBaseInfoMapper;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-		this.messageBaseInfoMapper = messageBaseInfoMapper;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-		this.messageBaseInfoMapper = messageBaseInfoMapper;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
+        this.messageBaseInfoMapper = messageBaseInfoMapper;
+
     }
 
 
@@ -113,7 +73,6 @@ public class BookServiceImpl implements BookService {
 		List<BookBaseInfoEntity> booklist = bookBaseInfoMapper.queryBookListPage(param); // 图书列表
 		param.put("isCount", true);
 		Integer totalNum = bookBaseInfoMapper.queryBookInfoNum(param); // 图书总数
-
         return new BookList<>(num, totalNum, pageSize, booklist);
 	}
 

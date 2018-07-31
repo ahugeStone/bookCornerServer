@@ -10,20 +10,9 @@ import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 import com.ahuang.bookCornerServer.servise.EmailService;
 import com.ahuang.bookCornerServer.servise.impl.EmailServiceImp;
-=======
 import com.ahuang.bookCornerServer.servise.MessageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-import com.ahuang.bookCornerServer.servise.MessageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-import com.ahuang.bookCornerServer.servise.MessageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
 import com.ahuang.bookCornerServer.util.BookActions;
 import com.ahuang.bookCornerServer.util.JWTUtil;
 import com.ahuang.bookCornerServer.util.LoginStatus;
@@ -74,31 +63,12 @@ public class BookRestController extends BaseController{
 
     private final EmailService emailService;
     @Autowired
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public BookRestController(BookService bookService, CommonService commonService,EmailService emailService) {
+
+    public BookRestController(BookService bookService, CommonService commonService,EmailService emailService,MessageService messageService) {
         this.bookService = bookService;
         this.commonService = commonService;
         this.emailService = emailService;
-=======
-    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
-        this.bookService = bookService;
-        this.commonService = commonService;
         this.messageService = messageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
-        this.bookService = bookService;
-        this.commonService = commonService;
-        this.messageService = messageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
-=======
-    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
-        this.bookService = bookService;
-        this.commonService = commonService;
-        this.messageService = messageService;
->>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
     }
 
     /**
