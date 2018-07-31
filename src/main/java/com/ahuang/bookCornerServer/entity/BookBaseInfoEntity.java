@@ -118,4 +118,12 @@ public class BookBaseInfoEntity implements Serializable{
 	* @Description: 当前用户是否评论该书
 	*/
 	private String isCommented;
+
+	/**
+	 * @fieldName: bookScore
+	 * @fieldType: String
+	 * @Description: 图书得分
+	 */
+	private String bookScore;
+
 }

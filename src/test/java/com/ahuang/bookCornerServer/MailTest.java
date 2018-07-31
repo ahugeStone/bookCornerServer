@@ -32,6 +32,6 @@ public class MailTest {
                 "    <h3>hello world ! 这是一封Html邮件!</h3>\n" +
                 "</body>\n" +
                 "</html>";
-        emailService.sendHtmlEmail("herofdherofd@126.com","this is html mail",content);
+        emailService.sendHtmlEmail("puxueweiwei@163.com","this is html mail",content);
     }
 }

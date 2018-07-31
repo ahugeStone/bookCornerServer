@@ -176,6 +176,7 @@ public class BookController  extends BaseController{
 		res.put("borrowHistoryList", borrowHistoryList);
 		return getRes(res);
 	}
+	//用户点赞图书
 	@RequestMapping("/CustLikeBook")
 	public Response custLikeBook(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
 		this.checkLoginExp(session);
@@ -185,6 +186,18 @@ public class BookController  extends BaseController{
 		bookService.addBookLikedRecord(bookId, openid);
 		return getRes(null);
 	}
+
+	//用户点赞评论
+   /* @RequestMapping("/custLikeComment")
+    public Response custLikeComment(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+        this.checkLoginExp(session);
+        CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		Integer bookId = (Integer)req.getParam("bookId");
+        Integer commentId = (Integer)req.getParam("commentId");
+		bookService.addCommentLikedRecord(bookId, bindUser, commentId);
+        return getRes(null);
+    }*/
+
 	
 //	@RequestMapping(value="/CustCommentBook", produces="text/plain;charset=UTF-8;")
 	@RequestMapping(path="/CustCommentBook")

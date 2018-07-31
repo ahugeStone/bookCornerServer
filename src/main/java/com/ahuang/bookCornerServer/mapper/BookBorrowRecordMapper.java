@@ -55,6 +55,36 @@ public interface BookBorrowRecordMapper {
 	List<Map<String, Object>> queryBookBorrowByOpenid(@Param("openid") String openid);
 
 	/**
+	 * 查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * @params  [openid]
+	 * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+	 * @Author: puxuewei
+	 * @Date: 2018/7/27 下午2:29
+	 */
+	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime,"
+			+  "b.bookStatus, cu.userEmail from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
+			+ " where r.bookId=b.bookId "
+			+ " and r.openid=#{openid} and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
+	List<Map<String, Object>> queryBookBorrowByOpenidAndBookStatus(@Param("openid") String openid);
+
+	/**
+	 * 查询全部用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * @params
+	 * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+	 * @Author: puxuewei
+	 * @Date: 2018/7/30 下午7:00
+	 */
+	/*@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime,"
+			+  "b.bookStatus, cu.userEmail from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
+			+ " where r.bookId=b.bookId "
+			+ "and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
+	List<Map<String, Object>> queryBookBorrowByBookStatus();*/
+	@Select("Select r.openid" + " from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
+			+ " where r.bookId=b.bookId "
+			+ "and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  group BY r.userName ")
+	List<Map<String, Object>> queryBookBorrowByBookStatus();
+
+	/**
 	* 插入一条图书被借阅的记录
 	* @params  [entity]
 	* @return: java.lang.Integer

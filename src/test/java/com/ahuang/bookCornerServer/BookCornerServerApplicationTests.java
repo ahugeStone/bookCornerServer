@@ -148,7 +148,7 @@ public class BookCornerServerApplicationTests extends BaseTest{
 		.andExpect(jsonPath("$._isException_").value("false"))//判断接口返回无异常
 		.andDo(print()); // 打印测试过程
 	}
-	
+
 	@Test
 	public void custQueryBookCommentHistory() throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -181,7 +181,32 @@ public class BookCornerServerApplicationTests extends BaseTest{
 		.andExpect(jsonPath("$._isException_").value("false"))//判断接口返回无异常
 		.andDo(print()); // 打印测试过程
 	}
-	
+
+	/**
+	 * 用户点赞评论测试
+	 * @params  [bookId, request]
+	 * @return: java.util.Map
+	 * @Author: puxuewei
+	 * @Date: 2018/7/30 上午9:00
+	 */
+	//用户点赞评论测试用例
+	@Test
+	public void custLikeComment() throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("bookId", 77);
+		params.put("commentId", 21);
+		params.put("userName", "黄实");
+		params.put("comment", "测试");
+		String jsonStr = getRequest("custLikeComment",params);// 获取上送报文
+		this.mockMvc.perform(post("/bookCorner/CustCommentBook")
+				.session(session) // 设置模拟session
+				.contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
+				.content(jsonStr.getBytes()))		// 设置报文参数
+				.andExpect(status().isOk())//判断返回200
+				.andExpect(jsonPath("$._isException_").value("false"))//判断接口返回无异常
+				.andDo(print()); // 打印测试过程
+	}
+
 	@Test
 	public void custQueryBookBorrowHistory() throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();

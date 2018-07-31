@@ -113,6 +113,35 @@ public interface BookService {
 	List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception;
 
 	/**
+	 * 查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * @throws Exception
+	 * @Title: queryBookBorrowByOpenidAndbookStatus
+	 * @Description: 查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * @param openid
+	 * @return List<BookBorrowRecordEntity> ？   返回类型
+	 * @author puxuewei
+	 * @date 2018年7月27日 下午3:07
+	 * @version V1.0
+	 * @throws
+	 */
+	List<Map<String, Object>> queryBookBorrowByOpenidAndBookStatus(String openid);
+
+	/**
+	 * 查询全部用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * @throws Exception
+	 * @Title: queryBookBorrowByBookStatus
+	 * @Description: 查询全部用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * @param
+	 * @return List<BookBorrowRecordEntity> ？   返回类型
+	 * @author puxuewei
+	 * @date 2018年7月30日 下午7:07
+	 * @version V1.0
+	 * @throws
+	 */
+	List<Map<String, Object>> queryBookBorrowByBookStatus();
+
+
+	/**
     * 查询特定图书的被借阅记录
 	* @Title: queryBookBorrowHistoryByBookId
 	* @Description: 查询特定图书的被借阅记录
@@ -124,6 +153,8 @@ public interface BookService {
 	* @throws
 	*/
 	List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId);
+
+
 
 	/**
      * 用户点赞图书
@@ -138,6 +169,18 @@ public interface BookService {
 	void addBookLikedRecord(Integer bookId, String openid);
 
 	/**
+	 * 用户点赞评论
+	 * @Title: addCommentLikedRecord
+	 * @param commentId
+	 * @param openid void    返回类型
+	 * @author puxuewei
+	 * @date 2018年7月25日 上午11:04:13
+	 * @version V1.0
+	 * @throws
+	 */
+	void addCommentLikedRecord(Integer bookId,CustBindUsersEntity bindUser, Integer commentId);
+
+	/**
 	 * 添加图书评论
      *
 	 * @throws BaseException 
@@ -150,4 +193,6 @@ public interface BookService {
 	* @throws
 	*/
 	void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException;
+
+
 }

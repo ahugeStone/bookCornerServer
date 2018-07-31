@@ -2,12 +2,24 @@ package com.ahuang.bookCornerServer.controller;
 
 import com.ahuang.bookCornerServer.controller.req.CustBindRequest;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
+import com.ahuang.bookCornerServer.controller.req.Request;
+import com.ahuang.bookCornerServer.controller.req.Response;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
+<<<<<<< HEAD
+<<<<<<< HEAD
+import com.ahuang.bookCornerServer.servise.EmailService;
+import com.ahuang.bookCornerServer.servise.impl.EmailServiceImp;
+=======
+import com.ahuang.bookCornerServer.servise.MessageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
+=======
+import com.ahuang.bookCornerServer.servise.MessageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
 import com.ahuang.bookCornerServer.util.BookActions;
 import com.ahuang.bookCornerServer.util.JWTUtil;
 import com.ahuang.bookCornerServer.util.LoginStatus;
@@ -18,8 +30,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,11 +66,28 @@ public class BookRestController extends BaseController{
     private final BookService bookService;
 
     private final CommonService commonService;
+    private final MessageService messageService;
 
+    private final EmailService emailService;
     @Autowired
-    public BookRestController(BookService bookService, CommonService commonService) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+    public BookRestController(BookService bookService, CommonService commonService,EmailService emailService) {
         this.bookService = bookService;
         this.commonService = commonService;
+        this.emailService = emailService;
+=======
+    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
+        this.bookService = bookService;
+        this.commonService = commonService;
+        this.messageService = messageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
+=======
+    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
+        this.bookService = bookService;
+        this.commonService = commonService;
+        this.messageService = messageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
     }
 
     /**
@@ -180,6 +211,21 @@ public class BookRestController extends BaseController{
     }
 
     /**
+     * 用户点赞评论
+     * @params  [bookId, commentId, request]
+     * @return: void
+     * @Author: puxuewei
+     * @Date: 2018/7/25 下午3:42
+     */
+    @RequestMapping(path="/books/{bookId}/comments/{commentId}",method = { RequestMethod.POST })
+    public Response custLikeComment(@PathVariable("bookId") Integer bookId,@PathVariable("commentId") Integer commentId, HttpServletRequest request) throws BaseException {
+        checkLoginForJWT(request);
+        CustBindUsersEntity user = checkLoginForJWT(request);
+        bookService.addCommentLikedRecord(bookId, user, commentId);
+        return getRes(null);
+    }
+
+    /**
     * 查询特定图书借阅历史
     * @params  [bookId, request]
     * @return: java.util.Map
@@ -194,6 +240,36 @@ public class BookRestController extends BaseController{
         res.put("borrowHistoryList", borrowHistoryList);
         return res;
     }
+
+
+    /**
+     * 向特定用户发送邮件提醒欠书超过一个月（且借书状态bookStatus 0，且借出时间大于30天）
+     * @params  [request]
+     * @return: java.util.Map
+     * @Author: puxuewei
+     * @Date: 2018/7/27 下午3:00
+     */
+    @RequestMapping(path="users/{userNo}", method = { RequestMethod.GET })
+    public Map sendBookBorrowEmailByOpenid(@PathVariable("userNo") String userNo, HttpServletRequest request) throws Exception {
+        CustBindUsersEntity user = checkLoginForJWT(request);
+        if (!user.getUserNo().equals(userNo)) {
+            throw new AuthException("userNo.not.match", "用户信息不符");
+        }
+        List<Map<String, Object>> userBorrowBookEmailList = bookService.queryBookBorrowByOpenidAndBookStatus(user.getOpenid());
+        Map<String, Object> res = new HashMap<>();
+        res.put("userBorrowBookEmailList", userBorrowBookEmailList);
+        String userEmail = ""+userBorrowBookEmailList.get(0).get("userEmail");
+        String emailSubject = "开发二部温馨提示"+"\t"+userBorrowBookEmailList.get(0).get("userName")+"\t"+"欠书超过一个月";
+        String emailContent = "";
+        for (int i = 0; i < userBorrowBookEmailList.size(); i++) {
+            Map<String, Object> map = userBorrowBookEmailList.get(i);
+            emailContent += ""+map.get("bookName")+"\t"+"借阅时间超过一个月需还书"+"\n";
+         }
+        emailService.sendSimpleEmail(userEmail,emailSubject,emailContent);
+        return res;
+    }
+
+
     /**
     * 操作图书
     * @params  [bookId, request]
@@ -283,5 +359,20 @@ public class BookRestController extends BaseController{
         res.put("userNo", bindUser.getUserNo());
         res.put("userName", bindUser.getUserName());
         return res;
+    }
+    /**
+     * 查询首页公告栏信息
+     * @params  []
+     * @return: java.util.Map
+     * @Author: lct
+     * @Date: 2018/7/26 上午11:55
+     */
+    @RequestMapping(path="/messages",method = { RequestMethod.GET })
+    public Map messageInfoQuery(@RequestParam("num") Integer num, HttpServletRequest request) throws BaseException {
+        checkLoginForJWT(request);
+        Map<String, Object> result = new HashMap<>();
+        result.put("messageList", messageService.queryMessageList(num));
+
+        return result;
     }
 }

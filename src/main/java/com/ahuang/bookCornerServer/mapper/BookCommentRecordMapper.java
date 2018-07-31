@@ -7,12 +7,13 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface BookCommentRecordMapper {
 	String COMMENT_RECORD_NAME = " BOOK_COMMENTRECORD c";
-	String COMMENT_RECORD_FIELDS=" id, bookId, openid, headImgUrl, userName, comment, recTime ";
+	String COMMENT_RECORD_FIELDS=" id, bookId, openid, headImgUrl, userName, comment, recTime,commentLikeNum,isThumbup ";
 
 	/**
 	* 查询特定图书的所有评论
@@ -51,4 +52,29 @@ public interface BookCommentRecordMapper {
 	@Select("Select "  + COMMENT_RECORD_FIELDS + " from " + COMMENT_RECORD_NAME
 			+ " where bookId=#{bookId} and openid=#{openid} limit 1")
 	BookCommentRecordEntity queryCommentById(@Param("bookId") Integer bookId, @Param("openid") String openid);
+
+	/**
+	 * 为特定评论点赞
+	 * @params  [commentId]
+	 * @return: java.lang.Integer
+	 * @Author: puxuewei
+	 * @Date: 2018/7/25 下午8:48
+	 */
+
+	@Update("Update " + COMMENT_RECORD_NAME + "  set commentLikeNum=commentLikeNum+1 "
+			+ " where id=#{commentId}")
+	Integer updateCommentLikeNumByOne(Integer commentId);
+
+	/**
+	 * 判断当前用户是否为该条评论点赞
+	 * @params  [commentId]
+	 * @return: java.lang.Integer
+	 * @Author: puxuewei
+	 * @Date: 2018/7/26 下午5:22
+	 */
+
+	@Update("Update " + COMMENT_RECORD_NAME + "  set isThumbup = '1' "
+			+ " where id=#{commentId}")
+	Integer updateisThumbup(Integer commentId);
+
 }

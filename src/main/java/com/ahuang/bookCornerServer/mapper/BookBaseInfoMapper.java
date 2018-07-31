@@ -20,7 +20,7 @@ import java.util.Map;
 public interface BookBaseInfoMapper{
 	String TABLE_NAEM = " BOOK_BASEINFO b ";
 	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, "
-			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime ";
+			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime,bookScore ";
 	String BOOK_LIST_WHERE = "<where>"
 			+ "<if test='bookName!=null and bookName!=\"\"'>"
 			+ "<bind name=\"pattern\" value=\"'%' + bookName + '%'\" />" 
