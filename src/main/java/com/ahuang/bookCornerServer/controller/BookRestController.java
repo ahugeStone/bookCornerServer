@@ -12,8 +12,12 @@ import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.ahuang.bookCornerServer.servise.EmailService;
 import com.ahuang.bookCornerServer.servise.impl.EmailServiceImp;
+=======
+import com.ahuang.bookCornerServer.servise.MessageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
 =======
 import com.ahuang.bookCornerServer.servise.MessageService;
 >>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
@@ -72,10 +76,17 @@ public class BookRestController extends BaseController{
     @Autowired
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     public BookRestController(BookService bookService, CommonService commonService,EmailService emailService) {
         this.bookService = bookService;
         this.commonService = commonService;
         this.emailService = emailService;
+=======
+    public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
+        this.bookService = bookService;
+        this.commonService = commonService;
+        this.messageService = messageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
 =======
     public BookRestController(BookService bookService, CommonService commonService,MessageService messageService) {
         this.bookService = bookService;
@@ -259,7 +270,7 @@ public class BookRestController extends BaseController{
         Map<String, Object> res = new HashMap<>();
         res.put("userBorrowBookEmailList", userBorrowBookEmailList);
         String userEmail = ""+userBorrowBookEmailList.get(0).get("userEmail");
-        String emailSubject = "开发二部温馨提示"+"\t"+userBorrowBookEmailList.get(0).get("userName")+"\t"+"欠书超过一个月";
+        String emailSubject = "开发二部温馨提示"+"\t"+userBorrowBookEmailList.get(0).get("userName")+"\t"+"借阅时间超过一个月需归还";
         String emailContent = "";
         for (int i = 0; i < userBorrowBookEmailList.size(); i++) {
             Map<String, Object> map = userBorrowBookEmailList.get(i);

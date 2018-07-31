@@ -7,9 +7,15 @@ import java.util.Map;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.ahuang.bookCornerServer.entity.*;
 import com.ahuang.bookCornerServer.mapper.*;
+=======
+import com.ahuang.bookCornerServer.entity.*;
+import com.ahuang.bookCornerServer.mapper.*;
+import com.ahuang.bookCornerServer.servise.MessageService;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
 =======
 import com.ahuang.bookCornerServer.entity.*;
 import com.ahuang.bookCornerServer.mapper.*;
@@ -57,6 +63,7 @@ public class BookServiceImpl implements BookService {
 	private final BookLikeRecordMapper bookLikeRecordMapper;
     private final MessageBaseInfoMapper messageBaseInfoMapper;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	private final CommentLikeRecordMapper commentLikeRecordMapper;
@@ -72,6 +79,11 @@ public class BookServiceImpl implements BookService {
 	@Autowired
     public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
 >>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
+=======
+
+	@Autowired
+    public BookServiceImpl(BookBaseInfoMapper bookBaseInfoMapper, BookBorrowRecordMapper bookBorrowRecordMapper, BookCommentRecordMapper bookCommentRecordMapper, CustBindUsersMapper custBindUsersMapper, BookLikeRecordMapper bookLikeRecordMapper, MessageBaseInfoMapper messageBaseInfoMapper) {
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
         this.bookBaseInfoMapper = bookBaseInfoMapper;
         this.bookBorrowRecordMapper = bookBorrowRecordMapper;
         this.bookCommentRecordMapper = bookCommentRecordMapper;
@@ -79,7 +91,11 @@ public class BookServiceImpl implements BookService {
         this.bookLikeRecordMapper = bookLikeRecordMapper;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.commentLikeRecordMapper = commentLikeRecordMapper;
+=======
+		this.messageBaseInfoMapper = messageBaseInfoMapper;
+>>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
 =======
 		this.messageBaseInfoMapper = messageBaseInfoMapper;
 >>>>>>> e831cb2d6c25bb43888d3b08000647813c6d3efa
