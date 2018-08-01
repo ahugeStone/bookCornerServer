@@ -123,12 +123,12 @@ public class BookServiceImpl implements BookService {
 		return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
 	}
 
-	//查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	//查询特定用户的逾期未还图书情况（借书状态bookStatus 0，且借出时间大于30天）
 	public List<Map<String, Object>> queryBookBorrowByOpenidAndBookStatus(String openid) {
 		return bookBorrowRecordMapper.queryBookBorrowByOpenidAndBookStatus(openid);
 	}
 
-	//查询全部用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	//查询所有逾期未还的全部用户（借书状态bookStatus 0，且借出时间大于30天）
 	public List<Map<String, Object>> queryBookBorrowByBookStatus() {
 		return bookBorrowRecordMapper.queryBookBorrowByBookStatus();
 	}
@@ -142,7 +142,7 @@ public class BookServiceImpl implements BookService {
 	public void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException {
 		BookCommentRecordEntity entity = new BookCommentRecordEntity();
         BookBaseInfoEntity bookInfo = bookBaseInfoMapper.queryById(bookId);
-
+		//entity.setRecTime(new Date());
 		entity.setBookId(bookId);
 		entity.setComment(comment);
 		entity.setOpenid(bindUser.getOpenid());
@@ -198,10 +198,9 @@ public class BookServiceImpl implements BookService {
 		entity.setUserName(bindUser.getUserName());
 		entity.setRecTime(new Date());
 		CommentLikeRecordEntity co = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
-		//bookCommentRecordMapper.updateisThumbup(commentId);
 		if(!StringUtil.isNullOrEmpty(co)) {
 			log.info("该用户已经点过赞了，openid:" + openid);
-			throw new BaseException("comment.failed", "该用户已经点过赞了，openid:");
+			throw new BaseException("comment.failed", "该用户已经点过赞了");
 		}
 
 		Integer cl = 0;

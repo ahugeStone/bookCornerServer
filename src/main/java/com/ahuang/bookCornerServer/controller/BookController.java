@@ -187,17 +187,6 @@ public class BookController  extends BaseController{
 		return getRes(null);
 	}
 
-	//用户点赞评论
-   /* @RequestMapping("/custLikeComment")
-    public Response custLikeComment(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
-        this.checkLoginExp(session);
-        CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
-		Integer bookId = (Integer)req.getParam("bookId");
-        Integer commentId = (Integer)req.getParam("commentId");
-		bookService.addCommentLikedRecord(bookId, bindUser, commentId);
-        return getRes(null);
-    }*/
-
 	
 //	@RequestMapping(value="/CustCommentBook", produces="text/plain;charset=UTF-8;")
 	@RequestMapping(path="/CustCommentBook")

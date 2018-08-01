@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BookCommentRecordMapper {
 	String COMMENT_RECORD_NAME = " BOOK_COMMENTRECORD c";
-	String COMMENT_RECORD_FIELDS=" id, bookId, openid, headImgUrl, userName, comment, recTime,commentLikeNum,isThumbup ";
+	String COMMENT_RECORD_FIELDS=" id, bookId, openid, headImgUrl, userName, comment, recTime,commentLikeNum";
 
 	/**
 	* 查询特定图书的所有评论
@@ -64,17 +64,5 @@ public interface BookCommentRecordMapper {
 	@Update("Update " + COMMENT_RECORD_NAME + "  set commentLikeNum=commentLikeNum+1 "
 			+ " where id=#{commentId}")
 	Integer updateCommentLikeNumByOne(Integer commentId);
-
-	/**
-	 * 判断当前用户是否为该条评论点赞
-	 * @params  [commentId]
-	 * @return: java.lang.Integer
-	 * @Author: puxuewei
-	 * @Date: 2018/7/26 下午5:22
-	 */
-
-	@Update("Update " + COMMENT_RECORD_NAME + "  set isThumbup = '1' "
-			+ " where id=#{commentId}")
-	Integer updateisThumbup(Integer commentId);
 
 }

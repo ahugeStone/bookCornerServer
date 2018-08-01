@@ -55,16 +55,16 @@ public interface BookBorrowRecordMapper {
 	List<Map<String, Object>> queryBookBorrowByOpenid(@Param("openid") String openid);
 
 	/**
-	 * 查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * 查询特定用户的逾期未还图书情况（借书状态bookStatus 0，且借出时间大于30天）
 	 * @params  [openid]
 	 * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
 	 * @Author: puxuewei
 	 * @Date: 2018/7/27 下午2:29
 	 */
 	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime,"
-			+  "b.bookStatus, cu.userEmail from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
-			+ " where r.bookId=b.bookId "
-			+ "and r.userName=cu.userName and r.openid=#{openid}  and r.borrowStatus='0' and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
+			+  "b.bookStatus, cu.userEmail from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu, CUST_BINDUSERS cb"
+			+ " where r.bookId=b.bookId and r.openid=#{openid} and r.openid= cb.openid and cb.userNo=cu.userNo " +
+			"and r.borrowStatus='0' and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
 	List<Map<String, Object>> queryBookBorrowByOpenidAndBookStatus(@Param("openid") String openid);
 
 	/**
@@ -74,14 +74,9 @@ public interface BookBorrowRecordMapper {
 	 * @Author: puxuewei
 	 * @Date: 2018/7/30 下午7:00
 	 */
-	/*@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime,"
-			+  "b.bookStatus, cu.userEmail from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
-			+ " where r.bookId=b.bookId "
-			+ "and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
-	List<Map<String, Object>> queryBookBorrowByBookStatus();*/
-	@Select("Select r.openid from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
-			+ " where r.bookId=b.bookId "
-			+ "and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  group BY r.userName ")
+	@Select("Select r.openid from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu,CUST_BINDUSERS cb"
+			+" where r.bookId=b.bookId  and r.openid= cb.openid and cb.userNo=cu.userNo " +
+			"and r.borrowStatus='0' and DATEDIFF(now(),r.borrowTime)>30  group BY r.userName ")
 	List<Map<String, Object>> queryBookBorrowByBookStatus();
 
 	/**

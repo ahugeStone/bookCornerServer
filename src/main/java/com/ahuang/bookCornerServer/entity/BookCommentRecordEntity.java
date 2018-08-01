@@ -20,8 +20,4 @@ public class BookCommentRecordEntity implements Serializable{
 	private String comment;
 	private Date recTime;
 	private Integer commentLikeNum;
-	/**
-	 * 当前用户是否点赞: 0：否；1：是。默认为0。
-	 */
-	private String isThumbup;
 }
