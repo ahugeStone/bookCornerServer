@@ -11,6 +11,7 @@ import com.ahuang.bookCornerServer.mapper.*;
 
 import com.ahuang.bookCornerServer.servise.MessageService;
 
+import net.sf.ehcache.constructs.nonstop.store.ExceptionOnTimeoutStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -187,7 +188,7 @@ public class BookServiceImpl implements BookService {
 	//评论点赞功能
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
-	public void addCommentLikedRecord(Integer bookId,CustBindUsersEntity bindUser,Integer commentId) {
+	public void addCommentLikedRecord(Integer bookId,CustBindUsersEntity bindUser,Integer commentId) throws BaseException {
 		CommentLikeRecordEntity entity = new CommentLikeRecordEntity();
 		entity.setBookId(bookId);
 		entity.setCommentId(commentId);
@@ -197,13 +198,18 @@ public class BookServiceImpl implements BookService {
 		entity.setUserName(bindUser.getUserName());
 		entity.setRecTime(new Date());
 		CommentLikeRecordEntity co = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
-		bookCommentRecordMapper.updateisThumbup(commentId);
+		//bookCommentRecordMapper.updateisThumbup(commentId);
 		if(!StringUtil.isNullOrEmpty(co)) {
 			log.info("该用户已经点过赞了，openid:" + openid);
-			return;
+			throw new BaseException("comment.failed", "该用户已经点过赞了，openid:");
 		}
 
-		Integer cl = commentLikeRecordMapper.insertCommentLikeRecord(entity);
+		Integer cl = 0;
+		try{
+			cl = commentLikeRecordMapper.insertCommentLikeRecord(entity);
+		} catch(Exception e) {
+			throw new BaseException("comment.failed", "该用户已经点过赞了");
+		}
 		//BookCommentRecordMapper 评论点赞记录表中点赞数添加一个字段，评论点赞数自增1
 		Integer cc = bookCommentRecordMapper.updateCommentLikeNumByOne(commentId);
 		log.debug("commentLikeRecord插入数据条数:" + cl);

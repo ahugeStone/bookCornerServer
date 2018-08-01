@@ -39,11 +39,11 @@ public class EmailTask {
 
         List<Map<String, Object>> userBorrowBookEmailList = bookService.queryBookBorrowByBookStatus();
         for (int i = 0; i < userBorrowBookEmailList.size(); i++) {
-            String openid = ""+userBorrowBookEmailList.get(i).get("openid");
+            String openid = (String) userBorrowBookEmailList.get(i).get("openid");
             List<Map<String, Object>> sendBorrowBookEmailList = bookService.queryBookBorrowByOpenidAndBookStatus(openid);
             Map<String, Object> res = new HashMap<>();
             res.put("sendBorrowBookEmailList", sendBorrowBookEmailList);
-            String userEmail = ""+sendBorrowBookEmailList.get(0).get("userEmail");
+            String userEmail = (String)sendBorrowBookEmailList.get(0).get("userEmail");
             String emailSubject = "开发二部图书角温馨提示"+"\t"+sendBorrowBookEmailList.get(0).get("userName")+"\t"+"借阅时间超过一个月需归还";
             String emailContent = "";
             for (int j = 0; j < sendBorrowBookEmailList.size(); j++) {

@@ -64,11 +64,11 @@ public interface BookBorrowRecordMapper {
 	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime,"
 			+  "b.bookStatus, cu.userEmail from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
 			+ " where r.bookId=b.bookId "
-			+ " and r.openid=#{openid} and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
+			+ "and r.userName=cu.userName and r.openid=#{openid}  and r.borrowStatus='0' and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
 	List<Map<String, Object>> queryBookBorrowByOpenidAndBookStatus(@Param("openid") String openid);
 
 	/**
-	 * 查询全部用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
+	 * 查询所有逾期未还的全部用户（借书状态bookStatus 0，且借出时间大于30天）
 	 * @params
 	 * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
 	 * @Author: puxuewei
@@ -79,7 +79,7 @@ public interface BookBorrowRecordMapper {
 			+ " where r.bookId=b.bookId "
 			+ "and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  order by r.borrowTime desc ")
 	List<Map<String, Object>> queryBookBorrowByBookStatus();*/
-	@Select("Select r.openid" + " from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
+	@Select("Select r.openid from BOOK_BORROWRECORD r ,BOOK_BASEINFO b ,CUST_USERS cu"
 			+ " where r.bookId=b.bookId "
 			+ "and r.borrowStatus='0' and r.userName=cu.userName and DATEDIFF(now(),r.borrowTime)>30  group BY r.userName ")
 	List<Map<String, Object>> queryBookBorrowByBookStatus();

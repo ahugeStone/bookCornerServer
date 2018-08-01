@@ -178,7 +178,7 @@ public interface BookService {
 	 * @version V1.0
 	 * @throws
 	 */
-	void addCommentLikedRecord(Integer bookId,CustBindUsersEntity bindUser, Integer commentId);
+	void addCommentLikedRecord(Integer bookId,CustBindUsersEntity bindUser, Integer commentId) throws BaseException;
 
 	/**
 	 * 添加图书评论
