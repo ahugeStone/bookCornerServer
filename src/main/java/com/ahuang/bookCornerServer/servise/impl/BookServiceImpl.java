@@ -207,6 +207,7 @@ public class BookServiceImpl implements BookService {
 		try{
 			cl = commentLikeRecordMapper.insertCommentLikeRecord(entity);
 		} catch(Exception e) {
+			e.printStackTrace();
 			throw new BaseException("comment.failed", "该用户已经点过赞了");
 		}
 		//BookCommentRecordMapper 评论点赞记录表中点赞数添加一个字段，评论点赞数自增1

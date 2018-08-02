@@ -23,7 +23,7 @@ alter table `BOOK_COMMENTRECORD` add COLUMN `commentLikeNum` int(11) NOT NULL DE
 -- ----------------------------
 DROP TABLE IF EXISTS `COMMENT_LIKERECORD`;
 CREATE TABLE `COMMENT_LIKERECORD`  (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `commentId` int(11) NOT NULL,
   `openid` varchar(100)  NOT NULL,
   `recTime` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP(0),
@@ -45,7 +45,7 @@ INSERT INTO `COMMENT_LIKERECORD` VALUES (1, 1, 'oe0Ej0d3pqW_Bi5Bmg2lvpSdOtRE', '
 -- ----------------------------
 DROP TABLE IF EXISTS `MESSAGE_BASEINFO`;
 CREATE TABLE `MESSAGE_BASEINFO`  (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `operationType` char(1)  NOT NULL,
   `operationContent` varchar(500)  NOT NULL,
   `operationTime` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP(0),
