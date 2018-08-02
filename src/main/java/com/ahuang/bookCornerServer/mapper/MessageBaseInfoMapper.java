@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
 * @ClassName: MessageBaseInfoMapper
 * @Description: MESSAGE_BASEINFO表的Mapper
 * @author lct
@@ -18,7 +18,7 @@ import java.util.Map;
 * @version V1.00
  */
 @Service
-@CacheNamespace(size=100, implementation=org.mybatis.caches.ehcache.EhcacheCache.class) // 使用应用缓存
+
 public interface MessageBaseInfoMapper {
 	//String TABLE_NAME = " MESSAGE_BASEINFO m ";
 	String SELECT_FIELDS = " id, operationType, operationContent, operationTime, userName, bookId, bookName ";
