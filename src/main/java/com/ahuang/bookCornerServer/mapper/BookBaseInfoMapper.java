@@ -81,6 +81,35 @@ public interface BookBaseInfoMapper{
 	Integer updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
 
 	/**
+	* 根据豆瓣信息更新表
+	* @params  [bookId, bookScore, isbn13, doubanAuthor]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/8/4 下午7:02
+	*/
+	@Update("<script>" +
+			"Update" + TABLE_NAEM +
+			"<set>"+
+			"<if test='bookScore!=null'>" +
+			"bookScore=#{bookScore}," +
+			"</if>"+
+			"<if test='isbn13!=null'>" +
+			"isbn13=#{isbn13}," +
+			"</if>"+
+			"<if test='doubanAuthor!=null'>" +
+			"doubanAuthor=#{doubanAuthor}," +
+			"</if>"+
+			"<if test='bookBrief!=null'>" +
+			"bookBrief=#{bookBrief}," +
+			"</if>"+
+			"</set>"+
+			" where bookId=#{bookId}" +
+			"</script>")
+	Integer updateBookInfoFromDouban(@Param("bookId") Integer bookId, @Param("bookScore") String bookScore,
+									 @Param("isbn13") String isbn13, @Param("doubanAuthor") String doubanAuthor,
+									 @Param("bookBrief") String bookBrief);
+
+	/**
 	* 查询图书列表
 	* @params  []
 	* @return: java.util.List<com.ahuang.bookCornerServer.entity.BookBaseInfoEntity>

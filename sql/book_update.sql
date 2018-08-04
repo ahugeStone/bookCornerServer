@@ -2,13 +2,15 @@
 -- Table structure for BOOK_BASEINFO
 -- ----------------------------
 
-alter table `BOOK_BASEINFO` add `bookScore` varchar(11)  NOT NULL DEFAULT '0' COMMENT '得分:默认为0';
+ALTER TABLE `BOOK_BASEINFO` ADD COLUMN `bookScore` varchar(11) NOT NULL DEFAULT '0' COMMENT '得分:默认为0';
+
+ALTER TABLE `BOOK_BASEINFO` ADD COLUMN `isbn13` varchar(20) NULL DEFAULT NULL COMMENT '图书的isbn码';
 
 -- ----------------------------
 -- Table structure for CUST_USERS
 -- ----------------------------
 
-alter table `CUST_USERS` add `userEmail` varchar(40) DEFAULT NULL COMMENT '员工邮箱';
+ALTER TABLE `CUST_USERS` ADD COLUMN `userEmail` varchar(40) NULL DEFAULT NULL COMMENT '员工邮箱';
 
 
 -- ----------------------------
@@ -31,13 +33,8 @@ CREATE TABLE `COMMENT_LIKERECORD`  (
   `headImgUrl` varchar(200)  DEFAULT NULL,
   `userName` varchar(20)  DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `U_OPENID_COMMENTID` (openid,commentId) USING BTREE COMMENT '同一用户只能点赞一个评论一次'
+  UNIQUE INDEX `U_OPENID_COMMENTID` (`openid`, `commentId`) USING BTREE COMMENT '同一用户只能点赞一个评论一次'
 );
-
--- ----------------------------
--- Records of COMMENT_LIKERECORD
--- ----------------------------
-INSERT INTO `COMMENT_LIKERECORD` VALUES (1, 1, 'oe0Ej0d3pqW_Bi5Bmg2lvpSdOtRE', '2018-07-25 16:42:56', 1, '12121212', '黄实');
 
 
 -- ----------------------------
@@ -53,10 +50,5 @@ CREATE TABLE `MESSAGE_BASEINFO`  (
   `bookId` int(11) NOT NULL,
   `bookName` varchar(100)  NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_operationTime` (`operationTime`) USING BTREE
+  INDEX `idx_operationTime` (`operationTime`) USING BTREE
 );
-
--- ----------------------------
--- Records of MESSAGE_BASEINFO
--- ----------------------------
-INSERT INTO `MESSAGE_BASEINFO` VALUES (1, '1', '1', '2018-07-25 11:38:23', '黄实', 1, '中国震撼');
