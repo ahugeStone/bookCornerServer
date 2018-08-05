@@ -23,7 +23,7 @@ public interface BookCommentRecordMapper {
 	* @Date: 2018/7/19 下午9:17
 	*/
 	@Select("Select " + COMMENT_RECORD_FIELDS + " from " + COMMENT_RECORD_NAME
-			+ " where bookId=#{bookId} ")
+			+ " where bookId=#{bookId} order by recTime desc")
 	List<BookCommentRecordEntity> queryCommentList(@Param("bookId") Integer bookId);
 
 	/**
