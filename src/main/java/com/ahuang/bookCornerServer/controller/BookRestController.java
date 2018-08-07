@@ -2,7 +2,6 @@ package com.ahuang.bookCornerServer.controller;
 
 import com.ahuang.bookCornerServer.controller.req.CustBindRequest;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
-import com.ahuang.bookCornerServer.controller.req.Request;
 import com.ahuang.bookCornerServer.controller.req.Response;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
@@ -11,7 +10,6 @@ import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
 import com.ahuang.bookCornerServer.servise.EmailService;
-import com.ahuang.bookCornerServer.servise.impl.EmailServiceImp;
 import com.ahuang.bookCornerServer.servise.MessageService;
 import com.ahuang.bookCornerServer.util.BookActions;
 import com.ahuang.bookCornerServer.util.JWTUtil;
@@ -23,10 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
