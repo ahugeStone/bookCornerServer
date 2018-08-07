@@ -1,30 +1,21 @@
 package com.ahuang.bookCornerServer.servise.impl;
 
-import java.util.AbstractList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.*;
+import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.mapper.*;
-
-import com.ahuang.bookCornerServer.servise.MessageService;
-
-import net.sf.ehcache.constructs.nonstop.store.ExceptionOnTimeoutStore;
+import com.ahuang.bookCornerServer.servise.BookService;
+import com.ahuang.bookCornerServer.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ahuang.bookCornerServer.bo.BookList;
-import com.ahuang.bookCornerServer.servise.BookService;
-import com.ahuang.bookCornerServer.util.StringUtil;
-
-import lombok.extern.slf4j.Slf4j;
-
-import com.ahuang.bookCornerServer.exception.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The type Book service.
@@ -119,13 +110,13 @@ public class BookServiceImpl implements BookService {
 		Integer bookId = (Integer)param.get("id");
 		String openid = (String)param.get("openid");
 		List<BookCommentRecordEntity> bookCommentRecordEntities=bookCommentRecordMapper.queryCommentList(bookId);
-		for (int i = 0; i < bookCommentRecordEntities.size(); i++) {
-			int commentId=bookCommentRecordEntities.get(i).getId();
-			CommentLikeRecordEntity isLiked = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
-			if(!StringUtil.isNullOrEmpty(isLiked)) {
-				bookCommentRecordEntities.get(i).setIsLiked("1");
-			}
-		}
+        for (BookCommentRecordEntity bookCommentRecordEntity : bookCommentRecordEntities) {
+            int commentId = bookCommentRecordEntity.getId();
+            CommentLikeRecordEntity isLiked = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
+            if (!StringUtil.isNullOrEmpty(isLiked)) {
+                bookCommentRecordEntity.setIsLiked("1");
+            }
+        }
 		return bookCommentRecordEntities;
 	}
 
@@ -220,7 +211,7 @@ public class BookServiceImpl implements BookService {
 			throw new BaseException("comment.failed", "该用户已经点过赞了");
 		}
 
-		Integer cl = 0;
+		Integer cl;
 		try{
 			cl = commentLikeRecordMapper.insertCommentLikeRecord(entity);
 		} catch(Exception e) {
