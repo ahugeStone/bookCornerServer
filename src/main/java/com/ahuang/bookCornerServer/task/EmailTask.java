@@ -1,10 +1,13 @@
 package com.ahuang.bookCornerServer.task;
 
+import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import com.ahuang.bookCornerServer.exception.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import java.util.Map;
  * @Package com.ahuang.bookCornerServer.task
  * @create 2018-07-24 20:41
  */
+@Slf4j
 @Component
 public class EmailTask {
     @Autowired
@@ -31,9 +35,9 @@ public class EmailTask {
     /**
      * 定时执行，每工作日中午发送一次
      */
-    //@Scheduled(fixedDelay = 100000)
-    @Scheduled(cron="0 0 12 * * MON-FRI")
-    public void task()
+    @Scheduled(fixedDelay = 100000)
+    //@Scheduled(cron="0 0 12 * * MON-FRI")
+    public void task () throws BaseException
     {
         System.out.println(new Date());
 
@@ -50,7 +54,35 @@ public class EmailTask {
                 Map<String, Object> map = sendBorrowBookEmailList.get(j);
                 emailContent += "图书："+map.get("bookName")+"\t"+"借阅时间超过一个月需还书"+"\n";
             }
-            emailService.sendSimpleEmail(userEmail,emailSubject,emailContent);
+            String content="<html>\n" +
+                    "<body>\n" +
+                    "    <h3>这是一封Html邮件!</h3>\n" +
+                    "<table border=\"1\">"+
+                    " <tr>\n" +
+                    "    <th th:text=\"${emailContent}\">\n" +
+                    "    <th>hello</th>\n" +
+                    " </tr>\n"+
+                    "</table>\n"+
+                    "</body>\n" +
+                    "</html>";
+
+            try {
+                emailService.sendHtmlEmail(userEmail, emailSubject, content);
+                log.info("html邮件发送正常:" + emailSubject);
+            } catch (Exception e){
+                log.error("html邮件发送失败:" + emailSubject);
+                e.printStackTrace();
+                throw new BaseException("email.failed", "html邮件发送失败,用户邮箱为空"+emailSubject);
+            }
+
+          /*  try{
+                emailService.sendSimpleEmail(userEmail,emailSubject,emailContent);
+                log.info("简单邮件发送正常:" + emailSubject);
+            } catch(Exception e) {
+                log.error("简单邮件发送失败:" + emailSubject);
+                e.printStackTrace();
+                throw new BaseException("email.failed", "简单邮件发送失败,用户邮箱为空"+emailSubject);
+            }*/
         }
     }
 

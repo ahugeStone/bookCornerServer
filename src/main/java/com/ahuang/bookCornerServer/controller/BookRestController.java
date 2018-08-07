@@ -224,36 +224,7 @@ public class BookRestController extends BaseController{
         res.put("borrowHistoryList", borrowHistoryList);
         return res;
     }
-
-
-    /**
-     * 向特定用户发送邮件提醒欠书超过一个月（且借书状态bookStatus 0，且借出时间大于30天）
-     * @params  [request]
-     * @return: java.util.Map
-     * @Author: puxuewei
-     * @Date: 2018/7/27 下午3:00
-     */
-    @RequestMapping(path="users/{userNo}", method = { RequestMethod.GET })
-    public Map sendBookBorrowEmailByOpenid(@PathVariable("userNo") String userNo, HttpServletRequest request) throws Exception {
-        CustBindUsersEntity user = checkLoginForJWT(request);
-        if (!user.getUserNo().equals(userNo)) {
-            throw new AuthException("userNo.not.match", "用户信息不符");
-        }
-        List<Map<String, Object>> userBorrowBookEmailList = bookService.queryBookBorrowByOpenidAndBookStatus(user.getOpenid());
-        Map<String, Object> res = new HashMap<>();
-        res.put("userBorrowBookEmailList", userBorrowBookEmailList);
-        String userEmail = ""+userBorrowBookEmailList.get(0).get("userEmail");
-        String emailSubject = "开发二部温馨提示"+"\t"+userBorrowBookEmailList.get(0).get("userName")+"\t"+"借阅时间超过一个月需归还";
-        String emailContent = "";
-        for (int i = 0; i < userBorrowBookEmailList.size(); i++) {
-            Map<String, Object> map = userBorrowBookEmailList.get(i);
-            emailContent += ""+map.get("bookName")+"\t"+"借阅时间超过一个月需还书"+"\n";
-         }
-        emailService.sendSimpleEmail(userEmail,emailSubject,emailContent);
-        return res;
-    }
-
-
+    
     /**
     * 操作图书
     * @params  [bookId, request]
