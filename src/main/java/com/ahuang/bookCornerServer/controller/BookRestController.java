@@ -171,10 +171,14 @@ public class BookRestController extends BaseController{
     */
     @RequestMapping(path="/books/{bookId}/comments",method = { RequestMethod.GET })
     public Map custQueryBookCommentHistory(@PathVariable("bookId") Integer bookId, HttpServletRequest request) throws BaseException {
-        checkLoginForJWT(request);
-        Map<String, Object> result = new HashMap<>();
-        result.put("commentHistoryList", bookService.queryCommentList(bookId));
+        //checkLoginForJWT(request);
+        CustBindUsersEntity user = checkLoginForJWT(request);
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", bookId);
+        param.put("openid", user.getOpenid());
 
+        Map<String, Object> result = new HashMap<>();
+        result.put("commentHistoryList", bookService.queryCommentList(param));
         return result;
     }
 
@@ -200,7 +204,6 @@ public class BookRestController extends BaseController{
      */
     @RequestMapping(path="/books/{bookId}/comments/{commentId}",method = { RequestMethod.POST })
     public Response custLikeComment(@PathVariable("bookId") Integer bookId,@PathVariable("commentId") Integer commentId, HttpServletRequest request) throws BaseException {
-        checkLoginForJWT(request);
         CustBindUsersEntity user = checkLoginForJWT(request);
         bookService.addCommentLikedRecord(bookId, user, commentId);
         return getRes(null);

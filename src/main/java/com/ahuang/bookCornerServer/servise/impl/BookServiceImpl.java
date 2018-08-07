@@ -101,6 +101,7 @@ public class BookServiceImpl implements BookService {
 				}
 			}
 		}
+		//查询当前用户是否点赞，是在图书详情页面调用的
 		BookLikeRecordEntity isLiked = bookLikeRecordMapper.queryBookLikeRecordById(id, openid);
 		if(!StringUtil.isNullOrEmpty(isLiked)) {
 			bo.setIsLiked("1");
@@ -111,10 +112,21 @@ public class BookServiceImpl implements BookService {
 		}
 		return bo;
 	}
-	
+
+	//查询评论记录
 	@Override
-	public List<BookCommentRecordEntity> queryCommentList(Integer bookId) {
-		return bookCommentRecordMapper.queryCommentList(bookId);
+	public List<BookCommentRecordEntity> queryCommentList(Map<String, Object> param) {
+		Integer bookId = (Integer)param.get("id");
+		String openid = (String)param.get("openid");
+		List<BookCommentRecordEntity> bookCommentRecordEntities=bookCommentRecordMapper.queryCommentList(bookId);
+		for (int i = 0; i < bookCommentRecordEntities.size(); i++) {
+			int commentId=bookCommentRecordEntities.get(i).getId();
+			CommentLikeRecordEntity isLiked = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
+			if(!StringUtil.isNullOrEmpty(isLiked)) {
+				bookCommentRecordEntities.get(i).setIsLiked("1");
+			}
+		}
+		return bookCommentRecordEntities;
 	}
 
 	//查询特定用户的借阅图书历史，包括当前图书的被借阅状态
@@ -179,10 +191,12 @@ public class BookServiceImpl implements BookService {
 			log.info("该用户已经点过赞了，openid:" + openid);
 			return;
 		}
+
 		Integer bl = bookLikeRecordMapper.insertBookLikeRecord(entity);
 		Integer bb = bookBaseInfoMapper.updateBookLikeNumByOne(bookId);
 		log.debug("bookLikeRecord插入数据条数:" + bl);
 		log.debug("bookBaseInfo插入数据条数:" + bb);
+
 	}
 
 	//评论点赞功能
@@ -197,8 +211,11 @@ public class BookServiceImpl implements BookService {
 		entity.setHeadImgUrl(bindUser.getHeadImgUrl());
 		entity.setUserName(bindUser.getUserName());
 		entity.setRecTime(new Date());
-		CommentLikeRecordEntity co = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
-		if(!StringUtil.isNullOrEmpty(co)) {
+		CommentLikeRecordEntity isLiked = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
+		//BookCommentRecordEntity bc = bookCommentRecordMapper.queryComment(bookId,commentId);
+		if(!StringUtil.isNullOrEmpty(isLiked)) {
+			//return; 返回状态给前端 该用户是否点过赞
+			//bc.setIsLiked("1");
 			log.info("该用户已经点过赞了，openid:" + openid);
 			throw new BaseException("comment.failed", "该用户已经点过赞了");
 		}

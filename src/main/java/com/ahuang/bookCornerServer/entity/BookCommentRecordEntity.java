@@ -20,4 +20,11 @@ public class BookCommentRecordEntity implements Serializable{
 	private String comment;
 	private Date recTime;
 	private Integer commentLikeNum;
+	/**
+	 * @fieldName: isLiked
+	 * @fieldType: String
+	 * @Description: 当前用户是否点赞该评论
+	 */
+	private String isLiked;
+
 }
