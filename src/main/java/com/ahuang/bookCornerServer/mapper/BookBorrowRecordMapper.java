@@ -64,7 +64,7 @@ public interface BookBorrowRecordMapper {
 	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,b.bookLikeNum,b.bookCommentNum "
 			+  "from BOOK_BORROWRECORD r inner join BOOK_BASEINFO b"
 			+ " on r.bookId=b.bookId "
-			+ " and r.openid=#{openid} ")
+			+ " and r.openid=#{openid} order by r.borrowTime desc")
 	List<BookBorrowRecordEntity> queryBookBorrowByOpenidNew(@Param("openid") String openid);
 
 	/**

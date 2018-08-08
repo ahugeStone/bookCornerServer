@@ -124,9 +124,7 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<BookBorrowRecordEntity> queryBookBorrowByOpenid(String openid) {
 		//return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
-		List<BookBorrowRecordEntity> bookBorrowRecordEntities =
-				bookBorrowRecordMapper.queryBookBorrowByOpenidNew(openid);
-		return bookBorrowRecordEntities;
+        return bookBorrowRecordMapper.queryBookBorrowByOpenidNew(openid);
 
 	}
 
