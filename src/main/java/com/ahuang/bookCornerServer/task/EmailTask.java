@@ -34,8 +34,8 @@ public class EmailTask {
     /**
      * 定时执行，每工作日中午发送一次
      */
-    //@Scheduled(cron="0 0 12 * * MON-FRI")
-    @Scheduled(fixedDelay = 100000)
+    //@Scheduled(fixedDelay = 100000)
+    @Scheduled(cron="0 0 12 * * MON-FRI")
     public void task () throws BaseException
     {
         System.out.println(new Date());
