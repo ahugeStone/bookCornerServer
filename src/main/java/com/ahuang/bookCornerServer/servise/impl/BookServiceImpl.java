@@ -126,14 +126,6 @@ public class BookServiceImpl implements BookService {
 		//return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
 		List<BookBorrowRecordEntity> bookBorrowRecordEntities =
 				bookBorrowRecordMapper.queryBookBorrowByOpenidNew(openid);
-		for (BookBorrowRecordEntity bookBorrowRecordEntity : bookBorrowRecordEntities) {
-			int bookId = bookBorrowRecordEntity.getBookId();
-			Integer bookLikeNum = bookBaseInfoMapper.queryLikeNumById(bookId);
-			Integer bookCommentNum=bookBaseInfoMapper.queryCommentNumById(bookId);
-			bookBorrowRecordEntity.setBookLikeNum(bookLikeNum);
-			bookBorrowRecordEntity.setBookCommentNum(bookCommentNum);
-		}
-
 		return bookBorrowRecordEntities;
 
 	}

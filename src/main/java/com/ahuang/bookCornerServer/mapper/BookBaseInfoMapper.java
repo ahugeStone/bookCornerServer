@@ -176,24 +176,5 @@ public interface BookBaseInfoMapper{
 //	@Options(useCache=true)
 	Integer queryBookInfoNum(Map<String, Object> param);
 
-	/**
-	 * 查询图书点赞数
-	 * @params  [bookid]
-	 * @return: java.lang.Integer
-	 * @Author: puxuewei
-	 * @Date: 2018/8/8 下午7:00
-	 */
-	@Select("Select bookLikeNum from " + TABLE_NAEM + " where bookId=#{id}")
-	Integer queryLikeNumById(Integer id);
-
-	/**
-	 * 查询图书评论数
-	 * @params  [bookid]
-	 * @return: java.lang.Integer
-	 * @Author: puxuewei
-	 * @Date: 2018/8/8 下午7:00
-	 */
-	@Select("Select bookCommentNum from " + TABLE_NAEM + " where bookId=#{id}")
-	Integer queryCommentNumById(Integer id);
 	
 }

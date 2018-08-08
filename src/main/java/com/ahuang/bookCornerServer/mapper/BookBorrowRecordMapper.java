@@ -61,10 +61,10 @@ public interface BookBorrowRecordMapper {
 	 * @Author: puxuewei
 	 * @Date: 2018/8/8 下午7:00
 	 */
-	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,"
-			+  "b.bookStatus from BOOK_BORROWRECORD r ,BOOK_BASEINFO b"
-			+ " where r.bookId=b.bookId "
-			+ " and r.openid=#{openid} order by r.borrowTime desc")
+	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,b.bookLikeNum,b.bookCommentNum "
+			+  "from BOOK_BORROWRECORD r inner join BOOK_BASEINFO b"
+			+ " on r.bookId=b.bookId "
+			+ " and r.openid=#{openid} ")
 	List<BookBorrowRecordEntity> queryBookBorrowByOpenidNew(@Param("openid") String openid);
 
 	/**
