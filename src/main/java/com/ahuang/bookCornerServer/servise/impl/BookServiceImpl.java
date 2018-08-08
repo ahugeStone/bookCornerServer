@@ -122,8 +122,20 @@ public class BookServiceImpl implements BookService {
 
 	//查询特定用户的借阅图书历史，包括当前图书的被借阅状态
 	@Override
-	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) {
-		return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
+	public List<BookBorrowRecordEntity> queryBookBorrowByOpenid(String openid) {
+		//return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
+		List<BookBorrowRecordEntity> bookBorrowRecordEntities =
+				bookBorrowRecordMapper.queryBookBorrowByOpenidNew(openid);
+		for (BookBorrowRecordEntity bookBorrowRecordEntity : bookBorrowRecordEntities) {
+			int bookId = bookBorrowRecordEntity.getBookId();
+			Integer bookLikeNum = bookBaseInfoMapper.queryLikeNumById(bookId);
+			Integer bookCommentNum=bookBaseInfoMapper.queryCommentNumById(bookId);
+			bookBorrowRecordEntity.setBookLikeNum(bookLikeNum);
+			bookBorrowRecordEntity.setBookCommentNum(bookCommentNum);
+		}
+
+		return bookBorrowRecordEntities;
+
 	}
 
 	//查询特定用户的逾期未还图书情况（借书状态bookStatus 0，且借出时间大于30天）

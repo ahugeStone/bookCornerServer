@@ -55,7 +55,7 @@ public class EmailTask {
                     "<table border=\"1\">\n" +
                     "  <thead>\n" +
                     "    <tr>\n" +
-                    "      <th>图书书名</th>\n" +
+                    "      <th>图书名</th>\n" +
                     "      <th>借阅信息</th>\n" +
                     "    </tr>\n" +
                     "  </thead>\n"+

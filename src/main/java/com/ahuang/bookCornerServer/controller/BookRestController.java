@@ -4,6 +4,7 @@ import com.ahuang.bookCornerServer.controller.req.CustBindRequest;
 import com.ahuang.bookCornerServer.controller.req.CustQueryBookListReq;
 import com.ahuang.bookCornerServer.controller.req.Response;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.AuthException;
 import com.ahuang.bookCornerServer.exception.BaseException;
@@ -247,13 +248,13 @@ public class BookRestController extends BaseController{
 
     }
 
-    /**
+   /* /**
     * 获取用户借阅图书的列表
     * @params  [request]
     * @return: java.util.Map
     * @Author: ahuang
     * @Date: 2018/7/9 下午9:05
-    */
+    *//*
     @RequestMapping(path="users/{userNo}/history", method = { RequestMethod.GET })
     public Map custQueryBookBorrowRecord(@PathVariable("userNo") String userNo, HttpServletRequest request) throws Exception {
         CustBindUsersEntity user = checkLoginForJWT(request);
@@ -264,7 +265,27 @@ public class BookRestController extends BaseController{
         Map<String, Object> res = new HashMap<>();
         res.put("borrowRecordList", borrowRecordList);
         return res;
+    }*/
+
+    /**
+     * 获取用户借阅图书的列表
+     * @params  [request]
+     * @return: java.util.Map
+     * @Author: ahuang
+     * @Date: 2018/7/9 下午9:05
+     */
+    @RequestMapping(path="users/{userNo}/history", method = { RequestMethod.GET })
+    public Map custQueryBookBorrowRecord(@PathVariable("userNo") String userNo, HttpServletRequest request) throws Exception {
+        CustBindUsersEntity user = checkLoginForJWT(request);
+        if (!user.getUserNo().equals(userNo)) {
+            throw new AuthException("userNo.not.match", "用户信息不符");
+        }
+        List<BookBorrowRecordEntity> borrowRecordList = bookService.queryBookBorrowByOpenid(user.getOpenid());
+        Map<String, Object> res = new HashMap<>();
+        res.put("borrowRecordList", borrowRecordList);
+        return res;
     }
+
 
     /**
     * 新用户绑定

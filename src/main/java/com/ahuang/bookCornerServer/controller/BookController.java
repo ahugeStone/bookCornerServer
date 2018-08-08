@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 import com.ahuang.bookCornerServer.servise.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -166,7 +167,7 @@ public class BookController  extends BaseController{
 	public Response custQueryBookBorrowRecord(@RequestBody @Valid Request req , HttpSession session) throws Exception {
 		this.checkLoginExp(session);
 		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
-		List<Map<String, Object>> borrowRecordList = bookService.queryBookBorrowByOpenid(bindUser.getOpenid());
+		List<BookBorrowRecordEntity> borrowRecordList = bookService.queryBookBorrowByOpenid(bindUser.getOpenid());
 		Map<String, Object> res = new HashMap<String, Object>();
 		res.put("borrowRecordList", borrowRecordList);
 		return getRes(res);
