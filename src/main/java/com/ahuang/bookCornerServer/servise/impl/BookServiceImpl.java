@@ -163,16 +163,9 @@ public class BookServiceImpl implements BookService {
 		if(1 != r2) {
 			throw new BaseException("comment.failed", "评论图书失败");
 		}
-        MessageBaseInfoEntity m = new MessageBaseInfoEntity();
-        m.setBookId(bookId);
-        m.setBookName(bookInfo.getBookName());
-        m.setOperationTime(new Date());
-        m.setOperationContent(comment);
-        m.setOperationType("2");
-        m.setUserName(bindUser.getUserName());
-        messageBaseInfoMapper.insertMessage(m);
+
 	}
-	
+
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.DEFAULT,timeout=36000,rollbackFor=Exception.class)
 	public void addBookLikedRecord(Integer bookId, String openid) {
@@ -254,33 +247,11 @@ public class BookServiceImpl implements BookService {
 				throw new BaseException("can.not.borrow", "本书当前不可借阅bookId：" + bookId);
 			}
 
-			//插入借阅记录到图书操作记录表中 借阅操作为0 归还操作为1 评论操作为2
-			//BookOperationRecordEntity operationRecord = new BookOperationRecordEntity();
-			//operationRecord.setBookId(bookId);
-			//operationRecord.setBookName(bookInfo.getBookName());
-			//operationRecord.setUserName(user.getUserName());
-			//operationRecord.setOperationType("0");
-			//operationRecord.setOperationTime(new Date());
-			//operationRecord.setOperationContent("借阅");
-
-
 		} else {
 			// 不可借阅
 			log.debug("bookInfo.getBookStatus：" + bookInfo.getBookStatus() + ", isBorrowed:" + isBorrowed);
 			throw new BaseException("can.not.borrow", "本书当前不可借阅bookId：" + bookId);
 		}
-
-		MessageBaseInfoEntity m = new MessageBaseInfoEntity();
-		m.setBookId(bookId);
-		m.setBookName(bookInfo.getBookName());
-		m.setOperationTime(new Date());
-		m.setOperationContent("");
-		m.setOperationType("0");
-		m.setUserName(user.getUserName());
-		messageBaseInfoMapper.insertMessage(m);
-
-
-
 
 	}
 	@Override
@@ -314,13 +285,20 @@ public class BookServiceImpl implements BookService {
 			log.debug("图书无法归还bookid：" + bookId);
 			throw new BaseException("can.not.return", "本书当前无法归还bookId：" + bookId);
 		}
-        MessageBaseInfoEntity m = new MessageBaseInfoEntity();
-        m.setBookId(bookId);
-        m.setBookName(bookInfo.getBookName());
-        m.setOperationTime(new Date());
-        m.setOperationContent("");
-        m.setOperationType("1");
-        m.setUserName(user.getUserName());
-        messageBaseInfoMapper.insertMessage(m);
+
+	}
+	@Override
+	public MessageBaseInfoEntity insertMessage(Integer bookId, String bookName, String operationContent, String operationType, String userName)
+
+	{
+		MessageBaseInfoEntity m = new MessageBaseInfoEntity();
+		m.setBookId(bookId);
+		m.setBookName(bookName);
+		m.setOperationTime(new Date());
+		m.setOperationContent(operationContent);
+		m.setOperationType(operationType);
+		m.setUserName(userName);
+		messageBaseInfoMapper.insertMessage(m);
+		return m;
 	}
 }
