@@ -42,8 +42,8 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping(path = "/bookCorner/v1")
-public class BookRestController extends BaseController {
+@RequestMapping(path="/bookCorner/v1")
+public class BookRestController extends BaseController{
     /**
      * JWT加密密钥
      */
@@ -62,10 +62,9 @@ public class BookRestController extends BaseController {
     private final MessageService messageService;
 
     private final EmailService emailService;
-
     @Autowired
 
-    public BookRestController(BookService bookService, CommonService commonService, EmailService emailService, MessageService messageService) {
+    public BookRestController(BookService bookService, CommonService commonService,EmailService emailService,MessageService messageService) {
         this.bookService = bookService;
         this.commonService = commonService;
         this.emailService = emailService;
@@ -73,14 +72,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 查询用户是否绑定，如果绑定返回jwt的token
-     *
-     * @params [code] 腾讯oauth的code
-     * @return: java.util.Map<java.lang.String       ,       java.lang.Object>
-     * @Author: ahuang
-     * @Date: 2018/7/8 下午10:27
-     */
-    @RequestMapping(path = "/token", method = {RequestMethod.GET})
+    * 查询用户是否绑定，如果绑定返回jwt的token
+    * @params  [code] 腾讯oauth的code
+    * @return: java.util.Map<java.lang.String,java.lang.Object>
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:27
+    */
+    @RequestMapping(path="/token",method = { RequestMethod.GET })
     public Map<String, Object> CustQueryIsBinded(@RequestParam("code") String code, HttpServletRequest request) throws BaseException {
         CustBindUsersEntity bindUser = checkLoginForJWTSilence(request);// 获取JWT中用户信息
         String openid = null;
@@ -102,7 +100,7 @@ public class BookRestController extends BaseController {
                 // 根据openid查询用户绑定信息
                 bindUser = commonService.getUserByOpenid(openid);
             case LoginWithoutBinded:
-                if (StringUtil.isNullOrEmpty(bindUser) || StringUtil.isNullOrEmpty(bindUser.getUserNo())) {
+                if(StringUtil.isNullOrEmpty(bindUser) || StringUtil.isNullOrEmpty(bindUser.getUserNo())) {
                     log.info("OPENID:" + openid + "未绑定！");
                     String tokenJWT = JWTUtil.getToken(openid, null, SECRET, EXPIRATIONTIME);
                     res.put("isBinded", "0");//默认未绑定
@@ -125,14 +123,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 查询图书列表
-     *
-     * @params [req]
-     * @return: java.lang.Object
-     * @Author: ahuang
-     * @Date: 2018/7/8 下午10:37
-     */
-    @RequestMapping(path = "/books", method = {RequestMethod.GET})
+    * 查询图书列表
+    * @params  [req]
+    * @return: java.lang.Object
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:37
+    */
+    @RequestMapping(path="/books",method = { RequestMethod.GET })
     public Object custQueryBookList(@Valid CustQueryBookListReq req, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         Integer num = req.getNum();
@@ -150,14 +147,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 查询图书详情
-     *
-     * @params [bookId, request]
-     * @return: com.ahuang.bookCornerServer.entity.BookBaseInfoEntity
-     * @Author: ahuang
-     * @Date: 2018/7/8 下午10:38
-     */
-    @RequestMapping(path = "/books/{bookId}", method = {RequestMethod.GET})
+    * 查询图书详情
+    * @params  [bookId, request]
+    * @return: com.ahuang.bookCornerServer.entity.BookBaseInfoEntity
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:38
+    */
+    @RequestMapping(path="/books/{bookId}",method = { RequestMethod.GET })
     public BookBaseInfoEntity custQueryBookDetail(@PathVariable Integer bookId, HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWT(request);
         Map<String, Object> param = new HashMap<>();
@@ -167,14 +163,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 查询特定图书的所有评论
-     *
-     * @params [bookId, request]
-     * @return: java.util.Map
-     * @Author: ahuang
-     * @Date: 2018/7/8 下午10:55
-     */
-    @RequestMapping(path = "/books/{bookId}/comments", method = {RequestMethod.GET})
+    * 查询特定图书的所有评论
+    * @params  [bookId, request]
+    * @return: java.util.Map
+    * @Author: ahuang
+    * @Date: 2018/7/8 下午10:55
+    */
+    @RequestMapping(path="/books/{bookId}/comments",method = { RequestMethod.GET })
     public Map custQueryBookCommentHistory(@PathVariable("bookId") Integer bookId, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         Map<String, Object> result = new HashMap<>();
@@ -184,14 +179,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 评论图书
-     *
-     * @params [bookId, comment, request]
-     * @return: void
-     * @Author: ahuang
-     * @Date: 2018/7/9 下午9:42
-     */
-    @RequestMapping(path = "/books/{bookId}/comments", method = {RequestMethod.POST})
+    * 评论图书
+    * @params  [bookId, comment, request]
+    * @return: void
+    * @Author: ahuang
+    * @Date: 2018/7/9 下午9:42
+    */
+    @RequestMapping(path="/books/{bookId}/comments",method = { RequestMethod.POST })
     public void custCommentBook(@PathVariable("bookId") Integer bookId, @RequestParam("comment") String comment, HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWT(request);
         bookService.addCommentRecord(bookId, user, comment);
@@ -199,14 +193,13 @@ public class BookRestController extends BaseController {
 
     /**
      * 用户点赞评论
-     *
-     * @params [bookId, commentId, request]
+     * @params  [bookId, commentId, request]
      * @return: void
      * @Author: puxuewei
      * @Date: 2018/7/25 下午3:42
      */
-    @RequestMapping(path = "/books/{bookId}/comments/{commentId}", method = {RequestMethod.POST})
-    public Response custLikeComment(@PathVariable("bookId") Integer bookId, @PathVariable("commentId") Integer commentId, HttpServletRequest request) throws BaseException {
+    @RequestMapping(path="/books/{bookId}/comments/{commentId}",method = { RequestMethod.POST })
+    public Response custLikeComment(@PathVariable("bookId") Integer bookId,@PathVariable("commentId") Integer commentId, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         CustBindUsersEntity user = checkLoginForJWT(request);
         bookService.addCommentLikedRecord(bookId, user, commentId);
@@ -214,14 +207,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 查询特定图书借阅历史
-     *
-     * @params [bookId, request]
-     * @return: java.util.Map
-     * @Author: ahuang
-     * @Date: 2018/7/9 下午9:43
-     */
-    @RequestMapping(path = "books/{bookId}/history")
+    * 查询特定图书借阅历史
+    * @params  [bookId, request]
+    * @return: java.util.Map
+    * @Author: ahuang
+    * @Date: 2018/7/9 下午9:43
+    */
+    @RequestMapping(path="books/{bookId}/history")
     public Map custQueryBookBorrowHistory(@PathVariable("bookId") Integer bookId, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         List<Map<String, Object>> borrowHistoryList = bookService.queryBookBorrowHistoryByBookId(bookId);
@@ -233,13 +225,12 @@ public class BookRestController extends BaseController {
 
     /**
      * 向特定用户发送邮件提醒欠书超过一个月（且借书状态bookStatus 0，且借出时间大于30天）
-     *
-     * @params [request]
+     * @params  [request]
      * @return: java.util.Map
      * @Author: puxuewei
      * @Date: 2018/7/27 下午3:00
      */
-    @RequestMapping(path = "users/{userNo}", method = {RequestMethod.GET})
+    @RequestMapping(path="users/{userNo}", method = { RequestMethod.GET })
     public Map sendBookBorrowEmailByOpenid(@PathVariable("userNo") String userNo, HttpServletRequest request) throws Exception {
         CustBindUsersEntity user = checkLoginForJWT(request);
         if (!user.getUserNo().equals(userNo)) {
@@ -248,37 +239,36 @@ public class BookRestController extends BaseController {
         List<Map<String, Object>> userBorrowBookEmailList = bookService.queryBookBorrowByOpenidAndBookStatus(user.getOpenid());
         Map<String, Object> res = new HashMap<>();
         res.put("userBorrowBookEmailList", userBorrowBookEmailList);
-        String userEmail = "" + userBorrowBookEmailList.get(0).get("userEmail");
-        String emailSubject = "开发二部温馨提示" + "\t" + userBorrowBookEmailList.get(0).get("userName") + "\t" + "借阅时间超过一个月需归还";
+        String userEmail = ""+userBorrowBookEmailList.get(0).get("userEmail");
+        String emailSubject = "开发二部温馨提示"+"\t"+userBorrowBookEmailList.get(0).get("userName")+"\t"+"借阅时间超过一个月需归还";
         String emailContent = "";
         for (int i = 0; i < userBorrowBookEmailList.size(); i++) {
             Map<String, Object> map = userBorrowBookEmailList.get(i);
-            emailContent += "" + map.get("bookName") + "\t" + "借阅时间超过一个月需还书" + "\n";
-        }
-        emailService.sendSimpleEmail(userEmail, emailSubject, emailContent);
+            emailContent += ""+map.get("bookName")+"\t"+"借阅时间超过一个月需还书"+"\n";
+         }
+        emailService.sendSimpleEmail(userEmail,emailSubject,emailContent);
         return res;
     }
 
 
     /**
-     * 操作图书
-     *
-     * @params [bookId, request]
-     * @return: void
-     * @Author: ahuang
-     * @Date: 2018/7/9 下午8:31
-     */
-    @RequestMapping(path = "/books/{bookId}", method = {RequestMethod.POST})
+    * 操作图书
+    * @params  [bookId, request]
+    * @return: void
+    * @Author: ahuang
+    * @Date: 2018/7/9 下午8:31
+    */
+    @RequestMapping(path="/books/{bookId}",method = { RequestMethod.POST })
     public void custHandleBook(@PathVariable Integer bookId, @RequestParam("action") String action,
                                HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWT(request);
-        if (BookActions.BORROW.toString().equals(action)) {//借阅图书
+        if(BookActions.BORROW.toString().equals(action)) {//借阅图书
             log.debug(BookActions.BORROW.toString());
             bookService.borrowBookById(bookId, user.getOpenid());
-        } else if (BookActions.RETURN.toString().equals(action)) {//归还图书
+        } else if(BookActions.RETURN.toString().equals(action)) {//归还图书
             log.debug(BookActions.RETURN.toString());
             bookService.returnBookById(bookId, user.getOpenid());
-        } else if (BookActions.THUMBUP.toString().equals(action)) {//图书点赞
+        } else if(BookActions.THUMBUP.toString().equals(action)) {//图书点赞
             log.debug(BookActions.THUMBUP.toString());
             bookService.addBookLikedRecord(bookId, user.getOpenid());
         } else {
@@ -288,14 +278,13 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 获取用户借阅图书的列表
-     *
-     * @params [request]
-     * @return: java.util.Map
-     * @Author: ahuang
-     * @Date: 2018/7/9 下午9:05
-     */
-    @RequestMapping(path = "users/{userNo}/history", method = {RequestMethod.GET})
+    * 获取用户借阅图书的列表
+    * @params  [request]
+    * @return: java.util.Map
+    * @Author: ahuang
+    * @Date: 2018/7/9 下午9:05
+    */
+    @RequestMapping(path="users/{userNo}/history", method = { RequestMethod.GET })
     public Map custQueryBookBorrowRecord(@PathVariable("userNo") String userNo, HttpServletRequest request) throws Exception {
         CustBindUsersEntity user = checkLoginForJWT(request);
         if (!user.getUserNo().equals(userNo)) {
@@ -308,26 +297,25 @@ public class BookRestController extends BaseController {
     }
 
     /**
-     * 新用户绑定
-     *
-     * @params [userNo, req, request]
-     * @return: java.util.Map
-     * @Author: ahuang
-     * @Date: 2018/7/9 下午10:58
-     */
-    @RequestMapping(path = "users/{userNo}", method = {RequestMethod.POST})
+    * 新用户绑定
+    * @params  [userNo, req, request]
+    * @return: java.util.Map
+    * @Author: ahuang
+    * @Date: 2018/7/9 下午10:58
+    */
+    @RequestMapping(path="users/{userNo}", method = { RequestMethod.POST })
     public Map custBind(@PathVariable("userNo") String userNo, @Valid CustBindRequest req, HttpServletRequest request) throws BaseException {
         CustBindUsersEntity user = checkLoginForJWTSilence(request);
         LoginStatus status = JWTUtil.getLoginStatus(user);
         CustBindUsersEntity bindUser;
         // 拼接返回报文
         Map<String, Object> res = new HashMap<>();
-        if (LoginStatus.LoginAndBinded.equals(status)) {
+        if(LoginStatus.LoginAndBinded.equals(status)) {
             bindUser = user;
             log.info("该用户已经成功登陆，openid:" + user.getOpenid());
-        } else if (LoginStatus.LoginWithoutBinded.equals(status)) {
+        } else if(LoginStatus.LoginWithoutBinded.equals(status)) {
             bindUser = commonService.getUserByOpenid(user.getOpenid());
-            if (StringUtil.isNullOrEmpty(bindUser)) {
+            if(StringUtil.isNullOrEmpty(bindUser)) {
                 // 如果库中没有绑定记录，说明用户需要绑定
                 bindUser = new CustBindUsersEntity();
                 bindUser.setOpenid(user.getOpenid());
@@ -353,27 +341,18 @@ public class BookRestController extends BaseController {
         res.put("userName", bindUser.getUserName());
         return res;
     }
-
     /**
      * 查询首页公告栏信息
-     *
-     * @params []
+     * @params  []
      * @return: java.util.Map
      * @Author: lct
      * @Date: 2018/7/26 上午11:55
      */
-    @RequestMapping(path = "/messages", method = {RequestMethod.GET})
+    @RequestMapping(path="/messages",method = { RequestMethod.GET })
     public Map messageInfoQuery(@RequestParam("num") Integer num, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         Map<String, Object> result = new HashMap<>();
-
-
-
-            if (num == 2 || num == 10) {
-                result.put("messageList", messageService.queryMessageList(num));
-
-            }else{ throw new BaseException("message.failed", "num不符合要求");}
-
+        result.put("messageList", messageService.queryMessageList(num));
 
         return result;
     }
