@@ -130,7 +130,8 @@ public class BookRestController extends BaseController{
     public Object custQueryBookList(@Valid CustQueryBookListReq req, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         Integer num = req.getNum();
-        String bookName = req.getBookName();
+        //搜索的关键词都改成小写
+        String bookName = req.getBookName().toLowerCase();
         String bookType = req.getBookType();
         String bookStatus = req.getBookStatus();
         Map<String, Object> param = new HashMap<>();

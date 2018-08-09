@@ -23,8 +23,9 @@ public interface BookBaseInfoMapper{
 			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime, bookScore, isbn13 ";
 	String BOOK_LIST_WHERE = "<where>"
 			+ "<if test='bookName!=null and bookName!=\"\"'>"
-			+ "<bind name=\"pattern\" value=\"'%' + bookName + '%'\" />" 
-			+ "and bookName like #{pattern} "
+			+ "<bind name=\"pattern\" value=\"'%' + bookName + '%'\" />"
+			//+ "and bookName like #{pattern} "
+			+ "and lower(bookName) like #{pattern} "
 			+ "</if>"
 			+ "<if test='bookType!=null and bookType!=\"\"'>"
 			+ "and bookType = #{bookType}"
