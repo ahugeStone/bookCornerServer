@@ -42,17 +42,30 @@ public interface BookBorrowRecordMapper {
 	List<Map<String, Object>> queryBookBorrowHistoryByBookId(@Param("bookId") Integer id);
 
 	/**
-	* 查询特定用户的借阅图书历史，包括当前图书的被借阅状态
-	* @params  [openid]
-	* @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
-	* @Author: ahuang
-	* @Date: 2018/7/19 下午8:55
-	*/
-	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime," 
+	 * 查询特定用户的借阅图书历史，包括当前图书的被借阅状态
+	 * @params  [openid]
+	 * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+	 * @Author: ahuang
+	 * @Date: 2018/7/19 下午8:55
+	 */
+	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,"
 			+  "b.bookStatus from BOOK_BORROWRECORD r ,BOOK_BASEINFO b"
 			+ " where r.bookId=b.bookId "
 			+ " and r.openid=#{openid} order by r.borrowTime desc")
 	List<Map<String, Object>> queryBookBorrowByOpenid(@Param("openid") String openid);
+
+	/**
+	 * 查询特定用户的借阅图书历史，包括当前图书的被借阅状态
+	 * @params  [openid]
+	 * @return: List<com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity>
+	 * @Author: puxuewei
+	 * @Date: 2018/8/8 下午7:00
+	 */
+	@Select("Select  r.id, r.bookId, r.bookName, r.borrowStatus, r.openid, r.headImgUrl, r.userName, r.borrowTime, r.returnTime,b.bookLikeNum,b.bookCommentNum "
+			+  "from BOOK_BORROWRECORD r inner join BOOK_BASEINFO b"
+			+ " on r.bookId=b.bookId "
+			+ " and r.openid=#{openid} order by r.borrowTime desc")
+	List<BookBorrowRecordEntity> queryBookBorrowByOpenidNew(@Param("openid") String openid);
 
 	/**
 	 * 查询特定用户的逾期未还图书情况（借书状态bookStatus 0，且借出时间大于30天）

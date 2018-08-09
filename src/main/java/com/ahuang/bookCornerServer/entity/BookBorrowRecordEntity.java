@@ -23,4 +23,17 @@ public class BookBorrowRecordEntity implements Serializable{
 	private String userName;
 	private Date borrowTime;
 	private Date returnTime;
+
+	/**
+	 * @fieldName: bookLikeNum
+	 * @fieldType: Integer
+	 * @Description: 图书点赞数：默认为0
+	 */
+	private Integer bookLikeNum;
+	/**
+	 * @fieldName: bookCommentNum
+	 * @fieldType: Integer
+	 * @Description: 图书评论数:默认为0
+	 */
+	private Integer bookCommentNum;
 }

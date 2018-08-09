@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ahuang.bookCornerServer.bo.PageList;
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
@@ -69,7 +70,8 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	List<BookCommentRecordEntity> queryCommentList(Integer bookId);
+	//List<BookCommentRecordEntity> queryCommentList(Integer bookId);
+	List<BookCommentRecordEntity> queryCommentList(Map<String, Object> param);
 	
 	/**
      * 根据bookId借阅图书
@@ -110,12 +112,12 @@ public interface BookService {
 	* @version V1.0
 	* @throws
 	*/
-	List<Map<String, Object>> queryBookBorrowByOpenid(String openid) throws Exception;
+	List<BookBorrowRecordEntity> queryBookBorrowByOpenid(String openid) throws Exception;
 
 	/**
 	 * 查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
 	 * @throws Exception
-	 * @Title: queryBookBorrowByOpenidAndbookStatus
+	 * @Title: queryBookBorrowByOpenidAndBookStatus
 	 * @Description: 查询特定用户的借阅图书情况，且借书状态bookStatus 0，且借出时间大于30天
 	 * @param openid
 	 * @return List<BookBorrowRecordEntity> ？   返回类型

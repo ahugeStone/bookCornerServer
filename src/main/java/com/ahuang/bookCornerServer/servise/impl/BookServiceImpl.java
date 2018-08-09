@@ -1,30 +1,21 @@
 package com.ahuang.bookCornerServer.servise.impl;
 
-import java.util.AbstractList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.ahuang.bookCornerServer.bo.BookList;
 import com.ahuang.bookCornerServer.entity.*;
+import com.ahuang.bookCornerServer.exception.BaseException;
 import com.ahuang.bookCornerServer.mapper.*;
-
-import com.ahuang.bookCornerServer.servise.MessageService;
-
-import net.sf.ehcache.constructs.nonstop.store.ExceptionOnTimeoutStore;
+import com.ahuang.bookCornerServer.servise.BookService;
+import com.ahuang.bookCornerServer.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ahuang.bookCornerServer.bo.BookList;
-import com.ahuang.bookCornerServer.servise.BookService;
-import com.ahuang.bookCornerServer.util.StringUtil;
-
-import lombok.extern.slf4j.Slf4j;
-
-import com.ahuang.bookCornerServer.exception.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The type Book service.
@@ -101,6 +92,7 @@ public class BookServiceImpl implements BookService {
 				}
 			}
 		}
+		//查询当前用户是否点赞，是在图书详情页面调用的
 		BookLikeRecordEntity isLiked = bookLikeRecordMapper.queryBookLikeRecordById(id, openid);
 		if(!StringUtil.isNullOrEmpty(isLiked)) {
 			bo.setIsLiked("1");
@@ -111,16 +103,29 @@ public class BookServiceImpl implements BookService {
 		}
 		return bo;
 	}
-	
+
+	//查询评论记录
 	@Override
-	public List<BookCommentRecordEntity> queryCommentList(Integer bookId) {
-		return bookCommentRecordMapper.queryCommentList(bookId);
+	public List<BookCommentRecordEntity> queryCommentList(Map<String, Object> param) {
+		Integer bookId = (Integer)param.get("id");
+		String openid = (String)param.get("openid");
+		List<BookCommentRecordEntity> bookCommentRecordEntities=bookCommentRecordMapper.queryCommentList(bookId);
+        for (BookCommentRecordEntity bookCommentRecordEntity : bookCommentRecordEntities) {
+            int commentId = bookCommentRecordEntity.getId();
+            CommentLikeRecordEntity isLiked = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
+            if (!StringUtil.isNullOrEmpty(isLiked)) {
+                bookCommentRecordEntity.setIsLiked("1");
+            }
+        }
+		return bookCommentRecordEntities;
 	}
 
 	//查询特定用户的借阅图书历史，包括当前图书的被借阅状态
 	@Override
-	public List<Map<String, Object>> queryBookBorrowByOpenid(String openid) {
-		return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
+	public List<BookBorrowRecordEntity> queryBookBorrowByOpenid(String openid) {
+		//return bookBorrowRecordMapper.queryBookBorrowByOpenid(openid);
+        return bookBorrowRecordMapper.queryBookBorrowByOpenidNew(openid);
+
 	}
 
 	//查询特定用户的逾期未还图书情况（借书状态bookStatus 0，且借出时间大于30天）
@@ -179,10 +184,12 @@ public class BookServiceImpl implements BookService {
 			log.info("该用户已经点过赞了，openid:" + openid);
 			return;
 		}
+
 		Integer bl = bookLikeRecordMapper.insertBookLikeRecord(entity);
 		Integer bb = bookBaseInfoMapper.updateBookLikeNumByOne(bookId);
 		log.debug("bookLikeRecord插入数据条数:" + bl);
 		log.debug("bookBaseInfo插入数据条数:" + bb);
+
 	}
 
 	//评论点赞功能
@@ -197,16 +204,20 @@ public class BookServiceImpl implements BookService {
 		entity.setHeadImgUrl(bindUser.getHeadImgUrl());
 		entity.setUserName(bindUser.getUserName());
 		entity.setRecTime(new Date());
-		CommentLikeRecordEntity co = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
-		if(!StringUtil.isNullOrEmpty(co)) {
+		CommentLikeRecordEntity isLiked = commentLikeRecordMapper.queryCommentLikeRecordById(commentId, openid);
+		//BookCommentRecordEntity bc = bookCommentRecordMapper.queryComment(bookId,commentId);
+		if(!StringUtil.isNullOrEmpty(isLiked)) {
+			//return; 返回状态给前端 该用户是否点过赞
+			//bc.setIsLiked("1");
 			log.info("该用户已经点过赞了，openid:" + openid);
 			throw new BaseException("comment.failed", "该用户已经点过赞了");
 		}
 
-		Integer cl = 0;
+		Integer cl;
 		try{
 			cl = commentLikeRecordMapper.insertCommentLikeRecord(entity);
 		} catch(Exception e) {
+			e.printStackTrace();
 			throw new BaseException("comment.failed", "该用户已经点过赞了");
 		}
 		//BookCommentRecordMapper 评论点赞记录表中点赞数添加一个字段，评论点赞数自增1

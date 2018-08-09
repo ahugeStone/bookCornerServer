@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
 import com.ahuang.bookCornerServer.servise.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -111,9 +112,14 @@ public class BookController  extends BaseController{
 	@RequestMapping("/CustQueryBookCommentHistory")
 	public Response custQueryBookCommentHistory(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
 		this.checkLoginExp(session);
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
 		Integer bookId = (Integer)req.getParam("bookId");
+		Map<String, Object> param = new HashMap<>();
+		param.put("id", bookId);
+		param.put("openid", bindUser.getOpenid());
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("commentHistoryList", bookService.queryCommentList(bookId));
+
+		result.put("commentHistoryList", bookService.queryCommentList(param));
 		return getRes(result);
 	}
 	/**
@@ -161,7 +167,7 @@ public class BookController  extends BaseController{
 	public Response custQueryBookBorrowRecord(@RequestBody @Valid Request req , HttpSession session) throws Exception {
 		this.checkLoginExp(session);
 		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
-		List<Map<String, Object>> borrowRecordList = bookService.queryBookBorrowByOpenid(bindUser.getOpenid());
+		List<BookBorrowRecordEntity> borrowRecordList = bookService.queryBookBorrowByOpenid(bindUser.getOpenid());
 		Map<String, Object> res = new HashMap<String, Object>();
 		res.put("borrowRecordList", borrowRecordList);
 		return getRes(res);
@@ -187,6 +193,17 @@ public class BookController  extends BaseController{
 		return getRes(null);
 	}
 
+	//用户点赞评论
+	@RequestMapping("/CustLikeComment")
+	public Response custLikeComment(@RequestBody @Valid Request req , HttpSession session) throws BaseException {
+		this.checkLoginExp(session);
+		CustBindUsersEntity bindUser = (CustBindUsersEntity)session.getAttribute("bindUser");
+		Integer bookId = (Integer)req.getParam("bookId");
+		Integer commentId = (Integer)req.getParam("commentid");
+		String openid = bindUser.getOpenid();
+		bookService.addCommentLikedRecord(bookId, bindUser ,commentId);
+		return getRes(null);
+	}
 	
 //	@RequestMapping(value="/CustCommentBook", produces="text/plain;charset=UTF-8;")
 	@RequestMapping(path="/CustCommentBook")

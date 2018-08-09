@@ -20,7 +20,7 @@ import java.util.Map;
 public interface BookBaseInfoMapper{
 	String TABLE_NAEM = " BOOK_BASEINFO b ";
 	String SELECT_FIELDS = " bookId, bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, "
-			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime,bookScore ";
+			+ "bookTime, bookRemark, bookLikeNum, bookCommentNum, recTime, bookScore, isbn13 ";
 	String BOOK_LIST_WHERE = "<where>"
 			+ "<if test='bookName!=null and bookName!=\"\"'>"
 			+ "<bind name=\"pattern\" value=\"'%' + bookName + '%'\" />" 
@@ -79,6 +79,35 @@ public interface BookBaseInfoMapper{
     */
 	@Update("Update "+TABLE_NAEM+" set bookStatus=#{bookStatus} where bookId=#{bookId}")
 	Integer updateBookBorrowStatus(@Param("bookId") Integer bookId,  @Param("bookStatus") String bookStatus);
+
+	/**
+	* 根据豆瓣信息更新表
+	* @params  [bookId, bookScore, isbn13, doubanAuthor]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/8/4 下午7:02
+	*/
+	@Update("<script>" +
+			"Update" + TABLE_NAEM +
+			"<set>"+
+			"<if test='bookScore!=null'>" +
+			"bookScore=#{bookScore}," +
+			"</if>"+
+			"<if test='isbn13!=null'>" +
+			"isbn13=#{isbn13}," +
+			"</if>"+
+			"<if test='doubanAuthor!=null'>" +
+			"doubanAuthor=#{doubanAuthor}," +
+			"</if>"+
+			"<if test='bookBrief!=null'>" +
+			"bookBrief=#{bookBrief}," +
+			"</if>"+
+			"</set>"+
+			" where bookId=#{bookId}" +
+			"</script>")
+	Integer updateBookInfoFromDouban(@Param("bookId") Integer bookId, @Param("bookScore") String bookScore,
+									 @Param("isbn13") String isbn13, @Param("doubanAuthor") String doubanAuthor,
+									 @Param("bookBrief") String bookBrief);
 
 	/**
 	* 查询图书列表
@@ -146,5 +175,6 @@ public interface BookBaseInfoMapper{
 		+ "</script>")
 //	@Options(useCache=true)
 	Integer queryBookInfoNum(Map<String, Object> param);
+
 	
 }

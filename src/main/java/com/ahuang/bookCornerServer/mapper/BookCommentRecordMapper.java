@@ -23,8 +23,19 @@ public interface BookCommentRecordMapper {
 	* @Date: 2018/7/19 下午9:17
 	*/
 	@Select("Select " + COMMENT_RECORD_FIELDS + " from " + COMMENT_RECORD_NAME
-			+ " where bookId=#{bookId} ")
+			+ " where bookId=#{bookId} order by recTime desc")
 	List<BookCommentRecordEntity> queryCommentList(@Param("bookId") Integer bookId);
+
+	/**
+	 * 查询特定图书的特定评论
+	 * @params  [bookId][commentId]
+	 * @return: java.util.List<com.ahuang.bookCornerServer.entity.BookCommentRecordEntity>
+	 * @Author: puxuewei
+	 * @Date: 2018/8/7 下午17:00
+	 */
+	@Select("Select " + COMMENT_RECORD_FIELDS + " from " + COMMENT_RECORD_NAME
+			+ " where bookId=#{bookId} and id=#{commentId} order by recTime desc")
+	BookCommentRecordEntity queryComment(@Param("bookId") Integer bookId,@Param("commentId") Integer commentId);
 
 	/**
 	* 插入用户的图书评论

@@ -126,4 +126,11 @@ public class BookBaseInfoEntity implements Serializable{
 	 */
 	private String bookScore;
 
+	/**
+	 * @fieldName: isbn13
+	 * @fieldType: String
+	 * @Description: isbn编号
+	 */
+	private String isbn13;
+
 }
