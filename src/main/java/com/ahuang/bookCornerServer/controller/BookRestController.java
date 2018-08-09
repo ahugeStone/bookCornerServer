@@ -344,7 +344,18 @@ public class BookRestController extends BaseController{
     public Map messageInfoQuery(@RequestParam("num") Integer num, HttpServletRequest request) throws BaseException {
         checkLoginForJWT(request);
         Map<String, Object> result = new HashMap<>();
-        result.put("messageList", messageService.queryMessageList(num));
+        if(num>10){
+            num=10;
+            throw new BaseException("message.failed", "num大于10，已重置为10");
+        }
+        if(num<2){
+            num=2;
+            throw new BaseException("message.failed", "num小于2，已重置为2");
+        }
+
+            result.put("messageList", messageService.queryMessageList(num));
+
+
 
         return result;
     }
