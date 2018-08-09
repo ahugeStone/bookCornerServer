@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.ahuang.bookCornerServer.bo.PageList;
-import com.ahuang.bookCornerServer.entity.*;
+import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import com.ahuang.bookCornerServer.entity.BookBorrowRecordEntity;
+import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
+import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
 import com.ahuang.bookCornerServer.exception.BaseException;
 
 /**
@@ -192,16 +195,6 @@ public interface BookService {
 	* @throws
 	*/
 	void addCommentRecord(Integer bookId, CustBindUsersEntity bindUser, String comment) throws BaseException;
-	/**
-	 * 公告栏信息表插入
-	 *
-	 * @Title: insertMessage
-	 * @param bookId，bookName，operationContent，operationType，userName
-	 * @author lct
-	 * @date 2018年8月9日 上午10:00:13
-	 * @version V1.0
-	 * @throws
-	 */
-	MessageBaseInfoEntity insertMessage(Integer bookId, String bookName, String operationContent, String operationType, String userName);
+
 
 }

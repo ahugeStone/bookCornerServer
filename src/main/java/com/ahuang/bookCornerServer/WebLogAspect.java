@@ -1,20 +1,14 @@
 package com.ahuang.bookCornerServer;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
-import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
-import com.ahuang.bookCornerServer.entity.MessageBaseInfoEntity;
-import com.ahuang.bookCornerServer.exception.BaseException;
-import com.ahuang.bookCornerServer.servise.BookService;
-import com.ahuang.bookCornerServer.servise.CommonService;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -35,11 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Order(-99) // 控制多个Aspect的执行顺序，越小越先执行
 @Component
 public class WebLogAspect {
-	@Autowired
-	private BookService bookService;
-
-	@Autowired
-	private CommonService commonService;
 	/**
 	 * 
 	* @Title: logPointCut
@@ -113,91 +102,4 @@ public class WebLogAspect {
     public void doAfterException(Object res){
         log.info("ResponseBody<<<<<<<:" + res);
     }
-
-	@Pointcut("execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.addCommentRecord(..))||execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.borrowBookById(..))||execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.returnBookById(..))")
-//两个..代表所有子目录，最后括号里的两个..代表所有参数
-	public void insertMessageInfo() {
-	}
-
-
-   /* @AfterReturning(returning = "res", pointcut = "insertMessageInfo()")
-    public void bbb(Object res){
-
-        System.out.println("+++++++++++++++++++++++++++++"+res);}*/
-
-	@After("insertMessageInfo()")
-	public void eee(JoinPoint joinPoint) throws BaseException {
-
-		Object[] args = joinPoint.getArgs();
-		try {
-			//评论 传进来三个参数 bookId CustBindUsersEntity comment
-			if (args.length == 3) {
-				for (int i = 0; i < args.length; i++) {
-                    log.info("第" + (i + 1) + "个参数为:" + args[i]);
-				}
-
-				int bookId = (int) args[0];
-				CustBindUsersEntity bindUser = (CustBindUsersEntity) args[1];
-				String operationContent = (String) args[2];
-
-
-				String openId = bindUser.getOpenid();
-				Map<String, Object> param = new HashMap<>();
-				param.put("id", bookId);
-				param.put("openid", openId);
-				BookBaseInfoEntity bo = bookService.queryBookDetailById(param);
-				String bookName = bo.getBookName();
-
-				String userName = bindUser.getUserName();
-				String operationType = "2";
-
-				MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
-
-
-				log.info("插入信息表成功：" + m);
-			}
-
-			//借、还 传进来两个参数
-
-			else if (args.length == 2) {
-				for (int i = 0; i < args.length; i++) {
-                    log.info("第" + (i + 1) + "个参数为:" + args[i]);
-
-                }
-				int bookId = (int) args[0];
-
-				String openid = (String) args[1];
-				Map<String, Object> param = new HashMap<>();
-				param.put("id", bookId);
-				param.put("openid", openid);
-				BookBaseInfoEntity bo1 = bookService.queryBookDetailById(param);
-
-				String bookName = bo1.getBookName();
-
-				CustBindUsersEntity user = commonService.getUserByOpenid(openid);
-				String userName = user.getUserName();
-
-
-				//操作类型(0是不在库，1是在库)(借为0，还为1)
-				String operationType = "";
-				if (bo1.getBookStatus().equals("1") ) {
-					operationType = "1";
-				} else if (bo1.getBookStatus().equals("0") ) {
-					operationType = "0";
-				}
-
-				//操作内容（评论内容，借/还为空）
-				String operationContent = "";
-
-				MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
-
-
-				log.info("插入信息表成功：" + m);
-
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-			throw new BaseException("insertMessage.failed", "信息没有插入成功");
-		}
-	}
 }
