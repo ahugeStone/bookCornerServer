@@ -34,7 +34,7 @@ public class EmailTask {
     /**
      * 定时执行，每工作日中午发送一次
      */
-    //@Scheduled(fixedDelay = 100000)
+    //@Scheduled(fixedDelay = 1000000)
     @Scheduled(cron="0 0 12 * * MON-FRI")
     public void task () throws BaseException
     {
@@ -47,15 +47,16 @@ public class EmailTask {
             Map<String, Object> res = new HashMap<>();
             res.put("sendBorrowBookEmailList", sendBorrowBookEmailList);
             String userEmail = (String)sendBorrowBookEmailList.get(0).get("userEmail");
-            String emailSubject = "开发二部图书角温馨提示"+"\t"+sendBorrowBookEmailList.get(0).get("userName")+"\t"+"借阅时间超过一个月需归还";
+            String emailSubject = "开发二部图书角还书温馨提醒"+"\t"+sendBorrowBookEmailList.get(0).get("userName")+"\t";
             String emailContent =
                     "<html>\n" +
                     "<body>\n" +
-                    "    <h3>开发二部图书角温馨提示</h3>\n"+
+                    "    <h3>您好，您借阅的图书已超过还书期限，请尽快完成阅读，并及时归还图书；如已归还图书，请及时在小程序上关闭借阅。</h3>\n"+
                     "<table border=\"1\">\n" +
                     "  <thead>\n" +
                     "    <tr>\n" +
                     "      <th>图书名</th>\n" +
+                            "<th>借阅时间</th>\n" +
                     "      <th>借阅信息</th>\n" +
                     "    </tr>\n" +
                     "  </thead>\n"+
@@ -65,6 +66,7 @@ public class EmailTask {
                 Map<String, Object> map = sendBorrowBookEmailList.get(j);
                 emailContent += "   <tr>\n" +
                                 "   <th>" + map.get("bookName")+"\t" + "</th>\n"+
+                                "   <th>" + map.get("borrowTime")+"\t" + "</th>\n"+
                                 "   <th>借阅时间超过一个月需还书</th>\n"+
                                 "   </tr>\n";
             }
