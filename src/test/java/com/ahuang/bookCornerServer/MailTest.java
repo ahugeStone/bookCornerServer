@@ -32,6 +32,7 @@ public class MailTest {
                 "    <h3>hello world ! 这是一封Html邮件!</h3>\n" +
                 "</body>\n" +
                 "</html>";
-        emailService.sendHtmlEmail("puxueweiwei@163.com","this is html mail",content);
+        emailService.sendHtmlEmail("puxueweiwei@163.com","this is html mail",content,"C:\\1.png");
+        //emailService.sendAttachmentsEmail("puxueweiwei@163.com","this is attachments Email","测试","C:\\1.png");
     }
 }

@@ -32,10 +32,10 @@ public class EmailTask {
     private BookService bookService;
 
     /**
-     * 定时执行，每工作日中午发送一次
+     * 定时执行，每工作日早上8点发送一次
      */
     //@Scheduled(fixedDelay = 1000000)
-    @Scheduled(cron="0 0 12 * * MON-FRI")
+    @Scheduled(cron="0 0 8 * * MON-FRI")
     public void task () throws BaseException
     {
         System.out.println(new Date());
@@ -47,11 +47,13 @@ public class EmailTask {
             Map<String, Object> res = new HashMap<>();
             res.put("sendBorrowBookEmailList", sendBorrowBookEmailList);
             String userEmail = (String)sendBorrowBookEmailList.get(0).get("userEmail");
-            String emailSubject = "开发二部图书角还书温馨提醒"+"\t"+sendBorrowBookEmailList.get(0).get("userName")+"\t";
+            //String emailSubject = "开发二部图书角还书温馨提醒"+"\t"+sendBorrowBookEmailList.get(0).get("userName")+"\t";
+            String emailSubject = "【还书提醒】开发二部图书角";
             String emailContent =
                     "<html>\n" +
                     "<body>\n" +
                     "    <h3>您好，您借阅的图书已超过还书期限，请尽快完成阅读，并及时归还图书；如已归还图书，请及时在小程序上关闭借阅。</h3>\n"+
+                            "    <h3>图书角小程序二维码见附件。</h3>\n"+
                     "<table border=\"1\">\n" +
                     "  <thead>\n" +
                     "    <tr>\n" +
@@ -76,7 +78,7 @@ public class EmailTask {
                             "</html>";
             System.out.println(emailContent);
             try {
-                emailService.sendHtmlEmail(userEmail, emailSubject, emailContent);
+                emailService.sendHtmlEmail(userEmail, emailSubject, emailContent,"C:\\图书角小程序二维码.png");
                 log.info("html邮件发送正常:" + emailSubject);
             } catch (Exception e){
                 log.error("html邮件发送失败:" + emailSubject);
