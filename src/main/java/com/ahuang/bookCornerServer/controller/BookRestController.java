@@ -134,12 +134,14 @@ public class BookRestController extends BaseController{
         String bookName = req.getBookName().toLowerCase();
         String bookType = req.getBookType();
         String bookStatus = req.getBookStatus();
+        String isbn13 = req.getIsbn13();
         Map<String, Object> param = new HashMap<>();
         param.put("num", num);
         param.put("pageSize", 20);
         param.put("bookName", bookName);
         param.put("bookType", bookType);
         param.put("bookStatus", bookStatus);
+        param.put("isbn13", isbn13);
 
         return bookService.queryBookListPage(param);
     }

@@ -15,4 +15,5 @@ public class CustQueryBookListReq {
 	private String bookName;
 	private String bookType;
 	private String bookStatus;
+	private String isbn13;
 }

@@ -33,6 +33,9 @@ public interface BookBaseInfoMapper{
 			+ "<if test='bookStatus!=null and bookStatus!=\"\"'>"
 			+ "and bookStatus = #{bookStatus}"
 			+ "</if>"
+			+ "<if test='isbn13!=null and isbn13!=\"\"'>"
+			+ "and isbn13 = #{isbn13}"
+			+ "</if>"
 		+"</where>";
 
 	/**
