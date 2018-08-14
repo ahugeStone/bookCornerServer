@@ -54,7 +54,7 @@ public class EmailServiceImp implements EmailService {
     }
 
     @Override
-    public void sendHtmlEmail(String to, String subject, String content,String filePath) {
+    public void sendHtmlEmail(String to, String subject, String content) {
         MimeMessage message = javaMailSender.createMimeMessage();//创建一个MINE消息
 
         String alias = "";
@@ -72,10 +72,6 @@ public class EmailServiceImp implements EmailService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(content, true);
-
-            FileSystemResource file = new FileSystemResource(new File(filePath));//创建文件系统资源
-            String fileName = filePath.substring(filePath.lastIndexOf(File.separator));
-            helper.addAttachment(fileName, file);//添加附件
 
             javaMailSender.send(message);
             log.info("html邮件发送成功");

@@ -137,6 +137,10 @@ public class BookServiceImpl implements BookService {
 	public List<Map<String, Object>> queryBookBorrowByBookStatus() {
 		return bookBorrowRecordMapper.queryBookBorrowByBookStatus();
 	}
+	//查询管理员信息
+	public List<Map<String, Object>>  queryIsAdmin(){
+		return custBindUsersMapper.queryIsAdmin();
+	}
 
 	@Override
 	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId) {

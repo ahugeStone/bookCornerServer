@@ -24,7 +24,7 @@ public interface EmailService {
      * @param subject
      * @param content
      */
-    void sendHtmlEmail(String to, String subject, String content,String filePath);
+    void sendHtmlEmail(String to, String subject, String content);
     /**
      * 发送带附件的邮件
      * @param to

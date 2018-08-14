@@ -204,4 +204,17 @@ public interface BookService {
 	 */
 	MessageBaseInfoEntity insertMessage(Integer bookId, String bookName, String operationContent, String operationType, String userName);
 
+	/**
+	 * 查询管理员信息
+	 *
+	 * @throws BaseException
+	 * @Title: addCommentRecord
+	 * @param
+	 * @return: com.ahuang.bookCornerServer.entity.CustBindUsersEntity
+	 * @author puxuewei
+	 * @date 2018年8月11日 下午7:40
+	 * @version V1.0
+	 * @throws
+	 */
+	List<Map<String, Object>>  queryIsAdmin();
 }
