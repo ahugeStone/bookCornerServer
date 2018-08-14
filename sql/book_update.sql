@@ -10,7 +10,7 @@ ALTER TABLE `BOOK_BASEINFO` ADD COLUMN `isbn13` varchar(20) NULL DEFAULT NULL CO
 -- Table structure for CUST_USERS
 -- ----------------------------
 
-ALTER TABLE `CUST_USERS` ADD COLUMN `userEmail` varchar(40) NULL DEFAULT NULL COMMENT '员工邮箱';
+ALTER TABLE `CUST_USERS` ADD COLUMN `userEmail` varchar(200) NULL DEFAULT NULL COMMENT '员工邮箱';
 
 
 -- ----------------------------
