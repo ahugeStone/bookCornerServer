@@ -108,6 +108,8 @@ public class BookRestController extends BaseController{
                 res.put("isBinded", "1");//已绑定
                 res.put("userNo", bindUser.getUserNo());
                 res.put("userName", bindUser.getUserName());
+                res.put("headImgUrl", bindUser.getHeadImgUrl());
+                res.put("isAdmin", bindUser.getIsAdmin());
 
                 String tokenJWT = JWTUtil.getToken(openid, bindUser, SECRET, EXPIRATIONTIME);
                 res.put("token", tokenJWT);
