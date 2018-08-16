@@ -247,6 +247,9 @@ public class BookRestController extends BaseController{
         } else if(BookActions.THUMBUP.toString().equals(action)) {//图书点赞
             log.debug(BookActions.THUMBUP.toString());
             bookService.addBookLikedRecord(bookId, user.getOpenid());
+        } else if(BookActions.DELETE.toString().equals(action)) {//删除图书
+            log.debug(BookActions.DELETE.toString());
+            bookService.deleteBookById(bookId, user.getIsAdmin());
         } else {
             throw new BaseException("not.defined.action:" + action, "未知的图书操作");
         }

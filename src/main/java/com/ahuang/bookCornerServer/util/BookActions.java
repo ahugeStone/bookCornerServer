@@ -15,5 +15,9 @@ public enum BookActions {
     /**
      * 点赞
      */
-    THUMBUP
+    THUMBUP,
+    /**
+     * 删除
+     */
+    DELETE
 }

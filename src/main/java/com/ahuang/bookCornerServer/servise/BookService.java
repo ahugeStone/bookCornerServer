@@ -217,4 +217,17 @@ public interface BookService {
 	 * @throws
 	 */
 	List<Map<String, Object>>  queryIsAdmin();
+	/**
+	 * 删除图书
+	 *
+	 * @throws BaseException
+	 * @Title: deleteBookById
+	 * @param
+	 * @param openid
+     * @author lct
+	 * @date 2018年8月16日 上午10:40
+	 * @version V1.0
+	 * @throws
+	 */
+	void deleteBookById(Integer bookId, String isAdmin) throws BaseException;
 }

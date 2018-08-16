@@ -143,6 +143,14 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
+	public void deleteBookById(Integer bookId, String isAdmin) throws BaseException {
+        if(isAdmin.equals("1")){
+            bookBaseInfoMapper.deleteBookByBookId(bookId);
+            log.info("删除图书：" + bookId + "  成功");
+        }else throw new BaseException("isAdmin.failed", "没有管理员权限");
+	}
+
+	@Override
 	public List<Map<String, Object>> queryBookBorrowHistoryByBookId(Integer bookId) {
 		return bookBorrowRecordMapper.queryBookBorrowHistoryByBookId(bookId);
 	}
