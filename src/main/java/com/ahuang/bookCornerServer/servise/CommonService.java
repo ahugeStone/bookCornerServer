@@ -49,6 +49,14 @@ public interface CommonService {
 	* @throws
 	*/
 	void custUserBind(CustBindUsersEntity user) throws BaseException;
-	
-	
+
+
+	/**
+	* 更新用户信息
+	* @params  [user]
+	* @return: void
+	* @Author: ahuang
+	* @Date: 2018/8/17 下午9:20
+	*/
+    void custUserUpdate(CustBindUsersEntity user);
 }

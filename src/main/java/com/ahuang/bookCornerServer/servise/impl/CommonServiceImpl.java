@@ -85,4 +85,14 @@ public class CommonServiceImpl implements CommonService {
 			throw new BaseException("user.cant.add", "该用户绑定失败");
 		}
 	}
+
+    @Override
+	public void custUserUpdate(CustBindUsersEntity user) {
+        Integer count = custBindUsersMapper.updateUserInfo(user);
+        if(1 != count) {
+            log.info("更新用户信息失败，openid：" + user.getOpenid());
+        } else {
+            log.info("更新用户信息成功，openid：" + user.getOpenid());
+        }
+    }
 }

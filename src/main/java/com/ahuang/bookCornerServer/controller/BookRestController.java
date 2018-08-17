@@ -311,6 +311,10 @@ public class BookRestController extends BaseController{
         Map<String, Object> res = new HashMap<>();
         if(LoginStatus.LoginAndBinded.equals(status)) {
             bindUser = user;
+            bindUser.setHeadImgUrl(req.getHeadImgUrl());
+            bindUser.setNickName(req.getNickName());
+            // 更新用户昵称和头像信息，解决部分用户昵称和头像为空的问题
+            commonService.custUserUpdate(bindUser);
             log.info("该用户已经成功登陆，openid:" + user.getOpenid());
         } else if(LoginStatus.LoginWithoutBinded.equals(status)) {
             bindUser = commonService.getUserByOpenid(user.getOpenid());

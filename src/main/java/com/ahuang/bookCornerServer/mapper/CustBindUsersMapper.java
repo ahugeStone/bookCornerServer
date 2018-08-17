@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import com.ahuang.bookCornerServer.entity.CustBindUsersEntity;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,17 @@ public interface CustBindUsersMapper {
 	@Insert("Insert into " + TABLE_NAEM +" (openid, nickName, headImgUrl, userNo, userName, isAdmin, recTime) "
 			+ " values(#{openid}, #{nickName}, #{headImgUrl}, #{userNo}, #{userName}, 0, SYSDATE())")
 	Integer insertUserInfo(CustBindUsersEntity entity);
+
+	/**
+	* 更新用户昵称，头像等信息
+	* @params  [entity]
+	* @return: java.lang.Integer
+	* @Author: ahuang
+	* @Date: 2018/8/17 下午9:17
+	*/
+	@Update("Update " + TABLE_NAEM + " set nickName=#{nickName}, headImgUrl=#{headImgUrl}, recTime=SYSDATE() " +
+			"where openid=#{openid}")
+	Integer updateUserInfo(CustBindUsersEntity entity);
 
 	/**
 	 * 查询管理员信息
