@@ -143,10 +143,10 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void deleteBookById(Integer bookId, String isAdmin) throws BaseException {
-        if(isAdmin.equals("1")){
+	public void deleteBookById(Integer bookId,CustBindUsersEntity bindUser) throws BaseException {
+        if(bindUser.getIsAdmin().equals("1")){
             bookBaseInfoMapper.deleteBookByBookId(bookId);
-            log.info("删除图书：" + bookId + "  成功");
+            log.info("管理员"+ bindUser.getUserName()+ " 删除ID为" + bookId + "的图书成功");
         }else throw new BaseException("isAdmin.failed", "没有管理员权限");
 	}
 

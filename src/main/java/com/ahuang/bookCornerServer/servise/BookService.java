@@ -229,5 +229,5 @@ public interface BookService {
 	 * @version V1.0
 	 * @throws
 	 */
-	void deleteBookById(Integer bookId, String isAdmin) throws BaseException;
+	void deleteBookById(Integer bookId,CustBindUsersEntity bindUser) throws BaseException;
 }

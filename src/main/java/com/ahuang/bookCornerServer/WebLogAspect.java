@@ -23,181 +23,217 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
-* @ClassName: WebLogAspect
-* @Description: 日志打印切片
-* @author ahuang
-* @date 2018年6月9日 下午7:32:27
-* @version V1.0
+ * @author ahuang
+ * @version V1.0
+ * @ClassName: WebLogAspect
+ * @Description: 日志打印切片
+ * @date 2018年6月9日 下午7:32:27
  */
 @Slf4j
 @Aspect
 @Order(-99) // 控制多个Aspect的执行顺序，越小越先执行
 @Component
 public class WebLogAspect {
-	@Autowired
-	private BookService bookService;
+    @Autowired
+    private BookService bookService;
 
-	@Autowired
-	private CommonService commonService;
-	/**
-	 * 
-	* @Title: logPointCut
-	* @Description: 正常输入返回切入点
-	* @return void    返回类型
-	* @author ahuang  
-	* @date 2018年6月9日 下午8:15:39
-	* @version V1.0
-	 */
-	@Pointcut("execution(public * com.ahuang.bookCornerServer.controller.*.*(..))")//两个..代表所有子目录，最后括号里的两个..代表所有参数
-    public void logPointCut() {}
-	
-	/**
-	 * 
-	* @Title: logExceptionCut
-	* @Description: 异常返回切入点
-	* @return void    返回类型
-	* @author ahuang  
-	* @date 2018年6月9日 下午8:16:11
-	* @version V1.0
-	 */
-	@Pointcut("execution(public * com.ahuang.bookCornerServer.ExceptionAdvice.*(..))")//两个..代表所有子目录，最后括号里的两个..代表所有参数
-    public void logExceptionCut() {}
+    @Autowired
+    private CommonService commonService;
 
-	/**
-	 * 
-	* @Title: doBefore
-	* @Description: 打印接口请求报文
-	* @param joinPoint    设定文件
-	* @return void    返回类型
-	* @author ahuang  
-	* @date 2018年6月9日 下午8:16:31
-	* @version V1.0
-	 */
+    /**
+     * @return void    返回类型
+     * @Title: logPointCut
+     * @Description: 正常输入返回切入点
+     * @author ahuang
+     * @date 2018年6月9日 下午8:15:39
+     * @version V1.0
+     */
+    @Pointcut("execution(public * com.ahuang.bookCornerServer.controller.*.*(..))")//两个..代表所有子目录，最后括号里的两个..代表所有参数
+    public void logPointCut() {
+    }
+
+    /**
+     * @return void    返回类型
+     * @Title: logExceptionCut
+     * @Description: 异常返回切入点
+     * @author ahuang
+     * @date 2018年6月9日 下午8:16:11
+     * @version V1.0
+     */
+    @Pointcut("execution(public * com.ahuang.bookCornerServer.ExceptionAdvice.*(..))")//两个..代表所有子目录，最后括号里的两个..代表所有参数
+    public void logExceptionCut() {
+    }
+
+    /**
+     * @param joinPoint 设定文件
+     * @return void    返回类型
+     * @Title: doBefore
+     * @Description: 打印接口请求报文
+     * @author ahuang
+     * @date 2018年6月9日 下午8:16:31
+     * @version V1.0
+     */
     @Before("logPointCut()")
-    public void doBefore(JoinPoint joinPoint){
-    	// 接收到请求，记录请求内容
+    public void doBefore(JoinPoint joinPoint) {
+        // 接收到请求，记录请求内容
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        log.info("RequestBody>>>>>>>:[" + request.getMethod()+ "]" 
-        + Arrays.toString(joinPoint.getArgs())
-        + ", ToURL:" + request.getRequestURL().toString()) ;
+        log.info("RequestBody>>>>>>>:[" + request.getMethod() + "]"
+                + Arrays.toString(joinPoint.getArgs())
+                + ", ToURL:" + request.getRequestURL().toString());
     }
 
     /**
-     * 
-    * @Title: doAfter
-    * @Description: 正常返回打印接口返回报文
-    * @param res    设定文件
-    * @return void    返回类型
-    * @author ahuang  
-    * @date 2018年6月9日 下午8:16:55
-    * @version V1.0
+     * @param res 设定文件
+     * @return void    返回类型
+     * @Title: doAfter
+     * @Description: 正常返回打印接口返回报文
+     * @author ahuang
+     * @date 2018年6月9日 下午8:16:55
+     * @version V1.0
      */
     @AfterReturning(returning = "res", pointcut = "logPointCut()")// returning的值和doAfterReturning的参数名一致
-    public void doAfter(Object res){
+    public void doAfter(Object res) {
         log.info("ResponseBody<<<<<<<:" + res);
     }
-    
+
     /**
-     * 
-    * @Title: doAfterException
-    * @Description: 异常返回打印返回报文
-    * @param res    设定文件
-    * @return void    返回类型
-    * @author ahuang  
-    * @date 2018年6月9日 下午8:17:12
-    * @version V1.0
+     * @param res 设定文件
+     * @return void    返回类型
+     * @Title: doAfterException
+     * @Description: 异常返回打印返回报文
+     * @author ahuang
+     * @date 2018年6月9日 下午8:17:12
+     * @version V1.0
      */
     @AfterReturning(returning = "res", pointcut = "logExceptionCut()")// returning的值和doAfterReturning的参数名一致
-    public void doAfterException(Object res){
+    public void doAfterException(Object res) {
         log.info("ResponseBody<<<<<<<:" + res);
     }
 
-	@Pointcut("execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.addCommentRecord(..))||execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.borrowBookById(..))||execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.returnBookById(..))")
+    @Pointcut("execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.addCommentRecord(..))||execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.borrowBookById(..))||execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.returnBookById(..))")
 //两个..代表所有子目录，最后括号里的两个..代表所有参数
-	public void insertMessageInfo() {
-	}
+    public void MessageInfo() {
+    }
+
+    @Pointcut("execution(* com.ahuang.bookCornerServer.servise.impl.BookServiceImpl.deleteBookById(..))")
+//两个..代表所有子目录，最后括号里的两个..代表所有参数
+    public void DeleteInfo() {
+    }
+
+    /* @AfterReturning(returning = "res", pointcut = "insertMessageInfo()")
+     public void bbb(Object res){
+
+         System.out.println("+++++++++++++++++++++++++++++"+res);}*/
 
 
-   /* @AfterReturning(returning = "res", pointcut = "insertMessageInfo()")
-    public void bbb(Object res){
+    //删除信息只能用before，用after就找不到bookinfo了
+    @Before("DeleteInfo()")
+    public void insertDeleteInfo(JoinPoint joinPoint) throws BaseException {
+        try {
+            Object[] args = joinPoint.getArgs();
 
-        System.out.println("+++++++++++++++++++++++++++++"+res);}*/
+            //评论 传进来2个参数 bookId CustBindUsersEntity
+            for (int i = 0; i < args.length; i++) {
+                log.info("第" + (i + 1) + "个参数为:" + args[i]);
+            }
+            int bookId = (int) args[0];
+            CustBindUsersEntity bindUser = (CustBindUsersEntity) args[1];
 
-	@After("insertMessageInfo()")
-	public void eee(JoinPoint joinPoint) throws BaseException {
+            String openId = bindUser.getOpenid();
+            Map<String, Object> param = new HashMap<>();
+            param.put("id", bookId);
+            param.put("openid", openId);
+            BookBaseInfoEntity bo = bookService.queryBookDetailById(param);
+            String bookName = bo.getBookName();
+            String userName = bindUser.getUserName();
+            String operationType = "3";
+            String operationContent = "";
 
-		Object[] args = joinPoint.getArgs();
-		try {
-			//评论 传进来三个参数 bookId CustBindUsersEntity comment
-			if (args.length == 3) {
-				for (int i = 0; i < args.length; i++) {
+            MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
+
+
+            log.info("插入信息表成功：" + m);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("insertMessage.failed", "信息没有插入成功");
+        }
+
+    }
+
+    @After("MessageInfo()()")
+    public void insertMessageInfo(JoinPoint joinPoint) throws BaseException {
+
+        Object[] args = joinPoint.getArgs();
+        try {
+            //评论 传进来三个参数 bookId CustBindUsersEntity comment
+            if (args.length == 3) {
+				/*for (int i = 0; i < args.length; i++) {
                     log.info("第" + (i + 1) + "个参数为:" + args[i]);
-				}
+				}*/
 
-				int bookId = (int) args[0];
-				CustBindUsersEntity bindUser = (CustBindUsersEntity) args[1];
-				String operationContent = (String) args[2];
-
-
-				String openId = bindUser.getOpenid();
-				Map<String, Object> param = new HashMap<>();
-				param.put("id", bookId);
-				param.put("openid", openId);
-				BookBaseInfoEntity bo = bookService.queryBookDetailById(param);
-				String bookName = bo.getBookName();
-
-				String userName = bindUser.getUserName();
-				String operationType = "2";
-
-				MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
+                int bookId = (int) args[0];
+                CustBindUsersEntity bindUser = (CustBindUsersEntity) args[1];
+                String operationContent = (String) args[2];
 
 
-				log.info("插入信息表成功：" + m);
-			}
+                String openId = bindUser.getOpenid();
+                Map<String, Object> param = new HashMap<>();
+                param.put("id", bookId);
+                param.put("openid", openId);
+                BookBaseInfoEntity bo = bookService.queryBookDetailById(param);
+                String bookName = bo.getBookName();
 
-			//借、还 传进来两个参数
+                String userName = bindUser.getUserName();
+                String operationType = "2";
 
-			else if (args.length == 2) {
-				for (int i = 0; i < args.length; i++) {
+                MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
+
+
+                log.info("插入信息表成功：" + m);
+            }
+
+            //借、还 传进来两个参数
+
+            else if (args.length == 2) {
+                for (int i = 0; i < args.length; i++) {
                     log.info("第" + (i + 1) + "个参数为:" + args[i]);
 
                 }
-				int bookId = (int) args[0];
+                int bookId = (int) args[0];
 
-				String openid = (String) args[1];
-				Map<String, Object> param = new HashMap<>();
-				param.put("id", bookId);
-				param.put("openid", openid);
-				BookBaseInfoEntity bo1 = bookService.queryBookDetailById(param);
+                String openid = (String) args[1];
+                Map<String, Object> param = new HashMap<>();
+                param.put("id", bookId);
+                param.put("openid", openid);
+                BookBaseInfoEntity bo1 = bookService.queryBookDetailById(param);
 
-				String bookName = bo1.getBookName();
+                String bookName = bo1.getBookName();
 
-				CustBindUsersEntity user = commonService.getUserByOpenid(openid);
-				String userName = user.getUserName();
-
-
-				//操作类型(0是不在库，1是在库)(借为0，还为1)
-				String operationType = "";
-				if (bo1.getBookStatus().equals("1") ) {
-					operationType = "1";
-				} else if (bo1.getBookStatus().equals("0") ) {
-					operationType = "0";
-				}
-
-				//操作内容（评论内容，借/还为空）
-				String operationContent = "";
-
-				MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
+                CustBindUsersEntity user = commonService.getUserByOpenid(openid);
+                String userName = user.getUserName();
 
 
-				log.info("插入信息表成功：" + m);
+                //操作类型(0是不在库，1是在库)(借为0，还为1)
+                String operationType = "";
+                if (bo1.getBookStatus().equals("1")) {
+                    operationType = "1";
+                } else if (bo1.getBookStatus().equals("0")) {
+                    operationType = "0";
+                }
 
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-			throw new BaseException("insertMessage.failed", "信息没有插入成功");
-		}
-	}
+                //操作内容（评论内容，借/还为空）
+                String operationContent = "";
+
+                MessageBaseInfoEntity m = bookService.insertMessage(bookId, bookName, operationContent, operationType, userName);
+
+
+                log.info("插入信息表成功：" + m);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("insertMessage.failed", "信息没有插入成功");
+        }
+    }
 }

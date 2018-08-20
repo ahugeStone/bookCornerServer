@@ -34,7 +34,7 @@ public interface MessageBaseInfoMapper {
 	* @Author: lct
 	* @Date: 2018年7月27日 上午10:50:58
 	*/
-	@Select("Select " + SELECT_FIELDS + " from MESSAGE_BASEINFO order by operationTime desc limit 0 , #{num}"  )
+	@Select("Select " + SELECT_FIELDS + " from MESSAGE_BASEINFO where (operationType='0' OR operationType='1' OR operationType='2') order by operationTime desc limit 0 , #{num}"  )
 	List<MessageBaseInfoEntity> queryMessageList(Integer num);
 
 
