@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -369,5 +370,39 @@ public class BookRestController extends BaseController{
 
 
         return result;
+    }
+
+    /**
+     * 管理员新增图书
+     * @params  []
+     * @return:
+     * @Author: lct
+     * @Date: 2018/8/31 上午11:55
+     */
+    @RequestMapping(path="/books",method = { RequestMethod.POST })
+    public void custAddBook(@RequestParam("bookName") String bookName, @RequestParam("bookWriter") String bookWriter, @RequestParam("bookBrief") String bookBrief, @RequestParam("bookType") String bookType, @RequestParam("bookSource") String bookSource, @RequestParam("bookBuyer") String bookBuyer, @RequestParam("bookTime") String bookTime, @RequestParam("bookScore") String bookScore, @RequestParam("isbn13") String isbn13
+            , HttpServletRequest request) throws BaseException {
+        checkLoginForJWT(request);
+        BookBaseInfoEntity entity = new BookBaseInfoEntity();
+
+        entity.setBookName(bookName);
+        entity.setBookWriter(bookWriter);
+        entity.setBookBrief(bookBrief);
+        entity.setBookType(bookType);
+        entity.setBookSource(bookSource);
+        entity.setBookBuyer(bookBuyer);
+        entity.setBookTime(bookTime);
+        entity.setBookScore(bookScore);
+        entity.setIsbn13(isbn13);
+
+
+        System.out.println("****************");
+
+        System.out.println(entity);
+
+        bookService.addBook(entity);
+
+
+
     }
 }

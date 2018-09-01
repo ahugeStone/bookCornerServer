@@ -1,6 +1,7 @@
 package com.ahuang.bookCornerServer.mapper;
 
 import com.ahuang.bookCornerServer.entity.BookBaseInfoEntity;
+import com.ahuang.bookCornerServer.entity.BookCommentRecordEntity;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -182,4 +183,7 @@ public interface BookBaseInfoMapper{
 
 	@Delete("DELETE FROM BOOK_BASEINFO where bookId=#{bookId}")
     void deleteBookByBookId(Integer bookId);
+
+	@Insert("INSERT INTO BOOK_BASEINFO (bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, bookTime,  bookLikeNum, bookCommentNum, recTime, bookScore, isbn13)"+  "VALUES (#{bookName}, #{bookWriter}, #{bookBrief}, #{bookType}, \"1\", #{bookSource}, #{bookBuyer}, #{bookTime},  \"0\" , \"0\", SYSDATE(), #{bookScore}, #{isbn13})")
+	void addBookInfo(BookBaseInfoEntity entity);
 }

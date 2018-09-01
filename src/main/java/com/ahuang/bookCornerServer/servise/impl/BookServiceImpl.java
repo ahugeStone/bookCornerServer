@@ -73,7 +73,14 @@ public class BookServiceImpl implements BookService {
 		Integer bookId = (Integer) param.get("bookId");
 		return bookBaseInfoMapper.queryById(bookId);
 	}
-	
+
+	@Override
+	public void addBook(BookBaseInfoEntity entity) {
+
+		bookBaseInfoMapper.addBookInfo(entity);
+
+	}
+
 	@Override
 	public BookBaseInfoEntity queryBookDetailById(Map<String, Object> param) {
 		Integer id = (Integer)param.get("id");

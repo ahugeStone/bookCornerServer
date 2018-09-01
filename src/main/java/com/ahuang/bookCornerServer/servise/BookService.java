@@ -44,6 +44,19 @@ public interface BookService {
 	BookBaseInfoEntity queryBookById(Map<String, Object> param);
 
 	/**
+	 * 管理员新增图书
+	 * @Title: addBook
+	 * @Description: 管理员新增图书
+	 * @param BookBaseInfoEntity
+	 * @return BookBaseInfoEntity    返回类型
+	 * @author lct
+	 * @date 2018年8月31日 上午9:46:39
+	 * @version V1.0
+	 * @throws
+	 */
+	void addBook(BookBaseInfoEntity entity);
+
+	/**
      * 根据bookid查看图书详情，包括本人是否正在借阅中
 	* @Title: queryBookDetailById
 	* @Description: 根据bookid查看图书详情，包括本人是否正在借阅中

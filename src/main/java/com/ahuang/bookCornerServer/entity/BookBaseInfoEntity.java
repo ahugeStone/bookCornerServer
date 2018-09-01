@@ -1,6 +1,8 @@
 package com.ahuang.bookCornerServer.entity;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import lombok.Data;
@@ -133,4 +135,15 @@ public class BookBaseInfoEntity implements Serializable{
 	 */
 	private String isbn13;
 
+    public void setBookTime(String bookTime) {
+        try {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(bookTime);
+            this.bookTime = date;
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }
