@@ -54,7 +54,7 @@ public interface BookService {
 	 * @version V1.0
 	 * @throws
 	 */
-	void addBook(BookBaseInfoEntity entity);
+	Integer addBook(BookBaseInfoEntity entity);
 
 	/**
      * 根据bookid查看图书详情，包括本人是否正在借阅中

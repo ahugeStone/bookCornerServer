@@ -20,9 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -380,8 +383,8 @@ public class BookRestController extends BaseController{
      * @Date: 2018/8/31 上午11:55
      */
     @RequestMapping(path="/books",method = { RequestMethod.POST })
-    public void custAddBook(@RequestParam("bookName") String bookName, @RequestParam("bookWriter") String bookWriter, @RequestParam("bookBrief") String bookBrief, @RequestParam("bookType") String bookType, @RequestParam("bookSource") String bookSource, @RequestParam("bookBuyer") String bookBuyer, @RequestParam("bookTime") String bookTime, @RequestParam("bookScore") String bookScore, @RequestParam("isbn13") String isbn13
-            , HttpServletRequest request) throws BaseException {
+    public void custAddBook(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("bookName") String bookName, @RequestParam("bookWriter") String bookWriter, @RequestParam("bookBrief") String bookBrief, @RequestParam("bookType") String bookType, @RequestParam("bookSource") String bookSource, @RequestParam("bookBuyer") String bookBuyer, @RequestParam("bookTime") String bookTime, @RequestParam("bookScore") String bookScore, @RequestParam("isbn13") String isbn13
+            , HttpServletRequest request) throws BaseException, IOException {
         checkLoginForJWT(request);
         BookBaseInfoEntity entity = new BookBaseInfoEntity();
 
@@ -395,13 +398,31 @@ public class BookRestController extends BaseController{
         entity.setBookScore(bookScore);
         entity.setIsbn13(isbn13);
 
+        //addBook返回刚插入图书的bookId
+        Integer bookId = bookService.addBook(entity);
 
-        System.out.println("****************");
-
-        System.out.println(entity);
-
-        bookService.addBook(entity);
-
+        try {
+            // 获取原始文件名
+            String fileName = file.getOriginalFilename();
+            String path = null;
+            String type = null;
+            // 获取文件格式
+            type = fileName.indexOf(".") != -1 ? fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()) : null;
+            System.out.println("图片初始名称为：" + fileName + " 类型为：" + type);
+            // 项目在容器中实际发布运行的根路径
+            String realPath = request.getSession().getServletContext().getRealPath("/");
+            // 最终的文件名称
+            String finalFileName = bookId + "." + type;
+            // 设置存放图片文件的路径
+            // path = realPath + "/uploads/" + finalFileName;
+            path = "d:/" + finalFileName;
+            System.out.println("存放图片文件的路径:" + path);
+            file.transferTo(new File(path));
+            System.out.println("文件成功上传到指定目录下");
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("uploadImg.failed", "图片没有上传成功");
+        }
 
 
     }

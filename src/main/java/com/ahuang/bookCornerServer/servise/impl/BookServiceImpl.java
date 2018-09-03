@@ -75,10 +75,11 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void addBook(BookBaseInfoEntity entity) {
+	public Integer addBook(BookBaseInfoEntity entity) {
 
 		bookBaseInfoMapper.addBookInfo(entity);
-
+		Integer bookId =bookBaseInfoMapper.queryMaxBookId();
+		return bookId;
 	}
 
 	@Override

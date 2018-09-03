@@ -186,4 +186,7 @@ public interface BookBaseInfoMapper{
 
 	@Insert("INSERT INTO BOOK_BASEINFO (bookName, bookWriter, bookBrief, bookType, bookStatus, bookSource, bookBuyer, bookTime,  bookLikeNum, bookCommentNum, recTime, bookScore, isbn13)"+  "VALUES (#{bookName}, #{bookWriter}, #{bookBrief}, #{bookType}, \"1\", #{bookSource}, #{bookBuyer}, #{bookTime},  \"0\" , \"0\", SYSDATE(), #{bookScore}, #{isbn13})")
 	void addBookInfo(BookBaseInfoEntity entity);
+
+	@Select("select max(bookId) from BOOK_BASEINFO;")
+    Integer queryMaxBookId();
 }
