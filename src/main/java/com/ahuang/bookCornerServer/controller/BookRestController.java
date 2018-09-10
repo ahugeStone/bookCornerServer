@@ -383,7 +383,7 @@ public class BookRestController extends BaseController{
      * @Date: 2018/8/31 上午11:55
      */
     @RequestMapping(path="/books",method = { RequestMethod.POST })
-    public void custAddBook(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("bookName") String bookName, @RequestParam("bookWriter") String bookWriter, @RequestParam("bookBrief") String bookBrief, @RequestParam("bookType") String bookType, @RequestParam("bookSource") String bookSource, @RequestParam("bookBuyer") String bookBuyer, @RequestParam("bookTime") String bookTime, @RequestParam("bookScore") String bookScore, @RequestParam("isbn13") String isbn13
+    public Integer custAddBook(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("bookName") String bookName, @RequestParam("bookWriter") String bookWriter, @RequestParam("bookBrief") String bookBrief, @RequestParam("bookType") String bookType, @RequestParam("bookSource") String bookSource, @RequestParam("bookBuyer") String bookBuyer, @RequestParam("bookTime") String bookTime, @RequestParam("bookScore") String bookScore, @RequestParam("isbn13") String isbn13
             , HttpServletRequest request) throws BaseException, IOException {
         checkLoginForJWT(request);
         BookBaseInfoEntity entity = new BookBaseInfoEntity();
@@ -425,5 +425,6 @@ public class BookRestController extends BaseController{
         }
 
 
+        return bookId;
     }
 }
