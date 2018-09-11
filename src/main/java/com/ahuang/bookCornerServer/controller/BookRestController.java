@@ -57,6 +57,9 @@ public class BookRestController extends BaseController{
     @Value("${jwt.expiration.time}")
     protected long EXPIRATIONTIME;
 
+    @Value("${img.path}")
+    protected String imgPath;
+
     private final BookService bookService;
 
     private final CommonService commonService;
@@ -408,17 +411,17 @@ public class BookRestController extends BaseController{
             String type = null;
             // 获取文件格式
             type = fileName.indexOf(".") != -1 ? fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()) : null;
-            System.out.println("图片初始名称为：" + fileName + " 类型为：" + type);
+            log.info("图片初始名称为：" + fileName + " 类型为：" + type);
             // 项目在容器中实际发布运行的根路径
-            String realPath = request.getSession().getServletContext().getRealPath("/");
+//            String realPath = request.getSession().getServletContext().getRealPath("/");
             // 最终的文件名称
             String finalFileName = bookId + "." + type;
             // 设置存放图片文件的路径
-            // path = realPath + "/uploads/" + finalFileName;
-            path = "d:/" + finalFileName;
-            System.out.println("存放图片文件的路径:" + path);
+            path = imgPath + finalFileName;
+            // path = finalFileName;
+            log.info("存放图片文件的路径:" + path);
             file.transferTo(new File(path));
-            System.out.println("文件成功上传到指定目录下");
+            log.info("文件成功上传到指定目录下");
         }catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("uploadImg.failed", "图片没有上传成功");
