@@ -1,8 +1,9 @@
 package com.ahuang.bookCornerServer.util;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGEncodeParam;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -149,23 +150,23 @@ public class ImageUtil {
         return __rgbs;
     }
 
-    public static void toJPG(File img, File save, int size, int quality) throws IOException {
-        FileOutputStream out = new FileOutputStream(save);
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-
-        BufferedImage image = (BufferedImage) getRoundedImage(ImageIO.read(img), size, 0, 2);//默认无圆角
-
-        //如果图像是透明的，就丢弃Alpha通道
-        if (image.getTransparency() == Transparency.TRANSLUCENT) {
-            image = get24BitImage(image);
-        }
-
-        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(image);//使用jpeg编码器
-        param.setQuality(1, true);//高质量jpg图片输出
-        encoder.encode(image, param);
-
-        out.close();
-    }
+//    public static void toJPG(File img, File save, int size, int quality) throws IOException {
+//        FileOutputStream out = new FileOutputStream(save);
+//        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//
+//        BufferedImage image = (BufferedImage) getRoundedImage(ImageIO.read(img), size, 0, 2);//默认无圆角
+//
+//        //如果图像是透明的，就丢弃Alpha通道
+//        if (image.getTransparency() == Transparency.TRANSLUCENT) {
+//            image = get24BitImage(image);
+//        }
+//
+//        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(image);//使用jpeg编码器
+//        param.setQuality(1, true);//高质量jpg图片输出
+//        encoder.encode(image, param);
+//
+//        out.close();
+//    }
 
     public static void toPNG(File img, File save, int size) throws IOException {
         ImageIO.write((BufferedImage) getRoundedImage(ImageIO.read(img), size, 0, 2), "PNG", save);//默认无圆角
