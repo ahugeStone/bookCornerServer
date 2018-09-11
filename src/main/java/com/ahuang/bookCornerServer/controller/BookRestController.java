@@ -12,10 +12,7 @@ import com.ahuang.bookCornerServer.servise.BookService;
 import com.ahuang.bookCornerServer.servise.CommonService;
 import com.ahuang.bookCornerServer.servise.EmailService;
 import com.ahuang.bookCornerServer.servise.MessageService;
-import com.ahuang.bookCornerServer.util.BookActions;
-import com.ahuang.bookCornerServer.util.JWTUtil;
-import com.ahuang.bookCornerServer.util.LoginStatus;
-import com.ahuang.bookCornerServer.util.StringUtil;
+import com.ahuang.bookCornerServer.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -412,17 +409,32 @@ public class BookRestController extends BaseController{
             // 获取文件格式
             type = fileName.indexOf(".") != -1 ? fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()) : null;
             log.info("图片初始名称为：" + fileName + " 类型为：" + type);
+            if(!"jpg".equals(type.toLowerCase()) && !"png".equals(type.toLowerCase())) {
+                // 如果上传图下那个的类型不是png或者jpg，则报错
+                throw new BaseException("uploadImg.type.error", "不支持的图片类型");
+            }
             // 项目在容器中实际发布运行的根路径
 //            String realPath = request.getSession().getServletContext().getRealPath("/");
             // 最终的文件名称
             String finalFileName = bookId + "." + type;
             // 设置存放图片文件的路径
-            path = imgPath + finalFileName;
+            if("jpg".equals(type.toLowerCase())) {
+                path = imgPath + "tmp/" + finalFileName;
+            } else {
+                path = imgPath + finalFileName;
+            }
             // path = finalFileName;
             log.info("存放图片文件的路径:" + path);
             file.transferTo(new File(path));
             log.info("文件成功上传到指定目录下");
-        }catch (Exception e) {
+            if("jpg".equals(type.toLowerCase())) {
+                File img = new File(path);
+                File save = new File(imgPath + bookId + ".png");
+                ImageUtil.toPNG(img, save, 300);
+                log.info("图片类型转换成功");
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("uploadImg.failed", "图片没有上传成功");
         }
