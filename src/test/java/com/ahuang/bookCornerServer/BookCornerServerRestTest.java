@@ -109,6 +109,7 @@ public class BookCornerServerRestTest  extends BaseTest{
                         .contentType(MediaType.APPLICATION_JSON_UTF8) // 设置报文头
                         .header("Authorization", "Bearer " + tokenBinded)
                         .param("num", "1") // 设置报文参数
+                        .param("bookName", "") // 设置报文参数
         )
                 .andDo(print())// 打印测试过程
                 .andExpect(status().isOk())//判断返回200
