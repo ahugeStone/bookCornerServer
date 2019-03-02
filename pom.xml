@@ -113,6 +113,11 @@
                 <version>1.0.0</version>
                 <configuration>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <imageTags>
+                        <imageTag>2019.3.2.01</imageTag>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <forceTags>true</forceTags>
                     <dockerDirectory>src/main/docker</dockerDirectory>
                     <resources>
                         <resource>
@@ -121,6 +126,8 @@
                             <include>${project.build.finalName}.jar</include>
                         </resource>
                     </resources>
+                    <!-- 与maven配置文件settings.xml中配置的server.id一致，用于推送镜像 -->
+                    <serverId>docker-hub</serverId>
                 </configuration>
             </plugin>
 		</plugins>
