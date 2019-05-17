@@ -113,7 +113,7 @@ public class EmailTask {
                 emailService.sendHtmlEmail(userEmail, emailSubject, emailContent.toString());
                 log.info("html邮件发送正常--收件人：" + userName + "，邮箱：" + userEmail + "，邮件标题：" + emailSubject);
             } catch (Exception e) {
-                log.error("html邮件发送失败--收件人：" + userName + "，邮箱：" + userEmail + "，邮件标题：" + emailSubject);
+                log.error("html邮件发送失败--收件人：" + userName + "，邮箱：" + userEmail + "，邮件标题：" + emailSubject, e);
                 e.printStackTrace();
             }
 
@@ -137,7 +137,7 @@ public class EmailTask {
                 emailService.sendHtmlEmail(adminEmail, adminEmailSubject, adminEmailHtml);
                 log.info("admin邮件发送正常--收件人" + adminName + "，邮箱：" + adminEmail + "，邮件标题：" + adminEmailSubject);
             } catch (Exception e) {
-                log.error("admin邮件发送失败--收件人" + adminName + "，邮箱：" + adminEmail + "，邮件标题：" + adminEmailSubject);
+                log.error("admin邮件发送失败--收件人" + adminName + "，邮箱：" + adminEmail + "，邮件标题：" + adminEmailSubject, e);
                 e.printStackTrace();
             }
 

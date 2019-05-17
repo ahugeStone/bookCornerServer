@@ -37,7 +37,7 @@ public class MailTest {
                     "<img src=''>\n" +
                 "</html>";
 
-        emailService.sendHtmlEmail("puxueweiwei@163.com","this is html mail",content);
+        emailService.sendHtmlEmail("742969055@qq.com","this is html mail",content);
 
     }
     @Test

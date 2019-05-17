@@ -23,6 +23,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <docker.image.prefix>ahugestone</docker.image.prefix>
+		<!-- 设置时间格式 -->
+		<maven.build.timestamp.format>yyyy.MM.dd</maven.build.timestamp.format>
 	</properties>
 
 	<dependencies>
@@ -114,7 +116,7 @@
                 <configuration>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <imageTags>
-                        <imageTag>2019.3.2.01</imageTag>
+                        <imageTag>${maven.build.timestamp}.01</imageTag>
                         <imageTag>latest</imageTag>
                     </imageTags>
                     <forceTags>true</forceTags>

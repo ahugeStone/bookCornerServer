@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.ahuang.bookCornerServer.servise.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,6 +40,8 @@ import lombok.extern.slf4j.Slf4j;
 public class bookTest {
 	@Autowired
 	private BookBaseInfoMapper bookBaseInfoMapper;
+    @Autowired
+    private EmailService emailService;
 	
 	@Autowired
 	private BookService bookService;
@@ -101,4 +104,16 @@ public class bookTest {
 		param.put("bookStatus", bookStatus);
 		return bookService.queryBookListPage(param);
 	}
+
+    @RequestMapping("/mailtest")
+    public boolean mailTest() {
+        String content="<html>\n" +
+                "<body>\n" +
+                "    <h3>hello world ! 这是一封Html邮件!</h3>\n" +
+                "<img src=''>\n" +
+                "</html>";
+
+        emailService.sendHtmlEmail("742969055@qq.com","this is html mail",content);
+        return true;
+    }
 }
